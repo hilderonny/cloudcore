@@ -5,8 +5,12 @@
  */
 class Arrange {
 
-    constructor() {
-        this.websocket = io();
+    /**
+     * Connect to server.
+     * @param {String} url URL of the server, defaults to window.location at same host
+     */
+    constructor(url) {
+        this.websocket = io(url);
     }
 
     /**
@@ -130,17 +134,3 @@ class Arrange {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
