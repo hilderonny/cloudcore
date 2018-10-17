@@ -1,13 +1,20 @@
-/* global io */
-
-/**
+/** 
  * Arrange client library
+ * @example
+ * // Connect to local server
+ * var arrange = Arrange.connect();
+ * var user = await arrange.login('myusername', 'mypassword');
+ * var datatypes = await arrange.getdatatypes();
+ * // Connect to remote server
+ * var arrangeremote = Arrange.connect('https://my.remoteserver.net');
+ * var user = await arrangeremote.login('myusername', 'mypassword');
+ * 
  */
 class Arrange {
 
     /**
-     * Connect to server.
-     * @param {String} url URL of the server, defaults to window.location at same host
+     * Connect to an Arrange server.
+     * @param {?string} url URL of the server. When not set, window.location is assumed as target URL
      */
     constructor(url) {
         this.websocket = io(url);
@@ -32,6 +39,11 @@ class Arrange {
     /**
      * Creates a field for a datatype. Returns the field with the generated id.
      * When the datatype or fieldtype does not exist, null is returned.
+     * @example
+     * arrange.createfield('mydatatypeid', 'newfield', Arrange.FieldType.TEXT);
+     * @param {string} datatypeid ID of the datatype to create a field for
+     * @param {string} fieldname Name of the field to be created
+     * @param {FieldType} fieldtype Type of the field to be created
      */
     async createfield(datatypeid, fieldname, fieldtype) {
         return this.dorequest('createfield', { datatypeid: datatypeid, fieldname: fieldname, fieldtype: fieldtype }, 'oncreatefield');
@@ -93,12 +105,58 @@ class Arrange {
     }
 
     /**
+     * Possible types of datatype fields.
+     * @typedef FieldType
+     * @property {string} Boolean "boolean"
+     * @property {string} Number "number"
+     * @property {string} Text "text"
+     */
+
+    /**
+     * Possible types of datatype fields.
+     * @enum {FieldType}
+     */
+    static FieldType = {
+        BOOLEAN: 'boolean',
+        NUMBER: 'number',
+        TEXT: 'text'
+    }
+
+    /**
+     * A datatype's field
+     * @typedef Field
+     * @property {string} id The unique identifier of the field
+     * @property {string} name The name of the field for visualization porposes
+     * @property {FieldType} type The value type of the field
+     */
+
+    /**
+     * A datatype
+     * @typedef Datatype
+     * @property {string} id The unique identifier of the datatype
+     * @property {string} name The name of the datatype for visualization porposes
+     * @property {Field[]} fields List of fields of the datatype
+     */
+
+    /**
      * Returns all datatypes with their fields. There is no need to obtain
      * information about special datatypes or fields separately because this call
      * contains a very small amount of data, so it can be retrieved all at once.
+     * @async
+     * @returns {Promise<Datatype[]>} List of all datatypes and their fields
      */
     async getdatatypes() {
         return this.dorequest('getdatatypes', null, 'ongetdatatypes');
+    }
+
+    /**
+     * Returns all objects of the given datatype
+     * @async
+     * @param {string} datatypeid ID of the datatypes for which the objects should be returned
+     * @returns {Promise<Object[]>} List of all objects of the given datatype
+     */
+    async getobjects(datatypeid) {
+        return this.dorequest('getobjects', { datatypeid: datatypeid }, 'ongetobjects');
     }
 
     /**
@@ -127,10 +185,11 @@ class Arrange {
     }
 
     /**
-     * Connect to the server
+     * Connect to the given server
+     * @param {?string} url URL of the server. When not set, window.location is assumed as target URL
      */
-    static async connect() {
-        return new Arrange();
+    static async connect(url) {
+        return new Arrange(url);
     }
 
 }
