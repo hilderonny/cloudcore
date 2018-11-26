@@ -1,5 +1,16 @@
 <html>
     <body>
         <a href="arrange-client.min.js">arrange-client.min.js</a>
+        <script>
+            const ws = new WebSocket('wss://arrange.avorium.de/ws');
+
+            ws.onopen = function() {
+                ws.send('something');
+            };
+
+            ws.onmessage = function (data) {
+                console.log(data);
+            };
+        </script>
     </body>
 </html>
