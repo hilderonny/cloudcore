@@ -2,13 +2,9 @@
   "name": "arrangeplatform",
   "version": "1.0.0",
   "description": "Arrange platform",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
+  "main": "server/index.js",
   "scripts": {
-    "clientdocs": "jsdoc -d ./docs/clientdocs/ ./client/src/arrange-client.js ",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "minify": "minify client/arrange-client.js --out-file ./client/arrange-client.min.js --mangle.keepClassName"
   },
   "repository": {
     "type": "git",
@@ -21,6 +17,9 @@
   },
   "homepage": "https://github.com/hilderonny/arrange#readme",
   "devDependencies": {
-    "jsdoc": "^3.5.5"
+    "babel-minify": "^0.5.0"
+  },
+  "dependencies": {
+    "ws": "^6.1.2"
   }
 }
