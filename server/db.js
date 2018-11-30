@@ -25,8 +25,8 @@ module.exports = (function (url) {
         },
 
 
-        read: async (dbName, collectionName, _id) => {
-            return getCollection(dbName, collectionName).findOne(_id);
+        read: async (dbName, collectionName, _id, options) => {
+            return getCollection(dbName, collectionName).findOne(_id, options);
         },
 
 

@@ -30,10 +30,11 @@ module.exports = (function(db, webSocketServer) {
     /* params = {
      *  db: string,
      *  collection: string,
-     *  _id: string
+     *  _id: string,
+     *  options?: object
      */
     function _handleRead(params) {
-      return db.read(params.db, params.collection, params._id);
+      return db.read(params.db, params.collection, params._id, params.options);
     }
     
     /* params = {

@@ -58,12 +58,13 @@ const ArrangeClient = (function () {
         });
     }
 
-    function _read(dbName, collectionName, _id) {
+    function _read(dbName, collectionName, _id, options) {
         return _request({
             type: 'read',
             db: dbName,
             collection: collectionName,
-            _id: _id
+            _id: _id,
+            options: options
         });
     }
 
