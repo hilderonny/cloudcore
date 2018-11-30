@@ -1,16 +1,37 @@
 <html>
-    <body>
-        <a href="arrange-client.min.js">arrange-client.min.js</a>
-        <script>
-            const ws = new WebSocket('wss://arrange.avorium.de/ws');
+  <head>
+    <script src="arrange-client..js"></script>
+  </head>
+  <body>
+    <a href="arrange-client.min.js">arrange-client.min.js</a>
+    <script>
 
-            ws.onopen = function() {
-                ws.send('something');
-            };
+      ArrangeClient().connect('wss://' + location.host).then(async function(ac) {
+        ac.addMessageListener(function(msg) {
+          if (!msg.response) console.log(msg);
+        });
 
-            ws.onmessage = function (data) {
-                console.log(data);
-            };
-        </script>
-    </body>
+        const users = await ac.search('dbfmcloud', 'users', {}, '_id name')
+        console.log(users);
+
+        ac.broadcast({info: 'tollesachen'});
+
+        const created = await ac.create('dbfmcloud', 'schnulli', { halli: 'galli', hopp: 'sassa' });
+        console.log('create', created);
+
+        console.log('read', await ac.read('dbfmcloud', 'schnulli', created._id));
+
+        console.log('update', await ac.update('dbfmcloud', 'schnulli', created._id, { extended: { bull: 'shit' } }));
+
+        console.log('search', await ac.search('dbfmcloud', 'schnulli'));
+
+        console.log('delete', await ac.delete('dbfmcloud', 'schnulli', created._id));
+
+        console.log('search', await ac.search('dbfmcloud', 'schnulli'));
+
+
+      });
+
+    </script>
+  </body>
 </html>
