@@ -20,6 +20,7 @@
     "babel-minify": "^0.5.0"
   },
   "dependencies": {
+    "https": "^1.0.0",
     "monk": "^6.0.6",
     "ws": "^6.1.2"
   }
