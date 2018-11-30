@@ -1,33 +1,37 @@
 <html>
   <head>
-    <script src="arrange-client.min.js"></script>
+    <script src="https://arrange.avorium.de/arrange-client.min.js"></script>
   </head>
   <body>
-    <a href="arrange-client.min.js">arrange-client.min.js</a>
+    <a href="https://arrange.avorium.de/arrange-client.min.js">arrange-client.min.js</a>
     <script>
+      
+      function log(msg1, msg2) {
+        const div = document.createElement('div');
+        div.innerText = JSON.stringify([msg1, msg2]);
+        document.body.appendChild(div);
+        console.log(msg1, msg2);
+      }
 
-      ArrangeClient().connect('wss://' + location.host).then(async function(ac) {
+      ArrangeClient().connect('wss://arrange.avorium.de:42001').then(async function(ac) {
         ac.addMessageListener(function(msg) {
           if (!msg.response) console.log(msg);
         });
 
-        const users = await ac.search('dbfmcloud', 'users', {}, '_id name')
-        console.log(users);
-
         ac.broadcast({info: 'tollesachen'});
 
-        const created = await ac.create('dbfmcloud', 'schnulli', { halli: 'galli', hopp: 'sassa' });
-        console.log('create', created);
+        const created = await ac.create('bubu', 'schnulli', { halli: 'galli', hopp: 'sassa' });
+        log('create', created);
 
-        console.log('read', await ac.read('dbfmcloud', 'schnulli', created._id));
+        log('read', await ac.read('bubu', 'schnulli', created._id));
 
-        console.log('update', await ac.update('dbfmcloud', 'schnulli', created._id, { extended: { bull: 'shit' } }));
+        log('update', await ac.update('bubu', 'schnulli', created._id, { extended: { bull: 'shit' } }));
 
-        console.log('search', await ac.search('dbfmcloud', 'schnulli'));
+        log('search', await ac.search('bubu', 'schnulli'));
 
-        console.log('delete', await ac.delete('dbfmcloud', 'schnulli', created._id));
+        log('delete', await ac.delete('bubu', 'schnulli', created._id));
 
-        console.log('search', await ac.search('dbfmcloud', 'schnulli'));
+        log('search', await ac.search('bubu', 'schnulli'));
 
 
       });
