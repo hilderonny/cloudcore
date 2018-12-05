@@ -61,8 +61,10 @@ const Editor = (function() {
     if (isBlocked) return;
     raycaster.setFromCamera( mouse, camera );
     const intersects = raycaster.intersectObjects( objects );
-    if (intersects.length > 0 && intersects[0].object.paletteNumber === currentColorIndex) {
-      isPainting = true;
+    if (intersects.length > 0) {
+      if (intersects[0].object.paletteNumber === currentColorIndex) {
+        isPainting = true;
+      }
     } else {
       isMoving = true;
     }
