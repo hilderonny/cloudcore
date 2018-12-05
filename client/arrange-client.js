@@ -104,15 +104,14 @@ const ArrangeClient = (function () {
         connect: function (url) {
             const self = this;
             return new Promise(function (resolve, reject) {
-                try {
-                    _webSocket = new WebSocket(url);
-                    _webSocket.onmessage = _handleMessage;
-                    _webSocket.onopen = function () {
-                        resolve(self);
-                    };
-                } catch(ex) {
-                    reject(ex);
-                }
+                _webSocket = new WebSocket(url);
+                _webSocket.onmessage = _handleMessage;
+                _webSocket.onopen = function () {
+                    resolve(self);
+                };
+                _webSocket.onerror = function (err) {
+                    reject(err);
+                };
             });
         },
 
