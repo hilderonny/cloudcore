@@ -28,14 +28,18 @@ const ArrangeClient = (function () {
      */
     function _request(req) {
         return new Promise(function (resolve, reject) {
-            const str = JSON.stringify(req);
-            const responseListener = function (msg) {
-                if (!msg || !msg.response || !msg.request === str) return;
-                _removeMessageListener(responseListener);
-                resolve(msg.response);
-            };
-            _addMessageListener(responseListener);
-            _send(req);
+            try {
+                const str = JSON.stringify(req);
+                const responseListener = function (msg) {
+                    if (!msg || !msg.response || !msg.request === str) return;
+                    _removeMessageListener(responseListener);
+                    resolve(msg.response);
+                };
+                _addMessageListener(responseListener);
+                _send(req);
+            } catch (ex) {
+                reject(ex);
+            }
         });
     }
 
@@ -100,11 +104,15 @@ const ArrangeClient = (function () {
         connect: function (url) {
             const self = this;
             return new Promise(function (resolve, reject) {
-                _webSocket = new WebSocket(url);
-                _webSocket.onmessage = _handleMessage;
-                _webSocket.onopen = function () {
-                    resolve(self);
-                };
+                try {
+                    _webSocket = new WebSocket(url);
+                    _webSocket.onmessage = _handleMessage;
+                    _webSocket.onopen = function () {
+                        resolve(self);
+                    };
+                } catch(ex) {
+                    reject(ex);
+                }
             });
         },
 
