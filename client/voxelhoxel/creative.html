@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      html { width: 100%; height: 100% }
+      body { display: flex; flex-direction: column; width: 100%; height: 100%; margin: 0; padding: 0; font-family: sans-serif; }
+      .list { overflow: auto; flex: 1; text-align: center; background-color: #fcfcfc; }
+      .list div { cursor: pointer; display: inline-block; margin: 8px; padding: 0 0 4px 0; border-radius: 8px; box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.8); background-color: #eee; }
+      .list div img { border-radius: 8px; }
+      .toolbar { margin: auto; display: flex; flex-direction: row; }
+      .toolbar div { display: flex; flex-direction: column; text-align: center; cursor: pointer; }
+      .toolbar img { width: 48px; height: 48px; image-rendering: pixelated; }
+    </style>
+    <script src="https://arrange.avorium.de/arrange-client.min.js"></script>
+    <script>
+      
+      window.addEventListener('load', async function() {
+
+        const arrangeClient = await ArrangeClient().connect('wss://arrange.avorium.de:42001');
+        const list = document.querySelector('.list');
+        const models = await arrangeClient.search('voxelhoxel', 'models', {}, '_id name thumbnail');
+        models.forEach(function(model) {
+          const el = document.createElement('div');
+          el.innerHTML = '<img src="' + model.thumbnail + '"/>';
+          el.addEventListener('click', function() {
+            location.href = 'edit.html?_id=' + model._id;
+          });
+          list.appendChild(el);
+        });
+        
+      });
+    </script>
+  </head>
+  <body>
+    <div class="list"></div>
+    <div class="toolbar">
+      <div>
+        <img onclick="location.href='index.html';" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAMCAYAAAC0qUeeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAZdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuMTCtCgrAAAAAWUlEQVQoU42MAQ7AIAgDfTo/ZysFBiNzNqnacrhUtfkWDvOYtfBAe7iCUORm9gw7OfMPQgmfKGER8epbCZ8sGMd7LuBdnTD8XojcHDDnLOOnOrP5KHxhwrouHQNfPTts4ocAAAAASUVORK5CYII=" />
+        <label>Start</label>
+      </div>
+      <div>
+        <img onclick="location.href='edit.html';" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFISURBVGhD7ZlNSsRQEIRzEF0pL15ZE9zrqO/hAbyLK1cj/hxAp7EQaWpRPWTyHOgPvlWgujozq/SQJEnyf7k+q6dTaXdTqR/z2L7W1GZOY324LI8XqBPDys+lbVn4qpb6enV+f4JaOvbmaWAPS92gls7u7X/SsA7u/krvqKXDgnqKWjospKeopcNCIj4/vfzKnkdFLR0WEjEXcKKWDguJmAs4UUuHhUTMBZyopcNCIuYCTtTSYSERcwEnaumwEPNvsUPIZpqopcNCTDZ0SdlME7V0WIjJhi4pm2milg4LiaiUiohaOiwkYi7gRC0dFhIxF3Cilg4LiZgLOFFLh4VEzAWcqKXDQiIe/QJLi1o6LKSnqKVz9B937bjAwno4je0GtXTsMmLHBRa4qqVt9zpwGD9Xmrqxn5CGH9a3eay3e5dPkiRZgWH4BpSe3oKhBqQLAAAAAElFTkSuQmCC"/>
+        <label>Neu</label>
+      </div>
+    </div>
+  </body>
+</html>
