@@ -25,7 +25,7 @@
 
         try {
           const arrangeClient = await ArrangeClient().connect('wss://arrange.avorium.de:42001');
-          const modelsFromServer = await arrangeClient.search('voxelhoxel', 'models', {}, '_id');
+          const modelsFromServer = await arrangeClient.search('voxelhoxel', 'models', {}, '_id version');
           // Save models in local database
           for (var i = 0; i < modelsFromServer.length; i++) {
             const model = modelsFromServer[i];
@@ -34,10 +34,13 @@
               const modelFromServer = await arrangeClient.read('voxelhoxel', 'models', model._id);
               LocalDb.saveModel(modelFromServer);
               localModels.push(modelFromServer);
-            } else if (Object.keys(localModels[localModelIndex].painted).length < 1) {
-              const modelFromServer = await arrangeClient.read('voxelhoxel', 'models', model._id);
-              LocalDb.saveModel(modelFromServer);
-              localModels[localModelIndex] = modelFromServer;
+            } else {
+              const localModel = localModels[localModelIndex];
+              if (Object.keys(localModel.painted).length < 1 && (!localModel.version || model.version > localModel.version)) {
+                const modelFromServer = await arrangeClient.read('voxelhoxel', 'models', model._id);
+                LocalDb.saveModel(modelFromServer);
+                localModels[localModelIndex] = modelFromServer;
+              }
             }
           }
         } catch(ex) {
