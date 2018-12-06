@@ -109,7 +109,7 @@ const ArrangeClient = (function () {
             };
             _webSocket.onclose = function() { // Reconnect when the connection was lost
                 _connect();
-            }
+            };
             _webSocket.onerror = function (err) {
                 reject(err);
             };
