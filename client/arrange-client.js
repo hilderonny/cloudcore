@@ -1,6 +1,6 @@
 const ArrangeClient = (function () {
 
-    var _webSocket;
+    var _webSocket, _url;
     const _messageListeners = [];
 
     function _handleMessage(message) {
@@ -18,8 +18,11 @@ const ArrangeClient = (function () {
         _messageListeners.splice(_messageListeners.indexOf(listener), 1);
     }
 
-    function _send(obj) {
-        if (!_webSocket || _webSocket.readyState !== 1) return;
+    async function _send(obj) {
+        if (!_webSocket || _webSocket.readyState !== 1) {
+            // Try to re-connect when connection was broken, e.g. when the phone came back from sleep
+            await _connect();
+        }
         _webSocket.send(JSON.stringify(obj));
     }
 
@@ -96,23 +99,31 @@ const ArrangeClient = (function () {
         _send(message);
     }
 
+    function _connect() {
+        const self = this;
+        return new Promise(function (resolve, reject) {
+            _webSocket = new WebSocket(_url);
+            _webSocket.onmessage = _handleMessage;
+            _webSocket.onopen = function () {
+                resolve(self);
+            };
+            _webSocket.onclose = function() { // Reconnect when the connection was lost
+                _connect();
+            }
+            _webSocket.onerror = function (err) {
+                reject(err);
+            };
+        });
+    }
+
     return {
 
         /**
          * Async function which resolves when the connection was established
          */
         connect: function (url) {
-            const self = this;
-            return new Promise(function (resolve, reject) {
-                _webSocket = new WebSocket(url);
-                _webSocket.onmessage = _handleMessage;
-                _webSocket.onopen = function () {
-                    resolve(self);
-                };
-                _webSocket.onerror = function (err) {
-                    reject(err);
-                };
-            });
+            _url = url;
+            return _connect();
         },
 
         addMessageListener: _addMessageListener,
