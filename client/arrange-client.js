@@ -100,12 +100,11 @@ const ArrangeClient = (function () {
     }
 
     function _connect() {
-        const self = this;
         return new Promise(function (resolve, reject) {
             _webSocket = new WebSocket(_url);
             _webSocket.onmessage = _handleMessage;
             _webSocket.onopen = function () {
-                resolve(self);
+                resolve(_self);
             };
             _webSocket.onclose = function() { // Reconnect when the connection was lost
                 _connect();
@@ -116,7 +115,7 @@ const ArrangeClient = (function () {
         });
     }
 
-    return {
+    const _self = {
 
         /**
          * Async function which resolves when the connection was established
@@ -136,5 +135,7 @@ const ArrangeClient = (function () {
         broadcast: _broadcast
 
     }
+
+    return _self;
 
 });
