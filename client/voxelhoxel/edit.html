@@ -37,6 +37,9 @@
             version: 1
           };
         };
+
+        document.getElementById('colorpalette').addEventListener('touchmove', function(e){e.stopPropagation()}, false);
+        document.getElementById('colorbar').addEventListener('touchmove', function(e){e.stopPropagation()}, false);
         
         Editor.loadModel(model);
         createColorPalette();

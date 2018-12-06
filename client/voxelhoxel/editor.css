@@ -151,6 +151,6 @@ input[type=radio] {
 #colorpalette div {
   cursor: pointer;
   display: flex;
-  width: 24px;
-  height: 38px;
+  width: 36px;
+  height: 42px;
 }

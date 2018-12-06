@@ -27,6 +27,9 @@
         model = await LocalDb.loadModel(_id);
         if (!model) return alert('Kein passendes Modell gefunden!');
         
+        document.getElementById('colorpalette').addEventListener('touchmove', function(e){e.stopPropagation()}, false);
+        document.getElementById('colorbar').addEventListener('touchmove', function(e){e.stopPropagation()}, false);
+
         Editor.loadModel(model);
         
         createColorPalette();
