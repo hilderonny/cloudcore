@@ -231,6 +231,7 @@ const Editor = (function() {
       controls = new THREE.OrbitControls( camera, renderer.domElement );
       controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
       controls.dampingFactor = 0.25;
+      controls.rotateSpeed = 0.1;
       controls.screenSpacePanning = true; // For panning vertically
       controls.minDistance = 1;
       controls.maxDistance = 1000;
