@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/hilderonny/arrange#readme",
   "devDependencies": {
-    "babel-minify": "^0.5.0"
+    "babel-minify": "^0.5.0",
+    "express": "^4.16.4"
   },
   "dependencies": {
     "https": "^1.0.0",
