@@ -162,7 +162,8 @@ const Editor = (function() {
     handleMouseUp();
   }
   
-  function onDocumentTouchMove() {
+  function onDocumentTouchMove(e) {
+    e.preventDefault();
     if (currentMode !== 'play' || !isPainting) return;
     mouse.set( ( event.changedTouches[0].clientX / renderer.domElement.parentNode.clientWidth  ) * 2 - 1, - ( event.changedTouches[0].clientY / renderer.domElement.parentNode.clientHeight ) * 2 + 1 );
     raycaster.setFromCamera( mouse, camera );
@@ -246,7 +247,7 @@ const Editor = (function() {
       document.addEventListener('touchend', onDocumentTouchEnd, false);
       document.addEventListener('mousedown', onDocumentMouseDown, false);
       document.addEventListener('touchstart', onDocumentTouchStart, false);
-      document.addEventListener('touchmove', onDocumentTouchMove, false);
+      document.addEventListener('touchmove', onDocumentTouchMove, { passive: false }); // https://stackoverflow.com/a/49582193/5964970
       // Setup lights
       const pointLight = new THREE.PointLight( 0xffffff );
       pointLight.position.set(1,1,2);
