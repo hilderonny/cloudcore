@@ -7,4 +7,4 @@ body { display: flex; flex-direction: column; width: 100%; height: 100%; margin:
 .list div span.complete { display: block; position:absolute; top:0; left: 0; color: #fff; background-color: #0c0; padding: 4px 12px; border-radius: 8px 0; text-transform: uppercase; font-weight: bold; font-size: 18px; }
 .toolbar { margin: auto; display: flex; flex-direction: row; }
 .toolbar div { display: flex; flex-direction: column; text-align: center; cursor: pointer; }
-.toolbar img { width: 48px; height: 48px; image-rendering: pixelated; }
+.toolbar img { margin: 3px; }
