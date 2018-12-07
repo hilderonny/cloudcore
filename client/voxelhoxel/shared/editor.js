@@ -312,11 +312,13 @@ const Editor = (function() {
       const oldAspect = camera.aspect;
       camera.aspect = 1;
       camera.updateProjectionMatrix();
+      scene.background = new THREE.Color( 0xFFFFFF );
       tempRenderer.render(scene, camera);
       const data = tempRenderer.domElement.toDataURL('image/jpeg');
       camera.aspect = oldAspect;
       camera.updateProjectionMatrix();
       isBlocked = false;
+      scene.background = new THREE.Color( 0xA37F81 );
       return data;
     },
     
