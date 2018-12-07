@@ -12,10 +12,14 @@
 
         const arrangeClient = await ArrangeClient().connect('wss://arrange.avorium.de:42001');
         const list = document.querySelector('.list');
-        const models = await arrangeClient.search('voxelhoxel', 'models', {}, '_id name thumbnail');
+        const models = await arrangeClient.search('voxelhoxel', 'models', {}, '_id name thumbnail isPublished');
         models.forEach(function(model) {
           const el = document.createElement('div');
-          el.innerHTML = '<img src="' + model.thumbnail + '"/>';
+          if (model.isPublished) {
+            el.innerHTML = '<img src="' + model.thumbnail + '" /><span class="published">Veröffentlicht</span>';
+          } else {
+            el.innerHTML = '<img src="' + model.thumbnail + '"/>';
+          }
           el.addEventListener('click', function() {
             location.href = 'edit.html?_id=' + model._id;
           });

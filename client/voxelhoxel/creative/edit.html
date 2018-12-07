@@ -41,6 +41,8 @@
 
         document.getElementById('colorpalette').addEventListener('touchmove', function(e){e.stopPropagation()}, false);
         document.getElementById('colorbar').addEventListener('touchmove', function(e){e.stopPropagation()}, false);
+
+        if (model.isPublished) document.getElementById('toolbar').style.display = 'none';
         
         Editor.loadModel(model);
         createColorPalette();
@@ -124,6 +126,13 @@
         document.getElementById('colorpalette').classList.toggle('visible');
         Editor.forceResize();
       }
+
+      async function publish() {
+        if (!confirm('Wirklich veröffentlichen? Das Model kann danach nicht mehr geändert oder gelöscht werden.')) return;
+        model.isPublished = true;
+        document.getElementById('toolbar').style.display = 'none';
+        await save();
+      }
       
     </script>
   </head>
@@ -152,6 +161,7 @@
       </label>
       <img onclick="toggleColorPalette();" src="../images/palette.png"/>
       <div class="spacer"></div>
+      <img onclick="publish();" src="../images/publish.png"/>
       <img onclick="duplicate();" src="../images/duplicate.png"/>
       <img onclick="deleteModel();" src="../images/delete.png" />
     </div>
