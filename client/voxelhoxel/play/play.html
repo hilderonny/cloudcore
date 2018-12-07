@@ -4,12 +4,13 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../shared/editor.css"/>
     <script src="https://arrange.avorium.de/arrange-client.min.js"></script>
-    <script src="three.js"></script>
-    <script src="three.orbitcontrols.js"></script>
-    <script src="utils.js"></script>
-    <script src="editor.js"></script>
-    <script src="localdb.js"></script>
+    <script src="../shared/three.js"></script>
+    <script src="../shared/three.orbitcontrols.js"></script>
+    <script src="../shared/utils.js"></script>
+    <script src="../shared/editor.js"></script>
+    <script src="../shared/localdb.js"></script>
     <script>
       
       // Palette by Arne http://androidarts.com/palette/Famicube.htm
@@ -34,10 +35,13 @@
         
         createColorPalette();
         createColorBar();
-        selectColor(0);
         
         Editor.setMode('play');
-        
+
+        const selectedColorIndex = parseInt(Object.keys(colorsLeft)[0]);
+        document.getElementsByName('color')[selectedColorIndex].checked = true;
+        selectColor(selectedColorIndex);
+
         Editor.start();
         
       });
@@ -98,7 +102,7 @@
           });
         });
         model.colorpalette.forEach(function(color, index) {
-          colorBar.innerHTML += '<label' + (colorsLeft[index] ? '' : ' class="invisible"') + '><input type="radio" name="color"' + (index === 0 ? ' checked' : '') + ' onchange="selectColor(' + index + ');" /><div style="background-color:' + color + '"><span class="unchecked">' + index + '</span><span class="checked">&#10004;</span></div></label>';
+          colorBar.innerHTML += '<label' + (colorsLeft[index] ? '' : ' class="invisible"') + '><input type="radio" name="color" onchange="selectColor(' + index + ');" /><div style="background-color:' + color + '"><span class="unchecked">' + index + '</span><span class="checked">&#10004;</span></div></label>';
         });
         checkAllColors();
       }
@@ -138,7 +142,6 @@
       }
       
     </script>
-    <link rel="stylesheet" href="editor.css"/>
   </head>
   <body>
     
@@ -148,9 +151,9 @@
     </div>
     
     <div id="toolbar">
-      <img onclick="toggleColorPalette();" src="palette.png"/>
+      <img onclick="toggleColorPalette();" src="../images/palette.png"/>
       <div class="spacer"></div>
-      <img onclick="clearPainted();" src="clear.png"/>
+      <img onclick="clearPainted();" src="../images/clear.png"/>
     </div>
     
     <div id="colorpalette"></div>

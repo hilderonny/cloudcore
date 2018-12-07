@@ -4,11 +4,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../shared/editor.css"/>
     <script src="https://arrange.avorium.de/arrange-client.min.js"></script>
-    <script src="three.js"></script>
-    <script src="three.orbitcontrols.js"></script>
-    <script src="utils.js"></script>
-    <script src="editor.js"></script>
+    <script src="../shared/three.js"></script>
+    <script src="../shared/three.orbitcontrols.js"></script>
+    <script src="../shared/utils.js"></script>
+    <script src="../shared/editor.js"></script>
     <script>
       
       // Palette by Arne http://androidarts.com/palette/Famicube.htm
@@ -69,7 +70,7 @@
       async function deleteModel() {
         if (confirm('Soll das Modell wirklich gelöscht werden?')) {
           if (_id) await arrangeClient.delete(dbName, collectionName, _id);
-          location.href = 'creative.html';
+          location.href = 'index.html';
         }
       }
       
@@ -125,7 +126,6 @@
       }
       
     </script>
-    <link rel="stylesheet" href="editor.css"/>
   </head>
   <body>
     
@@ -150,9 +150,9 @@
         <input type="radio" name="mode" onchange="setMode('remove');"  />
         <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAJPSURBVGhD7ZnNTtRQAIXnoWiHyIoOhkRAXbjnKWSlCxJiXMCGF8AEYuLCaEyMG4MvIiQqG/5cMB0CjOHSW09JO3PaObeDc4npSb4FzMzpd9I2k3RaTZo0aXK/04vCp3EUfOtGYRx3QjMJ0mMlx+zNth9Do166nfA1O8AkSRzWoOOWXid8wgp90IumlqClx55CVuaHYBdaeiZ5zY8mOIOWHl7kD2jpYSU+gZYeVkKZf2DiuTZ/7Q6Blh5WMsT8jPnz5bO52n7jPOLixfMU9hoDWnpYSQHIm+PfKS4jrLg5PElRR0BLDyvJ03/39lbeZcStfPY5cQS09LCSPOfLz8z19/3CAEvViCF5i68BFpcR48hboKWHlTCUEePKW6Clh5WUUTXi4uXK2PIWaOlhJVWUjTBHp8W/a8hboKWHlYyidERGTXkLtPSwEoV0xI+DYfnkTNjLiX1GAVp6WIlCesMeDVzzQPmeKANaeljJKFL5wRt2gLojoKWHlVRB5ZMzcf3zV/F/CXVGQEsPKymDyuOGTe+JPe3Lrgpo6WEljCr57D13MQJaeljJIIp8RumInS1pBLT0sJI8LvIZlSPI+/NASw8rydP/+L4oMkI+g4243Nyg780DLT2spMDDadP/9MFJPiM/QpG3QEsPKxnCjkjOhIt8hh1xuf6KvsaAlh5W4hNo6WElPoGWHlbiE2jp+Q8eLQa7vMwHNR7u2kfavMwLC9Byi/1xgZRNlG4nWIVOvSSnb/Hv5RScsQP8G5JjReHXeLb9CBpNmjRpci/Tat0AOcsXW3RXjVwAAAAASUVORK5CYII="/>
       </label>
-      <img onclick="toggleColorPalette();" src="palette.png"/>
+      <img onclick="toggleColorPalette();" src="../images/palette.png"/>
       <div class="spacer"></div>
-      <img onclick="duplicate();" src="duplicate.png"/>
+      <img onclick="duplicate();" src="../images/duplicate.png"/>
       <img onclick="deleteModel();" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAANESURBVFhH7ZhdTxNREIa58gf4Z/wXGowajV54ozEmxhBDpLUIgkYF+oF6gRQQwQLiRyhFKpYINaKBAqIVIYAKRr5MFIKCRFLHznpmadlhd09ZKiS+yRsazsyZl7O7T0szto1cNt+r4uzbsBXstvv6RaxV4cLY4MKWMGYRsVb1P6CE2YBum68PF7aCMYuIlSy789Zi+/hPeDYD/8Q4GzOIOFrlltYM+6MzbHM6jLMxg4ijlcNT01T/YpRtTodxdjygX8TR6qyzosDbGolxzemwNxiJYQYRR6uckorD7vrQAtecDuNszCDiaJVTXLmr8Oa9ea45HcbZmEHE0SrL6d0Zf4qWuWYje9o+wqFL7XCgIARFgTEIT/N1esbZmEHE4ZUKaso6P8Nu+6Mklz4ZZ2vXsyFiSLKoCU38goOFITXYnnN/f+7Pb4Pg+2W2h7MhYkjnJVFzPTQBJ2+8VIKdqewFW+1rNSy+5no4GyKGlCpqsqv6ITCyqJwanh6dZsPAHFu/1jhTFzGkVFHTMRlTX7uCH9RTvNps7moYIoZkFjXV3V/gdHlP/DIOaNY6p36Do+4NHLn8FOr7v2nWORsihmQGNaFPKwpS8IT2XWiDcDwQV4cm3ISn169Bm0IMyQg1Fx8Oq5cwyxthaxLdNPQdrvhH2DW0acSQ8HFvjs6ym+GDkJkbVMJlOoLgH/7B1qHbJ1aUW+B4aRfsjfe0jCyxdTjLFGJI+Livh5q8hrfq6RXcf8fWJDr/7qBaj71cjWnEkPRQc6qsWx14tDgMxzzPFfv6virreD/m1kXV32MN1WPv2v3QphFD0kMN3ks0kHziWpe6XhQY1ayT8T06cS+yacSQFNSU86jpmIpBfuNg8tubo1U9Qbzv8OQSg2Ft4YMh6Jzkn2ScZQoxJDOosdJSiCEZocYqSyOGpIcaKy2NGJIeaqw0zsBPUGKseeFjX/G4d9P/gfIGe+UQQ0r1U42spRFD0kONlZZGDCldqEkJMSTui53NsBgnL2zmvh6z0hsK6LLVzkcjs+zGVjjaMwMum29OjJOXx3bHXe1sXcSNuAEbMe5ZVdKy5Lb7XGKcvPLyGnfgBvhXJt4zVhj3xL1xhhi3HZWR8QdHb2kmZmwS0gAAAABJRU5ErkJggg==" />
     </div>
     
@@ -161,7 +161,7 @@
     <div id="colorbar"></div>
     
     <div id="toptoolbar">
-      <img onclick="location.href='creative.html';" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAMCAYAAAC0qUeeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAZdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuMTCtCgrAAAAAWUlEQVQoU42MAQ7AIAgDfTo/ZysFBiNzNqnacrhUtfkWDvOYtfBAe7iCUORm9gw7OfMPQgmfKGER8epbCZ8sGMd7LuBdnTD8XojcHDDnLOOnOrP5KHxhwrouHQNfPTts4ocAAAAASUVORK5CYII=" />
+      <img onclick="location.href='index.html';" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAMCAYAAAC0qUeeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAZdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuMTCtCgrAAAAAWUlEQVQoU42MAQ7AIAgDfTo/ZysFBiNzNqnacrhUtfkWDvOYtfBAe7iCUORm9gw7OfMPQgmfKGER8epbCZ8sGMd7LuBdnTD8XojcHDDnLOOnOrP5KHxhwrouHQNfPTts4ocAAAAASUVORK5CYII=" />
     </div>
     
   </body>
