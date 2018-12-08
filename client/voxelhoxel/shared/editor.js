@@ -64,6 +64,8 @@ const Editor = (function() {
     if (intersects.length > 0) {
       if (intersects[0].object.paletteNumber === currentColorIndex) {
         isPainting = true;
+      } else {
+        isMoving = true;
       }
     } else {
       isMoving = true;
@@ -73,21 +75,19 @@ const Editor = (function() {
   
   function handleMouseUp() {
     if (isBlocked) return;
-    if (!isMoving) {
-      raycaster.setFromCamera( mouse, camera );
-      const intersects = raycaster.intersectObjects( objects );
-      if ( intersects.length > 0 ) {
-        const intersect = intersects[0];
-        if (currentMode === 'add') {
-          const position = intersect.object.position.clone().add(intersect.face.normal);
-          addBox(position, currentColorIndex);
-        } else if (currentMode === 'remove') {
-          removeBox(intersect.object);
-        } else if (currentMode === 'paint') {
-          paintBox(intersect.object);
-        } else if (currentMode === 'play') {
-          playPaintBox(intersect.object);
-        }
+    raycaster.setFromCamera( mouse, camera );
+    const intersects = raycaster.intersectObjects( objects );
+    if ( intersects.length > 0 ) {
+      const intersect = intersects[0];
+      if (currentMode === 'add') {
+        const position = intersect.object.position.clone().add(intersect.face.normal);
+        addBox(position, currentColorIndex);
+      } else if (currentMode === 'remove') {
+        removeBox(intersect.object);
+      } else if (currentMode === 'paint') {
+        paintBox(intersect.object);
+      } else if (!isMoving && currentMode === 'play') {
+        playPaintBox(intersect.object);
       }
     }
     isMoving = false;
@@ -162,8 +162,7 @@ const Editor = (function() {
     handleMouseUp();
   }
   
-  function onDocumentTouchMove(e) {
-    e.preventDefault();
+  function onDocumentTouchMove() {
     if (currentMode !== 'play' || !isPainting) return;
     mouse.set( ( event.changedTouches[0].clientX / renderer.domElement.parentNode.clientWidth  ) * 2 - 1, - ( event.changedTouches[0].clientY / renderer.domElement.parentNode.clientHeight ) * 2 + 1 );
     raycaster.setFromCamera( mouse, camera );
