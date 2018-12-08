@@ -11,7 +11,7 @@ const Editor = (function() {
   var camera, controls, scene, renderer, currentMode, currentColorIndex, model, rollOverMesh, raycaster, mouse, objects = [], previousIntersection, numberMaterials = [], isMoving, isBlocked, isPainting;
   
   function addBox(pos, paletteNumber) {
-    const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+    const geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
     const standardMaterial = new THREE.MeshLambertMaterial( { color: model.colorpalette[paletteNumber] } );
     const mesh = new THREE.Mesh(geometry, standardMaterial);
     mesh.numbersMaterial = numberMaterials[paletteNumber];
@@ -236,7 +236,7 @@ const Editor = (function() {
       controls.maxDistance = 1000;
       controls.keys = { LEFT: 65, UP: 87 , RIGHT: 68, BOTTOM: 83};
       // Add mouse hover template
-      const rollOverGeo = new THREE.BoxGeometry(1, 1, 1);
+      const rollOverGeo = new THREE.BoxBufferGeometry(1, 1, 1);
       const rollOverMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, opacity: 0.5, transparent: true });
       rollOverMesh = new THREE.Mesh(rollOverGeo, rollOverMaterial);
       // Setup input handling
