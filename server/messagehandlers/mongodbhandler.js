@@ -26,7 +26,7 @@ module.exports = (function(db, webSocketServer) {
      *  data: object
      */
     async function _handleCreate(params, socket) {
-      if (!socket.loggedInUserId) return;
+      if (!socket.loggedInUserId) return { error: 'Not logged in' };
       params.data._ownerId = socket.loggedInUserId;
       const result = await db.create(params.db, params.collection, params.data);
       if (params.collection === 'users') delete result.password;
@@ -52,7 +52,7 @@ module.exports = (function(db, webSocketServer) {
      *  data: object
      */
     async function _handleUpdate(params, socket) {
-      if (!socket.loggedInUserId) return;
+      if (!socket.loggedInUserId) return { error: 'Not logged in' };
       const result = await db.update(params.db, params.collection, { _id: params._id, _ownerId: socket.loggedInUserId }, params.data);
       if (params.collection === 'users') delete result.password;
       return result;
@@ -64,7 +64,7 @@ module.exports = (function(db, webSocketServer) {
      *  _id: string
      */
     async function _handleDelete(params, socket) {
-      if (!socket.loggedInUserId) return;
+      if (!socket.loggedInUserId) return { error: 'Not logged in' };
       const result = await db.delete(params.db, params.collection, { _id: params._id, _ownerId: socket.loggedInUserId });
       if (params.collection === 'users') delete result.password;
       return result;
