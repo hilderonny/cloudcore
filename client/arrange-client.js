@@ -99,6 +99,15 @@ const ArrangeClient = (function () {
         _send(message);
     }
 
+    function _login(dbName, name, password) {
+        return _request({
+            type: 'login',
+            db: dbName,
+            name: name,
+            password: password
+        });
+    }
+
     function _connect() {
         return new Promise(function (resolve, reject) {
             _webSocket = new WebSocket(_url);
@@ -132,7 +141,8 @@ const ArrangeClient = (function () {
         read: _read,
         update: _update,
         delete: _delete,
-        broadcast: _broadcast
+        broadcast: _broadcast,
+        login: _login
 
     }
 
