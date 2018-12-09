@@ -16,7 +16,7 @@ module.exports = (function(db, webSocketServer) {
      */
     async function _handleSearch(params) {
       const result = await db.search(params.db, params.collection, params.filter, params.options);
-      if (params.collection === 'users') delete result.password;
+      if (params.collection === 'users') result.forEach(function(e) { delete e.password; });
       return result;
     }
     
