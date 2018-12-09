@@ -52,8 +52,7 @@ module.exports = (function(db, webSocketServer) {
      *  data: object
      */
     async function _handleUpdate(params, socket) {
-      if (!socket.loggedInUserId) return;
-      params.data.ownerId = socket.loggedInUserId; // TODO: Remove
+      //if (!socket.loggedInUserId) return;
       const result = await db.update(params.db, params.collection, params._id, params.data); // TODO: Filter for ownerId
       if (params.collection === 'users') delete result.password;
       return result;
