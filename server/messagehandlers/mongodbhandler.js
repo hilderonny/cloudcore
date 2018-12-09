@@ -25,7 +25,9 @@ module.exports = (function(db, webSocketServer) {
      *  collection: string,
      *  data: object
      */
-    async function _handleCreate(params) {
+    async function _handleCreate(params, socket) {
+      if (!socket.loggedInUserId) return;
+      params.data.ownerId = socket.loggedInUserId;
       const result = await db.create(params.db, params.collection, params.data);
       if (params.collection === 'users') delete result.password;
       return result;
@@ -49,8 +51,10 @@ module.exports = (function(db, webSocketServer) {
      *  _id: string,
      *  data: object
      */
-    async function _handleUpdate(params) {
-      const result = await db.update(params.db, params.collection, params._id, params.data);
+    async function _handleUpdate(params, socket) {
+      if (!socket.loggedInUserId) return;
+      params.data.ownerId = socket.loggedInUserId; // TODO: Remove
+      const result = await db.update(params.db, params.collection, params._id, params.data); // TODO: Filter for ownerId
       if (params.collection === 'users') delete result.password;
       return result;
     }
@@ -60,10 +64,23 @@ module.exports = (function(db, webSocketServer) {
      *  collection: string,
      *  _id: string
      */
-    async function _handleDelete(params) {
+    async function _handleDelete(params, socket) {
+      if (!socket.loggedInUserId) return;
       const result = await db.delete(params.db, params.collection, params._id);
       if (params.collection === 'users') delete result.password;
       return result;
+    }
+
+    /* params = {
+     *  db: string,
+     *  name: string,
+     *  password: string
+     */
+    async function _handleLogin(params, socket) {
+      const user = await db.read(params.db, 'users', { name: params.name, password: params.password }, '_id');
+      if (user) socket.loggedInUserId = user._id;
+      else delete socket.loggedInUserId;
+      return user;
     }
   
     
@@ -72,5 +89,6 @@ module.exports = (function(db, webSocketServer) {
     webSocketServer.registerMessageHandler('read', _handleRead);
     webSocketServer.registerMessageHandler('update', _handleUpdate);
     webSocketServer.registerMessageHandler('delete', _handleDelete);
+    webSocketServer.registerMessageHandler('login', _handleLogin);
     
   });
