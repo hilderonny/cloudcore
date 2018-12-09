@@ -41,6 +41,7 @@ module.exports = (function(db, webSocketServer) {
      */
     async function _handleRead(params) {
       const result = await db.read(params.db, params.collection, params._id, params.options);
+      if (!result) return { error: 'Not found' };
       if (params.collection === 'users') delete result.password;
       return result;
     }
@@ -54,6 +55,7 @@ module.exports = (function(db, webSocketServer) {
     async function _handleUpdate(params, socket) {
       if (!socket.loggedInUserId) return { error: 'Not logged in' };
       const result = await db.update(params.db, params.collection, { _id: params._id, _ownerId: socket.loggedInUserId }, params.data);
+      if (!result) return { error: 'Not allowed' };
       if (params.collection === 'users') delete result.password;
       return result;
     }
@@ -66,6 +68,7 @@ module.exports = (function(db, webSocketServer) {
     async function _handleDelete(params, socket) {
       if (!socket.loggedInUserId) return { error: 'Not logged in' };
       const result = await db.delete(params.db, params.collection, { _id: params._id, _ownerId: socket.loggedInUserId });
+      if (!result) return { error: 'Not allowed' };
       if (params.collection === 'users') delete result.password;
       return result;
     }
