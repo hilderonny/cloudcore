@@ -54,7 +54,7 @@ module.exports = (function(db, webSocketServer) {
      */
     async function _handleUpdate(params, socket) {
       if (!socket.loggedInUserId) return { error: 'Not logged in' };
-      const result = await db.update(params.db, params.collection, { _id: params._id, _ownerId: socket.loggedInUserId }, { extended: params.data });
+      const result = await db.update(params.db, params.collection, { _id: params._id, _ownerId: socket.loggedInUserId }, { $set: params.data });
       if (!result) return { error: 'Not allowed' };
       if (params.collection === 'users') delete result.password;
       return result;
