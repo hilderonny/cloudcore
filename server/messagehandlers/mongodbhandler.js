@@ -7,15 +7,17 @@
  * - delete (db, collection, _id)
  */
 module.exports = (function(db, webSocketServer) {
-  
+
     /* params = {
      *  db: string,
      *  collection: string,
      *  filter?: object,
      *  options?: object
      */
-    function _handleSearch(params) {
-      return db.search(params.db, params.collection, params.filter, params.options);
+    async function _handleSearch(params) {
+      const result = await db.search(params.db, params.collection, params.filter, params.options);
+      if (params.collection === 'users') delete result.password;
+      return result;
     }
     
     /* params = {
@@ -24,7 +26,9 @@ module.exports = (function(db, webSocketServer) {
      *  data: object
      */
     function _handleCreate(params) {
-      return db.create(params.db, params.collection, params.data);
+      const result = await db.create(params.db, params.collection, params.data);
+      if (params.collection === 'users') delete result.password;
+      return result;
     }
     
     /* params = {
@@ -34,7 +38,9 @@ module.exports = (function(db, webSocketServer) {
      *  options?: object
      */
     function _handleRead(params) {
-      return db.read(params.db, params.collection, params._id, params.options);
+      const result = await db.read(params.db, params.collection, params._id, params.options);
+      if (params.collection === 'users') delete result.password;
+      return result;
     }
     
     /* params = {
@@ -44,7 +50,9 @@ module.exports = (function(db, webSocketServer) {
      *  data: object
      */
     function _handleUpdate(params) {
-      return db.update(params.db, params.collection, params._id, params.data);
+      const result = await db.update(params.db, params.collection, params._id, params.data);
+      if (params.collection === 'users') delete result.password;
+      return result;
     }
     
     /* params = {
@@ -53,7 +61,9 @@ module.exports = (function(db, webSocketServer) {
      *  _id: string
      */
     function _handleDelete(params) {
-      return db.delete(params.db, params.collection, params._id);
+      const result = await db.delete(params.db, params.collection, params._id);
+      if (params.collection === 'users') delete result.password;
+      return result;
     }
   
     
