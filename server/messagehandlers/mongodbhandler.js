@@ -25,7 +25,7 @@ module.exports = (function(db, webSocketServer) {
      *  collection: string,
      *  data: object
      */
-    function _handleCreate(params) {
+    async function _handleCreate(params) {
       const result = await db.create(params.db, params.collection, params.data);
       if (params.collection === 'users') delete result.password;
       return result;
@@ -37,7 +37,7 @@ module.exports = (function(db, webSocketServer) {
      *  _id: string,
      *  options?: object
      */
-    function _handleRead(params) {
+    async function _handleRead(params) {
       const result = await db.read(params.db, params.collection, params._id, params.options);
       if (params.collection === 'users') delete result.password;
       return result;
@@ -49,7 +49,7 @@ module.exports = (function(db, webSocketServer) {
      *  _id: string,
      *  data: object
      */
-    function _handleUpdate(params) {
+    async function _handleUpdate(params) {
       const result = await db.update(params.db, params.collection, params._id, params.data);
       if (params.collection === 'users') delete result.password;
       return result;
@@ -60,7 +60,7 @@ module.exports = (function(db, webSocketServer) {
      *  collection: string,
      *  _id: string
      */
-    function _handleDelete(params) {
+    async function _handleDelete(params) {
       const result = await db.delete(params.db, params.collection, params._id);
       if (params.collection === 'users') delete result.password;
       return result;
