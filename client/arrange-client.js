@@ -108,6 +108,15 @@ const ArrangeClient = (function () {
         });
     }
 
+    function _register(dbName, name, password) {
+        return _request({
+            type: 'register',
+            db: dbName,
+            name: name,
+            password: password
+        });
+    }
+
     function _connect() {
         return new Promise(function (resolve, reject) {
             _webSocket = new WebSocket(_url);
@@ -142,7 +151,8 @@ const ArrangeClient = (function () {
         update: _update,
         delete: _delete,
         broadcast: _broadcast,
-        login: _login
+        login: _login,
+        register: _register
 
     }
 

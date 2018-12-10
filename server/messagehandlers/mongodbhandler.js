@@ -89,6 +89,21 @@ module.exports = (function(db, webSocketServer) {
         return { error: 'Login failed' };
       }
     }
+
+    /* params = {
+     *  db: string,
+     *  name: string,
+     *  password: string
+     */
+    async function _handleRegister(params, socket) {
+      if (!params.password) return { error: 'Password empty' };
+      const existingUser = await db.read(params.db, 'users', { name: params.name }, '_id');
+      if (existingUser) return { error: 'Username already taken' };
+      const user = await db.create(params.db, 'users', { name: params.name, password: require('bcryptjs').hashSync(params.password) });
+      socket.loggedInUserId = user._id.toString();
+      delete user.password;
+      return user;
+    }
   
     
     webSocketServer.registerMessageHandler('search', _handleSearch);
@@ -97,5 +112,6 @@ module.exports = (function(db, webSocketServer) {
     webSocketServer.registerMessageHandler('update', _handleUpdate);
     webSocketServer.registerMessageHandler('delete', _handleDelete);
     webSocketServer.registerMessageHandler('login', _handleLogin);
+    webSocketServer.registerMessageHandler('register', _handleRegister);
     
   });
