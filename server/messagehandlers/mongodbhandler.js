@@ -82,11 +82,12 @@ module.exports = (function(db, webSocketServer) {
       const user = await db.read(params.db, 'users', { name: params.name }, '_id password');
       if (user && require('bcryptjs').compareSync(params.password, user.password)) {
         socket.loggedInUserId = user._id;
+        delete user.password;
+        return user;
       } else {
         delete socket.loggedInUserId;
+        return null;
       }
-      delete user.password;
-      return user;
     }
   
     
