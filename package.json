@@ -21,6 +21,7 @@
     "express": "^4.16.4"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "https": "^1.0.0",
     "monk": "^6.0.6",
     "ws": "^6.1.2"

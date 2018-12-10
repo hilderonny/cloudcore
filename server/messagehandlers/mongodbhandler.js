@@ -79,9 +79,13 @@ module.exports = (function(db, webSocketServer) {
      *  password: string
      */
     async function _handleLogin(params, socket) {
-      const user = await db.read(params.db, 'users', { name: params.name, password: params.password }, '_id');
-      if (user) socket.loggedInUserId = user._id;
-      else delete socket.loggedInUserId;
+      const user = await db.read(params.db, 'users', { name: params.name }, '_id password');
+      if (user && require('bcryptjs').compareSync(params.password, user.password)) {
+        socket.loggedInUserId = user._id;
+      } else {
+        delete socket.loggedInUserId;
+      }
+      delete user.password;
       return user;
     }
   
