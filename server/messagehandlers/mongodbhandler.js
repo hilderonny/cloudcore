@@ -86,7 +86,7 @@ module.exports = (function(db, webSocketServer) {
         return user;
       } else {
         delete socket.loggedInUserId;
-        return null;
+        return { error: 'Login failed' };
       }
     }
   
