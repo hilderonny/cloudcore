@@ -1,10 +1,9 @@
 <html>
   <head>
-    <script src="https://arrange.avorium.de/arrange-client.min.js"></script>
+    <script src="arrange-client.js"></script>
   </head>
   <body>
     <a href="https://arrange.avorium.de/arrange-client.min.js">arrange-client.min.js</a>
-    <a href="voxelhoxel/">Voxel Hoxel</a>
     
     <script>
       
@@ -14,6 +13,51 @@
         document.body.appendChild(div);
         console.log(msg1, msg2);
       }
+
+      (async function() {
+
+        const ac = new ArrangeClient('http://localhost/');
+        const models = await ac.search('voxelhoxel', 'models', {});
+        console.log(models);
+        /*
+        models.forEach(async function(m) {
+            const details = await ac.read('voxelhoxel', 'models', m._id);
+            console.log(details);
+        });
+        */
+
+        try {
+            //await ac.create('voxelhoxel', 'models', { dummy: 'data' });
+            //await ac.update('voxelhoxel', 'models', '5c1387cb9ce95e1810e639b9', { furzel: 'schnurzel' });
+            //await ac.delete('voxelhoxel', 'models', '5c1387cb9ce95e1810e639b9');
+            //await ac.register('voxelhoxel', 'hilderonny', 'existing');
+        } catch (ex) { console.log(ex); }
+
+        //const newUser = await ac.register('voxelhoxel', 'fart', 'benutzer');
+        //console.log(newUser);
+
+        //const user = await ac.login('voxelhoxel', 'hilderonny', 'etmu5bhz');
+        //console.log(user);
+
+        //try {
+        //    console.log(await ac.delete('voxelhoxel', 'users', newUser._id));
+        //} catch(ex) { console.log(ex); }
+
+        //console.log(await ac.login('voxelhoxel', 'fart', 'benutzer'));
+        //console.log(await ac.delete('voxelhoxel', 'users', newUser._id));
+
+        console.log(await ac.search('voxelhoxel', 'users'));
+
+        //console.log(await ac.create('voxelhoxel', 'models', { dummy: 'data' }));
+        //console.log(await ac.update('voxelhoxel', 'models', '5c1387cb9ce95e1810e639b9', { furzel: 'schnurzel' }));
+        //console.log(await ac.update('voxelhoxel', 'models', '5c1387cb9ce95e1810e639b9', { furzel: 'pömpel' }));
+
+        //console.log(await ac.delete('voxelhoxel', 'models', '5c1387cb9ce95e1810e639b9'));
+
+        //console.log(await ac.search('voxelhoxel', 'models', { _ownerId: user._id }));
+        
+  
+      })();
 
       /*
       ArrangeClient().connect('wss://arrange.avorium.de:42001').then(async function(ac) {
