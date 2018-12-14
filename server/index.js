@@ -1,6 +1,7 @@
 const bodyParser = require('body-parser');
 const bcryptjs = require('bcryptjs');
 const compression = require('compression');
+const cors = require('cors');
 const express = require('express');
 const http = require('http');
 const jsonwebtoken = require('jsonwebtoken');
@@ -151,6 +152,13 @@ async function handleRestRequest(request, response) {
     app.use(bodyParser.json()); // JSON Request-Body-Parser -> req.body
     app.use(bodyParser.urlencoded({ extended: true })); // Formulare parsen application/x-www-form-urlencoded
     app.use(express.static(__dirname + '/../client')); // Statische Ressourcen im client-Verzeichnis, lädt bei root-Aufruf automatisch index.html
+    // CORS aktivieren
+    app.use(cors());
+    //app.options('/', function(request, response) {
+    //    response.header('Access-Control-Allow-Origin', '*');
+    //    response.header('Access-Control-Allow-Headers', 'Content-Type,Content-Length,Authorization,Accept,X-Requested-With');
+    //    response.header('Access-Control-Allow-Methods', 'POST,GET');
+    //});
     const server = http.createServer(app);
     server.listen(process.env.PORT, function () {
         console.log('Server running at port ' + process.env.PORT);
