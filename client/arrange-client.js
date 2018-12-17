@@ -2,7 +2,26 @@ class ArrangeClient {
 
     constructor(url) {
         this.url = url;
-        this.user = {}; // TODO: Weg damit!
+        this.user = {};
+        this.connectWebSocket(url.replace(/http/g, 'ws'));
+    }
+
+    connectWebSocket(url) {
+        this.websocket = new WebSocket(url);
+        this.websocket.onmessage = (function(message) {
+            if (this.messageHandler) this.messageHandler(message);
+        }).bind(this);
+        this.websocket.onclose = (function() { this.connectWebSocket(url); }).bind(this);
+        this.websocket.onerror = (function(err) { console.log(err); }).bind(this);
+    }
+
+    setMessageHandler(messageHandler) {
+        this.messageHandler = messageHandler;
+    }
+
+    broadcast(message) {
+        if (!this.websocket || this.websocket.readyState !== 1) return;
+        this.websocket.send(message);
     }
 
     request(data) {

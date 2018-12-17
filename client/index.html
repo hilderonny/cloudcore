@@ -17,8 +17,8 @@
       (async function() {
 
         const ac = new ArrangeClient('https://arrange.avorium.de/');
-        const models = await ac.search('voxelhoxel', 'models', {});
-        console.log(models);
+        //const models = await ac.search('voxelhoxel', 'models', {});
+        //console.log(models);
         /*
         models.forEach(async function(m) {
             const details = await ac.read('voxelhoxel', 'models', m._id);
@@ -46,7 +46,7 @@
         //console.log(await ac.login('voxelhoxel', 'fart', 'benutzer'));
         //console.log(await ac.delete('voxelhoxel', 'users', newUser._id));
 
-        console.log(await ac.search('voxelhoxel', 'users'));
+        //console.log(await ac.search('voxelhoxel', 'users'));
 
         //console.log(await ac.create('voxelhoxel', 'models', { dummy: 'data' }));
         //console.log(await ac.update('voxelhoxel', 'models', '5c1387cb9ce95e1810e639b9', { furzel: 'schnurzel' }));
@@ -56,6 +56,12 @@
 
         //console.log(await ac.search('voxelhoxel', 'models', { _ownerId: user._id }));
         
+        ac.setMessageHandler(function(message) {
+            console.log(message);
+        });
+        setTimeout(function() {
+            ac.broadcast('HUHU');
+        }, 1000);
   
       })();
 

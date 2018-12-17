@@ -5,6 +5,7 @@ const cors = require('cors');
 const express = require('express');
 const http = require('http');
 const jsonwebtoken = require('jsonwebtoken');
+const ws = require('ws');
 const Db = require('./db')(process.env.DB_URL);
 
 /* params = {
@@ -159,4 +160,20 @@ async function handleRestRequest(request, response) {
     });
     // Routen definieren, alle REST Methoden laufenüber POST-Requests
     app.post('/', handleRestRequest);
+    // Websocket broadcaster einrichten
+    const openSockets = [];
+    const socketServer = new ws.Server({ server: server });
+    socketServer.on('connection', function(socket) {
+        openSockets.push(socket);
+        socket.on('close', function() {
+            openSockets.splice(openSockets.indexOf(socket), 1);
+        });
+        socket.on('message', function(message) { // Simply send the message to all sockets except the sender
+            openSockets.forEach(function(s) {
+                if (s === socket || s.readyState !== 1) return;
+                s.send(message);
+            });
+        });
+    });
+    socketServer
 })();
