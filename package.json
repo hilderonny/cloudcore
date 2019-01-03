@@ -4,7 +4,7 @@
   "description": "Arrange platform",
   "main": "server/index.js",
   "scripts": {
-    "debug": "cross-env DB_URL=arrange.avorium.de:27017 PORT=80 SECRET=hubbelebubbele node --nolazy --inspect-brk=9229 ./server/index.js",
+    "debug": "cross-env DB_URL=127.0.0.1:27017 PORT=62020 SECRET=hubbelebubbele node --nolazy --inspect-brk=9229 ./server/index.js",
     "minify": "minify client/arrange-client.js --out-file ./client/arrange-client.min.js --mangle.keepClassName"
   },
   "repository": {
