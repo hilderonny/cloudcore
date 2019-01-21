@@ -1,33 +1,22 @@
 {
-  "name": "arrangeplatform",
+  "name": "@hilderonny/arrange",
   "version": "1.0.0",
-  "description": "Arrange platform",
-  "main": "server/index.js",
+  "description": "Library for arrange based projects",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
-    "debug": "cross-env DB_URL=127.0.0.1:27017 PORT=62020 SECRET=hubbelebubbele node --nolazy --inspect-brk=9229 ./server/index.js",
-    "minify": "minify client/arrange-client.js --out-file ./client/arrange-client.min.js --mangle.keepClassName"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hilderonny/arrange.git"
+    "url": "git+https://gitlab.com/hilderonny/arrange.git"
   },
   "author": "Ronny Hildebrandt",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hilderonny/arrange/issues"
+    "url": "https://gitlab.com/hilderonny/arrange/issues"
   },
-  "homepage": "https://github.com/hilderonny/arrange#readme",
-  "devDependencies": {
-    "babel-minify": "^0.5.0",
-    "cross-env": "^5.2.0"
-  },
-  "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.18.3",
-    "compression": "^1.7.3",
-    "cors": "^2.8.5",
-    "express": "^4.16.4",
-    "jsonwebtoken": "^8.4.0",
-    "monk": "^6.0.6"
-  }
+  "homepage": "https://gitlab.com/hilderonny/arrange#readme"
 }
