@@ -1,6 +1,6 @@
 {
   "name": "@hilderonny/arrange",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Library for arrange based projects",
   "main": "index.js",
   "directories": {
@@ -18,5 +18,14 @@
   "bugs": {
     "url": "https://gitlab.com/hilderonny/arrange/issues"
   },
-  "homepage": "https://gitlab.com/hilderonny/arrange#readme"
+  "homepage": "https://gitlab.com/hilderonny/arrange#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "compression": "^1.7.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "jsonwebtoken": "^8.4.0",
+    "monk": "^6.0.6"
+  }
 }
