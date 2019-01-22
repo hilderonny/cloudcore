@@ -1,5 +1,8 @@
 # arrange
 
+[![pipeline status](https://gitlab.com/hilderonny/arrange/badges/master/pipeline.svg)](https://gitlab.com/hilderonny/arrange/commits/master)
+[![coverage report](https://gitlab.com/hilderonny/arrange/badges/master/coverage.svg)](https://gitlab.com/hilderonny/arrange/commits/master)
+
 ## Usage
 
 Installation is done in that way.
