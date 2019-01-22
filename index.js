@@ -32,8 +32,6 @@ class Server {
         // APIs registrieren
         this.app.post('/api/arrange/login', this.login.bind(this));
         this.app.post('/api/arrange/register', this.register.bind(this));
-        // Server erstellen
-        this.server = http.createServer(this.app);
     }
 
     /**
@@ -107,6 +105,8 @@ class Server {
      */
     start() {
         const port = this.port;
+        // Server erstellen
+        this.server = http.createServer(this.app);
         this.server.listen(port, function () {
             console.log('Arrange server running at port ' + port);
         });
