@@ -3,11 +3,8 @@
   "version": "1.0.1",
   "description": "Library for arrange based projects",
   "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cross-env PORT=61080 DBURL=127.0.0.1/arrangetest nyc --reporter=html mocha --async-only --slow 500 --timeout 900000 ./test/**/*.js"
   },
   "repository": {
     "type": "git",
@@ -29,7 +26,9 @@
     "monk": "^6.0.6"
   },
   "devDependencies": {
+    "cross-env": "^5.2.0",
     "mocha": "^5.2.0",
+    "nyc": "^13.1.0",
     "supertest": "^3.4.1"
   }
 }
