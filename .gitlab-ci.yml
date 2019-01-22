@@ -5,11 +5,13 @@ stages:
 
 test:
   stage: test
+  variables:
+    DB_URL: "mongodb://mongo/arrangetest"
   services:
     - mongo:latest
   script:
     - npm i npm@latest -g
     - npm i
-    - npm test
+    - npm run-script test
   coverage:
     '/Statements.*?(\d+(?:\.\d+)?)%/'

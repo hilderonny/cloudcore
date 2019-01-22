@@ -6,6 +6,8 @@ const chaiHttp = require('chai-http');
 const port = process.env.PORT;
 const dbUrl = process.env.DB_URL;
 
+console.log(port, dbUrl);
+
 chai.use(chaiHttp);
 chai.should();
 
