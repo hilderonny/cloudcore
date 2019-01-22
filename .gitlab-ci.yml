@@ -14,4 +14,4 @@ test:
     - npm i
     - npm run-script test
   coverage:
-    '/Statements.*?(\d+(?:\.\d+)?)%/'
+    /All files[^|]*\|[^|]*\s+([\d\.]+)/
