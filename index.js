@@ -48,6 +48,7 @@ class Server {
             self.db('users').findOne(tokenUser._id, '_id username').then(function(user) {
                 if (!user) return response.status(401).json({ error: 'User not found' });
                 request.user = user;
+                user._id = user._id.toString(); // Convert ObjectID to string for compatibility
                 next();
             });
         });

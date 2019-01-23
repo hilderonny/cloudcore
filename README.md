@@ -33,6 +33,7 @@ node index.js
 
 |Version|Content|
 |---|---|
+|1.0.3|request.user._id is now a string for compatibility|
 |1.0.2|Added APIs for user login and registration and authentication middleware|
 |1.0.1|Initial NPM package without any functionality|
 
