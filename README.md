@@ -29,6 +29,13 @@ Run the server with
 node index.js
 ```
 
+## Releases
+
+|Version|Content|
+|---|---|
+|1.0.2|Added APIs for user login and registration and authentication middleware|
+|1.0.1|Initial NPM package without any functionality|
+
 ## Howto create NPM package
 
 ```
