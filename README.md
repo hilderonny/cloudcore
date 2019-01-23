@@ -18,7 +18,6 @@ const arrange = require('@hilderonny/arrange');
 const server = new arrange.Server(
     process.env.PORT || 8080, 
     process.env.DBURL || '127.0.0.1:27017/mydatabase',
-    process.env.USECORS || true,
     process.env.TOKENSECRET || 'mytokensecret'
 );
 server.start();

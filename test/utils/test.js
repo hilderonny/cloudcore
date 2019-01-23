@@ -16,5 +16,5 @@ module.exports = {
         const step2 = token ? request.set('x-access-token', token) : request;
         return step2.send(data);
     },
-    server: new arrange.Server(port, dbUrl, true, 'testtokensecret')
+    server: new arrange.Server(port, dbUrl, 'testtokensecret')
 };

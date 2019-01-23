@@ -13,10 +13,9 @@ class Server {
      * Server initialisieren.
      * @param {number} port Port, an dem der Server lauschen soll.
      * @param {string} dbUrl URL, an der die MongoDB erreichbar ist. Muss angegeben sein.
-     * @param {boolean} useCors Gibt an, ob Server CORS-Anfragen erlauben soll.
      * @param {string} tokenSecret Passphrase, mit der der Auth-Token verschlüsselt wird.
      */
-    constructor(port, dbUrl, useCors, tokenSecret) {
+    constructor(port, dbUrl, tokenSecret) {
         this.port = port;
         this.database = monk(dbUrl);
         this.database.catch(function(err) { console.log(err); });
@@ -24,10 +23,10 @@ class Server {
         this.tokenSecret = tokenSecret;
         this.app = express();
         this.app.use(compression());
-        if (this.useCors) this.app.use(cors());
+        this.app.use(cors());
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: true }));
-        // <script src="/arrange/arrange.js"></script>
+        // Einbindung in HTML-Seite mit <script src="/arrange/arrange.js"></script>
         this.app.use('/arrange', express.static(__dirname + '/client'));
         // APIs registrieren
         this.app.post('/api/arrange/login', this.login.bind(this));
