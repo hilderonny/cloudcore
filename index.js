@@ -19,7 +19,6 @@ class Server {
         this.port = port;
         this.database = monk(dbUrl);
         this.database.catch(function(err) { console.log(err); });
-        this.useCors = useCors;
         this.tokenSecret = tokenSecret;
         this.app = express();
         this.app.use(compression());
