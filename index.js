@@ -31,7 +31,9 @@ class Server {
         this.app.get('/api/arrange/listusers', this.auth.bind(this), this.listusers.bind(this));
         this.app.post('/api/arrange/login', this.login.bind(this));
         this.app.post('/api/arrange/register', this.register.bind(this));
+        this.app.post('/api/arrange/save/:table', this.auth.bind(this), this.save.bind(this));
         this.app.post('/api/arrange/setpassword', this.auth.bind(this), this.setpassword.bind(this));
+        this.app.post('/api/arrange/transferownership/:table/:entityid/:userid', this.auth.bind(this), this.transferownership.bind(this));
     }
 
     /**
@@ -62,6 +64,9 @@ class Server {
         return this.database.get(collectionName);
     }
 
+    /**
+     * API zum Auflisten aller Benutzer mit _id und _username.
+     */
     async listusers(request, response) {
         const users = await this.db('users').find({}, '_id username');
         response.json(users);
@@ -111,6 +116,26 @@ class Server {
     }
 
     /**
+     * API zum Speichern und Erzeugen von Objekten.
+     * Erwartet als URL Parameter den Tabellennamen.
+     */
+    async save(request, response) {
+        const collection = this.db(request.params.table);
+        const data = request.body;
+        const _id = data._id;
+        const toDatabase = Object.keys(data).filter(function(element) {
+            return ['_ownerid', '_publiclyreadable', '_publiclywritable', '_readableby', '_writableby'].indexOf(element) < 0;
+        });
+        if (!_id) { // Create
+            const createdEntity = collection.insert(toDatabase);
+            response.json(createdEntity);
+        } else { // Update
+            const updatedEntity = collection.update(_id, { $set: toDatabase });
+            response.json(updatedEntity);
+        }
+    }
+
+    /**
      * API für Passwortänderung.
      * Erwartet als Post-Parameter "password" (neues Passwort).
      * Danach ist alter Token ungültig.
@@ -121,6 +146,10 @@ class Server {
         const user = request.user;
         await this.db('users').update(user._id, { $set: { password: bcryptjs.hashSync(request.body.password) } });
         response.status(200).send();
+    }
+
+    async transferownership(request, response) {
+        const collection = this.db(request.params.table);
     }
 
     /**
