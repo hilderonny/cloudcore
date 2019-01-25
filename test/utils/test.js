@@ -11,6 +11,11 @@ chai.should();
 
 module.exports = {
     chai: chai,
+    get: function(url, token) {
+        const request = chai.request(this.server.app).get(url);
+        const step2 = token ? request.set('x-access-token', token) : request;
+        return step2.send();
+    },
     post: function(url, data, token) {
         const request = chai.request(this.server.app).post(url);
         const step2 = token ? request.set('x-access-token', token) : request;

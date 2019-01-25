@@ -28,6 +28,7 @@ class Server {
         // Einbindung in HTML-Seite mit <script src="/arrange/arrange.js"></script>
         this.app.use('/arrange', express.static(__dirname + '/client'));
         // APIs registrieren
+        this.app.get('/api/arrange/listusers', this.auth.bind(this), this.listusers.bind(this));
         this.app.post('/api/arrange/login', this.login.bind(this));
         this.app.post('/api/arrange/register', this.register.bind(this));
         this.app.post('/api/arrange/setpassword', this.auth.bind(this), this.setpassword.bind(this));
@@ -59,6 +60,11 @@ class Server {
      */
     db(collectionName) {
         return this.database.get(collectionName);
+    }
+
+    async listusers(request, response) {
+        const users = await this.db('users').find({}, '_id username');
+        response.json(users);
     }
 
     /**
