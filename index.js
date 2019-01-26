@@ -148,8 +148,31 @@ class Server {
         response.status(200).send();
     }
 
+    /**
+     * Übergibt den Beistz eines Objektes an einen anderen Benutzer. Der ursprüngliche Besitzer
+     * hat danach immernoch Lese- und Schreibrechte.
+     */
     async transferownership(request, response) {
-        const collection = this.db(request.params.table);
+        const tablename = request.params.table;
+        if (tablename === 'users') return response.status(400).send();
+        const userid = request.user._id.toString();
+        const targetuserid = request.params.userid;
+        if (targetuserid.length !== 24) return response.status(400).json({ error: 'User id has wrong format' });
+        const targetuser = await this.db('users').findOne(targetuserid, '_id');
+        if (!targetuser) return response.status(404).json({ error: 'User not found' });
+        const entityid = request.params.entityid;
+        if (entityid.length !== 24) return response.status(400).json({ error: 'Entity id has wrong format' });
+        const entity = await this.db(tablename).findOne(entityid, '_ownerid _readableby _writableby');
+        if (!entity) return response.status(404).json({ error: 'Entity not found' });
+        if (entity._ownerid.toString() !== userid) return response.status(403).send();
+        delete entity._id;
+        entity._ownerid = targetuserid;
+        if (!entity._readableby) entity._readableby = [];
+        entity._readableby.push(userid);
+        if (!entity._writableby) entity._writableby = [];
+        entity._writableby.push(userid);
+        await this.db(tablename).update(entityid, { $set: entity });
+        response.status(200).send();
     }
 
     /**
