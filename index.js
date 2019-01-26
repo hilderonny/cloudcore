@@ -33,7 +33,7 @@ class Server {
         this.app.post('/api/arrange/register', this.register.bind(this));
         this.app.post('/api/arrange/save/:table', this.auth.bind(this), this.save.bind(this));
         this.app.post('/api/arrange/setpassword', this.auth.bind(this), this.setpassword.bind(this));
-        this.app.post('/api/arrange/transferownership/:table/:entityid/:userid', this.auth.bind(this), this.validateid('entityid'), this.validateid('userid'), this.transferownership.bind(this));
+        this.app.post('/api/arrange/transferownership/:table/:entityid/:userid', this.auth.bind(this), this.validateparamid('entityid'), this.validateparamid('userid'), this.transferownership.bind(this));
     }
 
     /**
@@ -55,6 +55,29 @@ class Server {
                 next();
             });
         });
+    }
+
+    /**
+     * Middleware zum Prüfen, ob ein Datenbankobjekt vom angemeldeten Benutzer schreibbar ist.
+     * Im body muss _id enthalten sein, damit das geht.
+     * Verwendung: arrangeInstance.app.post('/api/myapi', arrangeInstance.canwrite.bind(arrangeInstance)('mytable'), function(req, res) { ... });
+     */
+    canwrite(tablename) {
+        const self = this;
+        return function(request, response, next) {
+            self.auth(request, response, function() {
+                self.validatebodyid(request, response, async function() {
+                    const id = request.body._id;
+                    const userid = request.user._id.toString();
+                    const entity = await self.database.get(tablename).findOne(id, '_ownerid _publiclywritable _writableby');
+                    if (!entity) return response.status(404).json({error: 'Entity not found' });
+                    if (entity._ownerid !== userid && !entity._publiclywritable && (!entity._writableby || entity._writableby.indexOf(userid) < 0)) {
+                        return response.status(403).json({ error: 'Writing not allowed' });
+                    }
+                    next();
+                });
+            });
+        };
     }
 
     /**
@@ -186,11 +209,23 @@ class Server {
     }
 
     /**
+     * Middleware zum Prüfen, ob das _id Attribut im Body eine valide
+     * MongoDB-ID darstellt (24 Zeichen lang). Verwendung:
+     * arrangeInstance.app.post('/api/myapi/', arrangeInstance.validatebodyid, function(req, res) { ... });
+     */
+    validatebodyid(request, response, next) {
+        const id = request.body._id;
+        if (!id) return response.status(400).json({error: '_id is not given in body' });
+        if (id.length !== 24) return response.status(400).json({error: '_id is no valid id' });
+        next();
+    }
+
+    /**
      * Middleware zum Prüfen, ob ein bestimmter request-Parameter eine korrekte
      * MongoDB-ID darstellt (24 Zeichen lang). Verwendung:
-     * arrangeInstance.app.post('/api/myapi/:param1', arrangeInstance.validateid('param1'), function(req, res) { ... });
+     * arrangeInstance.app.post('/api/myapi/:param1', arrangeInstance.validateparamid('param1'), function(req, res) { ... });
      */
-    validateid(parametername) {
+    validateparamid(parametername) {
         return function(request, response, next) {
             const param = request.params[parametername];
             if (!param) return response.status(400).json({error: 'Parameter ' + parametername + ' is not given' });
