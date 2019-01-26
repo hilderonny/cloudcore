@@ -31,7 +31,7 @@ class Server {
         this.app.get('/api/arrange/listusers', this.auth.bind(this), this.listusers.bind(this));
         this.app.post('/api/arrange/login', this.login.bind(this));
         this.app.post('/api/arrange/register', this.register.bind(this));
-        this.app.post('/api/arrange/save/:table', this.auth.bind(this), this.save.bind(this));
+        this.app.post('/api/arrange/save/:table', this.canwrite.bind(this)('table'), this.save.bind(this));
         this.app.post('/api/arrange/setpassword', this.auth.bind(this), this.setpassword.bind(this));
         this.app.post('/api/arrange/transferownership/:table/:entityid/:userid', this.auth.bind(this), this.validateparamid('entityid'), this.validateparamid('userid'), this.transferownership.bind(this));
     }
@@ -62,9 +62,11 @@ class Server {
      * Im body muss _id enthalten sein, damit das geht.
      * Verwendung: arrangeInstance.app.post('/api/myapi', arrangeInstance.canwrite.bind(arrangeInstance)('mytable'), function(req, res) { ... });
      */
-    canwrite(tablename) {
+    canwrite(tablenameparam) {
         const self = this;
         return function(request, response, next) {
+            const tablename = request.params[tablenameparam];
+            if (!tablename) return response.status(400).json({error: 'Parameter ' + tablenameparam + ' is not given' });
             self.auth(request, response, function() {
                 self.validatebodyid(request, response, async function() {
                     const id = request.body._id;

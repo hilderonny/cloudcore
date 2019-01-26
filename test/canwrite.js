@@ -5,7 +5,7 @@ describe('Middleware canwrite', function() {
 
     before(function() {
         // Define API endpoint for testing
-        test.server.app.post('/api/testcanwrite', test.server.canwrite.bind(test.server)('testcanwrite'), function(request, response) {
+        test.server.app.post('/api/testcanwrite1/:tablename', test.server.canwrite.bind(test.server)('tablename'), function(request, response) {
             response.status(200).send();
         });
     });
@@ -21,27 +21,37 @@ describe('Middleware canwrite', function() {
     });
 
     it('Responds with error 401 when user is not logged in', async function() {
-        const response = await test.post('/api/testcanwrite', { _id: '123456789012345678901234' });
+        const response = await test.post('/api/testcanwrite1/testcanwrite', { _id: '123456789012345678901234' });
         assert.strictEqual(response.status, 401);
     });
 
     it('Responds with error 400 when parameter _id is not given in body', async function() {
         let user = (await test.post('/api/arrange/login', { username: 'username1', password: 'password1' })).body;
-        const response = await test.post('/api/testcanwrite', { key: 'newkey' }, user.token);
+        const response = await test.post('/api/testcanwrite1/testcanwrite', { key: 'newkey' }, user.token);
         assert.strictEqual(response.status, 400);
         assert.strictEqual(response.body.error, '_id is not given in body');
     });
 
+    it('Responds with error 400 when given tablename parameter is not given', async function() {
+        test.server.app.post('/api/testcanwrite2/:tablename', test.server.canwrite.bind(test.server)('invalidparametername'), function(request, response) {
+            response.status(200).send();
+        });
+        let user = (await test.post('/api/arrange/login', { username: 'username3', password: 'password3' })).body;
+        const response = await test.post('/api/testcanwrite2/testcanwrite', { key: 'newkey' }, user.token);
+        assert.strictEqual(response.status, 400);
+        assert.strictEqual(response.body.error, 'Parameter invalidparametername is not given');
+    });
+
     it('Responds with error 400 when parameter _id is not valid', async function() {
         let user = (await test.post('/api/arrange/login', { username: 'username1', password: 'password1' })).body;
-        const response = await test.post('/api/testcanwrite', { _id: 'wrongformat', key: 'newkey' }, user.token);
+        const response = await test.post('/api/testcanwrite1/testcanwrite', { _id: 'wrongformat', key: 'newkey' }, user.token);
         assert.strictEqual(response.status, 400);
         assert.strictEqual(response.body.error, '_id is no valid id');
     });
 
     it('Responds with error 404 when there is no entity with the given _id', async function() {
         let user = (await test.post('/api/arrange/login', { username: 'username1', password: 'password1' })).body;
-        const response = await test.post('/api/testcanwrite', { _id: '123456789012345678901234', key: 'newkey' }, user.token);
+        const response = await test.post('/api/testcanwrite1/testcanwrite', { _id: '123456789012345678901234', key: 'newkey' }, user.token);
         assert.strictEqual(response.status, 404);
         assert.strictEqual(response.body.error, 'Entity not found');
     });
@@ -50,12 +60,12 @@ describe('Middleware canwrite', function() {
         const user2id = (await test.server.db('users').findOne({ username: 'username2' }, '_id'))._id.toString();
         let user = (await test.post('/api/arrange/login', { username: 'username1', password: 'password1' })).body;
         const entityid = (await test.server.db('testcanwrite').findOne({ key: 'testdata' }, '_id'))._id.toString();
-        const response1 = await test.post('/api/testcanwrite', { _id: entityid, key: 'newkey' }, user.token);
+        const response1 = await test.post('/api/testcanwrite1/testcanwrite', { _id: entityid, key: 'newkey' }, user.token);
         assert.strictEqual(response1.status, 403);
         assert.strictEqual(response1.body.error, 'Writing not allowed');
         // Try again when the _writableby field exists
         await test.server.db('testcanwrite').update(entityid, { $set : { _writableby: [ user2id ] }});
-        const response2 = await test.post('/api/testcanwrite', { _id: entityid, key: 'newkey' }, user.token);
+        const response2 = await test.post('/api/testcanwrite1/testcanwrite', { _id: entityid, key: 'newkey' }, user.token);
         assert.strictEqual(response2.status, 403);
         assert.strictEqual(response2.body.error, 'Writing not allowed');
     });
@@ -63,7 +73,7 @@ describe('Middleware canwrite', function() {
     it('Proceeds when the user is owner', async function() {
         let user3 = (await test.post('/api/arrange/login', { username: 'username3', password: 'password3' })).body;
         const entityid = (await test.server.db('testcanwrite').findOne({ key: 'testdata' }, '_id'))._id.toString();
-        const response = await test.post('/api/testcanwrite', { _id: entityid, key: 'newkey' }, user3.token);
+        const response = await test.post('/api/testcanwrite1/testcanwrite', { _id: entityid, key: 'newkey' }, user3.token);
         assert.strictEqual(response.status, 200);
     });
 
@@ -71,7 +81,7 @@ describe('Middleware canwrite', function() {
         const entityid = (await test.server.db('testcanwrite').findOne({ key: 'testdata' }, '_id'))._id.toString();
         await test.server.db('testcanwrite').update(entityid, { $set : { _publiclywritable: true }});
         let user1 = (await test.post('/api/arrange/login', { username: 'username1', password: 'password1' })).body;
-        const response = await test.post('/api/testcanwrite', { _id: entityid, key: 'newkey' }, user1.token);
+        const response = await test.post('/api/testcanwrite1/testcanwrite', { _id: entityid, key: 'newkey' }, user1.token);
         assert.strictEqual(response.status, 200);
     });
 
@@ -79,7 +89,7 @@ describe('Middleware canwrite', function() {
         const entityid = (await test.server.db('testcanwrite').findOne({ key: 'testdata' }, '_id'))._id.toString();
         let user1 = (await test.post('/api/arrange/login', { username: 'username1', password: 'password1' })).body;
         await test.server.db('testcanwrite').update(entityid, { $set : { _writableby: [ user1._id.toString() ] }});
-        const response = await test.post('/api/testcanwrite', { _id: entityid, key: 'newkey' }, user1.token);
+        const response = await test.post('/api/testcanwrite1/testcanwrite', { _id: entityid, key: 'newkey' }, user1.token);
         assert.strictEqual(response.status, 200);
     });
 
