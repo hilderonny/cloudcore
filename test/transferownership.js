@@ -41,7 +41,7 @@ describe('API transferownership', function() {
         let user1 = (await test.post('/api/arrange/login', { username: 'username1', password: 'password1' })).body;
         const response = await test.post('/api/arrange/transferownership/test/' + entityid + '/wrongformat', {}, user1.token);
         assert.strictEqual(response.status, 400);
-        assert.strictEqual(response.body.error, 'User id has wrong format');
+        assert.strictEqual(response.body.error, 'Parameter userid is no valid id');
     });
 
     it('Returns with error 404 when there is no user with the target user id', async function() {
@@ -57,7 +57,7 @@ describe('API transferownership', function() {
         let user1 = (await test.post('/api/arrange/login', { username: 'username1', password: 'password1' })).body;
         const response = await test.post('/api/arrange/transferownership/test/wrongformat/' + user3id, {}, user1.token);
         assert.strictEqual(response.status, 400);
-        assert.strictEqual(response.body.error, 'Entity id has wrong format');
+        assert.strictEqual(response.body.error, 'Parameter entityid is no valid id');
     });
 
     it('Returns with error 404 when there is no object with the target _id', async function() {

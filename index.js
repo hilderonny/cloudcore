@@ -33,7 +33,7 @@ class Server {
         this.app.post('/api/arrange/register', this.register.bind(this));
         this.app.post('/api/arrange/save/:table', this.auth.bind(this), this.save.bind(this));
         this.app.post('/api/arrange/setpassword', this.auth.bind(this), this.setpassword.bind(this));
-        this.app.post('/api/arrange/transferownership/:table/:entityid/:userid', this.auth.bind(this), this.transferownership.bind(this));
+        this.app.post('/api/arrange/transferownership/:table/:entityid/:userid', this.auth.bind(this), this.validateid('entityid'), this.validateid('userid'), this.transferownership.bind(this));
     }
 
     /**
@@ -149,6 +149,18 @@ class Server {
     }
 
     /**
+     * Server starten
+     */
+    start() {
+        const port = this.port;
+        // Server erstellen
+        this.server = http.createServer(this.app);
+        this.server.listen(port, function () {
+            console.log('Arrange server running at port ' + port);
+        });
+    }
+
+    /**
      * Übergibt den Beistz eines Objektes an einen anderen Benutzer. Der ursprüngliche Besitzer
      * hat danach immernoch Lese- und Schreibrechte.
      */
@@ -157,11 +169,9 @@ class Server {
         if (tablename === 'users') return response.status(400).send();
         const userid = request.user._id.toString();
         const targetuserid = request.params.userid;
-        if (targetuserid.length !== 24) return response.status(400).json({ error: 'User id has wrong format' });
         const targetuser = await this.db('users').findOne(targetuserid, '_id');
         if (!targetuser) return response.status(404).json({ error: 'User not found' });
         const entityid = request.params.entityid;
-        if (entityid.length !== 24) return response.status(400).json({ error: 'Entity id has wrong format' });
         const entity = await this.db(tablename).findOne(entityid, '_ownerid _readableby _writableby');
         if (!entity) return response.status(404).json({ error: 'Entity not found' });
         if (entity._ownerid.toString() !== userid) return response.status(403).send();
@@ -176,15 +186,17 @@ class Server {
     }
 
     /**
-     * Server starten
+     * Middleware zum Prüfen, ob ein bestimmter request-Parameter eine korrekte
+     * MongoDB-ID darstellt (24 Zeichen lang). Verwendung:
+     * arrangeInstance.app.post('/api/myapi/:param1', arrangeInstance.validateid('param1'), function(req, res) { ... });
      */
-    start() {
-        const port = this.port;
-        // Server erstellen
-        this.server = http.createServer(this.app);
-        this.server.listen(port, function () {
-            console.log('Arrange server running at port ' + port);
-        });
+    validateid(parametername) {
+        return function(request, response, next) {
+            const param = request.params[parametername];
+            if (!param) return response.status(400).json({error: 'Parameter ' + parametername + ' is not given' });
+            if (param.length !== 24) return response.status(400).json({error: 'Parameter ' + parametername + ' is no valid id' });
+            next();
+        }
     }
 
 }
