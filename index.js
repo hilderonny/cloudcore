@@ -66,14 +66,17 @@ class Server {
         return function(request, response, next) {
             const tablename = request.params[tablenameparam];
             if (!tablename) return response.status(400).json({error: 'Parameter ' + tablenameparam + ' is not given' });
-            self.validateparamid(entityidparam)(request, response, async function() {
-                const id = request.params[entityidparam];
-                const entity = await self.database.get(tablename).findOne(id, '_ownerid _publiclywritable _writableby');
-                if (!entity) return response.status(404).json({error: 'Entity not found' });
-                if (entity._ownerid !== userid && !entity._publiclyreadable && (!entity._readableby || entity._readableby.indexOf(userid) < 0)) {
-                    return response.status(403).json({ error: 'Reading not allowed' });
-                }
-                next();
+            self.auth(request, response, function() {
+                const userid = request.user._id;
+                self.validateparamid(entityidparam)(request, response, async function() {
+                    const id = request.params[entityidparam];
+                    const entity = await self.database.get(tablename).findOne(id, '_ownerid _publiclyreadable _readableby');
+                    if (!entity) return response.status(404).json({error: 'Entity not found' });
+                    if (entity._ownerid !== userid && !entity._publiclyreadable && (!entity._readableby || entity._readableby.indexOf(userid) < 0)) {
+                        return response.status(403).json({ error: 'Reading not allowed' });
+                    }
+                    next();
+                });
             });
         };
     }

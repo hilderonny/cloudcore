@@ -70,7 +70,7 @@ describe('Middleware canwrite', function() {
         assert.strictEqual(response.status, 200);
     });
 
-    it('Proceeds when _id is nopt given in request body', async function() {
+    it('Proceeds when _id is not given in request body', async function() {
         let user1 = (await test.post('/api/arrange/login', { username: 'username1', password: 'password1' })).body;
         const response = await test.post('/api/testcanwrite1/testcanwrite', { key: 'newkey' }, user1.token);
         assert.strictEqual(response.status, 200);
@@ -84,7 +84,7 @@ describe('Middleware canwrite', function() {
         assert.strictEqual(response.status, 200);
     });
 
-    it('Proceeds when the object is in writable array', async function() {
+    it('Proceeds when the user is in writable array', async function() {
         const entityid = (await test.server.db('testcanwrite').findOne({ key: 'testdata' }, '_id'))._id.toString();
         let user1 = (await test.post('/api/arrange/login', { username: 'username1', password: 'password1' })).body;
         await test.server.db('testcanwrite').update(entityid, { $set : { _writableby: [ user1._id.toString() ] }});
