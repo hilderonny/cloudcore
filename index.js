@@ -28,12 +28,12 @@ class Server {
         // Einbindung in HTML-Seite mit <script src="/arrange/arrange.js"></script>
         this.app.use('/arrange', express.static(__dirname + '/client'));
         // APIs registrieren
-        this.app.get('/api/arrange/listusers', this.auth.bind(this), this.listusers.bind(this));
+        this.app.get('/api/arrange/listusers', this.listusers.bind(this));
         this.app.post('/api/arrange/login', this.login.bind(this));
         this.app.post('/api/arrange/register', this.register.bind(this));
-        this.app.post('/api/arrange/save/:table', this.canwrite.bind(this)('table'), this.save.bind(this));
-        this.app.post('/api/arrange/setpassword', this.auth.bind(this), this.setpassword.bind(this));
-        this.app.post('/api/arrange/transferownership/:table/:entityid/:userid', this.auth.bind(this), this.validateparamid('entityid'), this.validateparamid('userid'), this.transferownership.bind(this));
+        this.app.post('/api/arrange/save/:table', this.save.bind(this));
+        this.app.post('/api/arrange/setpassword', this.setpassword.bind(this));
+        this.app.post('/api/arrange/transferownership/:table/:entityid/:userid', this.transferownership.bind(this));
     }
 
     /**
@@ -94,8 +94,11 @@ class Server {
      * API zum Auflisten aller Benutzer mit _id und _username.
      */
     async listusers(request, response) {
-        const users = await this.db('users').find({}, '_id username');
-        response.json(users);
+        const self = this;
+        self.auth(request, response, async function() {
+            const users = await self.db('users').find({}, '_id username');
+            response.json(users);
+        });
     }
 
     /**
@@ -146,19 +149,22 @@ class Server {
      * Erwartet als URL Parameter den Tabellennamen.
      */
     async save(request, response) {
-        const collection = this.db(request.params.table);
-        const data = request.body;
-        const _id = data._id;
-        const toDatabase = Object.keys(data).filter(function(element) {
-            return ['_ownerid', '_publiclyreadable', '_publiclywritable', '_readableby', '_writableby'].indexOf(element) < 0;
+        const self = this;
+        self.canwrite('table')(request, response, async function() {
+            const collection = self.db(request.params.table);
+            const data = request.body;
+            const _id = data._id;
+            const toDatabase = Object.keys(data).filter(function(element) {
+                return ['_ownerid', '_publiclyreadable', '_publiclywritable', '_readableby', '_writableby'].indexOf(element) < 0;
+            });
+            if (!_id) { // Create
+                const createdEntity = collection.insert(toDatabase);
+                response.json(createdEntity);
+            } else { // Update
+                const updatedEntity = collection.update(_id, { $set: toDatabase });
+                response.json(updatedEntity);
+            }
         });
-        if (!_id) { // Create
-            const createdEntity = collection.insert(toDatabase);
-            response.json(createdEntity);
-        } else { // Update
-            const updatedEntity = collection.update(_id, { $set: toDatabase });
-            response.json(updatedEntity);
-        }
     }
 
     /**
@@ -168,10 +174,13 @@ class Server {
      * Der Benutzer muss vorher angemeldet sein.
      */
     async setpassword(request, response) {
-        if (!request.body.password) return response.status(400).json({ error: 'Password required' });
-        const user = request.user;
-        await this.db('users').update(user._id, { $set: { password: bcryptjs.hashSync(request.body.password) } });
-        response.status(200).send();
+        const self = this;
+        self.auth(request, response, async function() {
+            if (!request.body.password) return response.status(400).json({ error: 'Password required' });
+            const user = request.user;
+            await self.db('users').update(user._id, { $set: { password: bcryptjs.hashSync(request.body.password) } });
+            response.status(200).send();
+        });
     }
 
     /**
@@ -191,24 +200,31 @@ class Server {
      * hat danach immernoch Lese- und Schreibrechte.
      */
     async transferownership(request, response) {
-        const tablename = request.params.table;
-        if (tablename === 'users') return response.status(400).send();
-        const userid = request.user._id.toString();
-        const targetuserid = request.params.userid;
-        const targetuser = await this.db('users').findOne(targetuserid, '_id');
-        if (!targetuser) return response.status(404).json({ error: 'User not found' });
-        const entityid = request.params.entityid;
-        const entity = await this.db(tablename).findOne(entityid, '_ownerid _readableby _writableby');
-        if (!entity) return response.status(404).json({ error: 'Entity not found' });
-        if (entity._ownerid.toString() !== userid) return response.status(403).send();
-        delete entity._id;
-        entity._ownerid = targetuserid;
-        if (!entity._readableby) entity._readableby = [];
-        entity._readableby.push(userid);
-        if (!entity._writableby) entity._writableby = [];
-        entity._writableby.push(userid);
-        await this.db(tablename).update(entityid, { $set: entity });
-        response.status(200).send();
+        const self = this;
+        self.auth(request, response, function() {
+            self.validateparamid('entityid')(request, response, function() {
+                self.validateparamid('userid')(request, response, async function() {
+                    const tablename = request.params.table;
+                    if (tablename === 'users') return response.status(400).send();
+                    const userid = request.user._id.toString();
+                    const targetuserid = request.params.userid;
+                    const targetuser = await self.db('users').findOne(targetuserid, '_id');
+                    if (!targetuser) return response.status(404).json({ error: 'User not found' });
+                    const entityid = request.params.entityid;
+                    const entity = await self.db(tablename).findOne(entityid, '_ownerid _readableby _writableby');
+                    if (!entity) return response.status(404).json({ error: 'Entity not found' });
+                    if (entity._ownerid.toString() !== userid) return response.status(403).send();
+                    delete entity._id;
+                    entity._ownerid = targetuserid;
+                    if (!entity._readableby) entity._readableby = [];
+                    entity._readableby.push(userid);
+                    if (!entity._writableby) entity._writableby = [];
+                    entity._writableby.push(userid);
+                    await self.db(tablename).update(entityid, { $set: entity });
+                    response.status(200).send();
+                });
+            });
+        });
     }
 
     /**
