@@ -107,4 +107,28 @@ describe('API save', function() {
         assert.ok(response.body._id);
     });
 
+    it('Returns 200 when the user is the owner', async function() {
+        const user2 = (await test.post('/api/arrange/login', { username: 'username2', password: 'password2' })).body;
+        const entityid = (await test.server.db('testsave').findOne({ key: 'testdata' }, '_id'))._id.toString();
+        await test.server.db('testsave').update(entityid, { $set : { _ownerid: user2._id.toString() }});
+        const response = await test.post('/api/arrange/save/testsave', { _id: entityid, key: 'newkey' }, user2.token);
+        assert.strictEqual(response.status, 200);
+    });
+
+    it('Returns 200 when the object is publiclywritable', async function() {
+        const user2 = (await test.post('/api/arrange/login', { username: 'username2', password: 'password2' })).body;
+        const entityid = (await test.server.db('testsave').findOne({ key: 'testdata' }, '_id'))._id.toString();
+        await test.server.db('testsave').update(entityid, { $set : { _publiclywritable: true }});
+        const response = await test.post('/api/arrange/save/testsave', { _id: entityid, key: 'newkey' }, user2.token);
+        assert.strictEqual(response.status, 200);
+    });
+
+    it('Returns 200 when the user is in writableby', async function() {
+        const user2 = (await test.post('/api/arrange/login', { username: 'username2', password: 'password2' })).body;
+        const entityid = (await test.server.db('testsave').findOne({ key: 'testdata' }, '_id'))._id.toString();
+        await test.server.db('testsave').update(entityid, { $set : { _writableby: [ user2._id.toString() ] }});
+        const response = await test.post('/api/arrange/save/testsave', { _id: entityid, key: 'newkey' }, user2.token);
+        assert.strictEqual(response.status, 200);
+    });
+
 });

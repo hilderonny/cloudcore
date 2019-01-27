@@ -28,6 +28,7 @@ class Server {
         // Einbindung in HTML-Seite mit <script src="/arrange/arrange.js"></script>
         this.app.use('/arrange', express.static(__dirname + '/client'));
         // APIs registrieren
+        this.app.get('/api/arrange/details/:table/:id', this.details.bind(this));
         this.app.get('/api/arrange/listusers', this.listusers.bind(this));
         this.app.post('/api/arrange/login', this.login.bind(this));
         this.app.post('/api/arrange/register', this.register.bind(this));
@@ -115,6 +116,20 @@ class Server {
     }
 
     /**
+     * Liefert Details über ein Objekt
+     */
+    async details(request, response) {
+        const self = this;
+        self.canread('table', 'id')(request, response, async function() {
+            const tablename = request.params.table;
+            if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
+            const collection = self.db(tablename);
+            const entity = await collection.findOne(request.params.id);
+            response.status(200).json(entity);
+        });
+    }
+
+    /**
      * API zum Auflisten aller Benutzer mit _id und _username.
      */
     async listusers(request, response) {
@@ -177,7 +192,7 @@ class Server {
         self.canwrite('table')(request, response, async function() {
             const tablename = request.params.table;
             if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
-            const collection = self.db(request.params.table);
+            const collection = self.db(tablename);
             const data = request.body;
             const _id = data._id;
             const keysToDatabase = Object.keys(data).filter(function(element) {
