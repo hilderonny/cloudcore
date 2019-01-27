@@ -38,6 +38,20 @@ class Server {
     }
 
     /**
+     * API zum Zufügen von Leseberechtigungen
+     */
+    async addreadableby(request, response) {
+
+    }
+
+    /**
+     * API zum Zufügen von Schreibberechtigungen
+     */
+    async addwritableby(request, response) {
+
+    }
+
+    /**
      * Middleware zur Benutzerauthentifizierung.
      * Liefert response 401, wenn Benutzer nicht authentifizierbar ist.
      * Schreibt request.user mit _id und username.
@@ -130,6 +144,13 @@ class Server {
     }
 
     /**
+     * API zum Auflisten aller Objekte eines Typs
+     */
+    async list(request, response) {
+
+    }
+
+    /**
      * API zum Auflisten aller Benutzer mit _id und _username.
      */
     async listusers(request, response) {
@@ -184,6 +205,20 @@ class Server {
     }
 
     /**
+     * API zum Entfernen von Leseberechtigungen
+     */
+    async removereadableby(request, response) {
+
+    }
+
+    /**
+     * API zum Entfernen von Schreibberechtigungen
+     */
+    async removewritableby(request, response) {
+
+    }
+
+    /**
      * API zum Speichern und Erzeugen von Objekten.
      * Erwartet als URL Parameter den Tabellennamen.
      */
@@ -226,6 +261,20 @@ class Server {
             await self.db('users').update(user._id, { $set: { password: bcryptjs.hashSync(request.body.password) } });
             response.status(200).send();
         });
+    }
+
+    /**
+     * API zum Fsetlegen von öffentlichen Lesebrechtigungen
+     */
+    async setpubliclyreadable(request, response) {
+
+    }
+
+    /**
+     * API zum Fsetlegen von öffentlichen Schreibbrechtigungen
+     */
+    async setpubliclywritable(request, response) {
+
     }
 
     /**
