@@ -70,7 +70,7 @@ class Server {
             self.auth(request, response, function() {
                 self.validatebodyid(request, response, async function() {
                     const id = request.body._id;
-                    if (!id) return response.status(200).send(); // Bei fehlender _id kann immer geschrieben werden. Das ist dann halt ein Anlegen eines Datensatzes.
+                    if (!id) return next(); // Bei fehlender _id kann immer geschrieben werden. Das ist dann halt ein Anlegen eines Datensatzes.
                     const userid = request.user._id.toString();
                     const entity = await self.database.get(tablename).findOne(id, '_ownerid _publiclywritable _writableby');
                     if (!entity) return response.status(404).json({error: 'Entity not found' });
@@ -151,18 +151,24 @@ class Server {
     async save(request, response) {
         const self = this;
         self.canwrite('table')(request, response, async function() {
+            const tablename = request.params.table;
+            if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
             const collection = self.db(request.params.table);
             const data = request.body;
             const _id = data._id;
-            const toDatabase = Object.keys(data).filter(function(element) {
-                return ['_ownerid', '_publiclyreadable', '_publiclywritable', '_readableby', '_writableby'].indexOf(element) < 0;
+            const keysToDatabase = Object.keys(data).filter(function(element) {
+                return ['_id', '_ownerid', '_publiclyreadable', '_publiclywritable', '_readableby', '_writableby'].indexOf(element) < 0;
+            });
+            const dataToDatabase = {};
+            keysToDatabase.forEach(function(key) {
+                dataToDatabase[key] = data[key];
             });
             if (!_id) { // Create
-                const createdEntity = collection.insert(toDatabase);
-                response.json(createdEntity);
+                const createdEntity = await collection.insert(dataToDatabase);
+                response.json({ _id: createdEntity._id.toString() });
             } else { // Update
-                const updatedEntity = collection.update(_id, { $set: toDatabase });
-                response.json(updatedEntity);
+                await collection.update(_id, { $set: dataToDatabase });
+                response.json({ _id: _id });
             }
         });
     }
