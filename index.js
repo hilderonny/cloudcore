@@ -58,6 +58,27 @@ class Server {
     }
 
     /**
+     * Middleware zum Prüfen, ob ein Datenbankobjekt vom angemeldeten Benutzer lesbar ist.
+     * Verwendung: arrangeInstance.app.get('/api/myapi/:tablename/:id', arrangeInstance.canread.bind(arrangeInstance)('tablename', 'id'), function(req, res) { ... });
+     */
+    canread(tablenameparam, entityidparam) {
+        const self = this;
+        return function(request, response, next) {
+            const tablename = request.params[tablenameparam];
+            if (!tablename) return response.status(400).json({error: 'Parameter ' + tablenameparam + ' is not given' });
+            self.validateparamid(entityidparam)(request, response, async function() {
+                const id = request.params[entityidparam];
+                const entity = await self.database.get(tablename).findOne(id, '_ownerid _publiclywritable _writableby');
+                if (!entity) return response.status(404).json({error: 'Entity not found' });
+                if (entity._ownerid !== userid && !entity._publiclyreadable && (!entity._readableby || entity._readableby.indexOf(userid) < 0)) {
+                    return response.status(403).json({ error: 'Reading not allowed' });
+                }
+                next();
+            });
+        };
+    }
+
+    /**
      * Middleware zum Prüfen, ob ein Datenbankobjekt vom angemeldeten Benutzer schreibbar ist.
      * Im body muss _id enthalten sein, damit das geht.
      * Verwendung: arrangeInstance.app.post('/api/myapi', arrangeInstance.canwrite.bind(arrangeInstance)('mytable'), function(req, res) { ... });
