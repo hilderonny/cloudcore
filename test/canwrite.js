@@ -25,13 +25,6 @@ describe('Middleware canwrite', function() {
         assert.strictEqual(response.status, 401);
     });
 
-    it('Responds with error 400 when parameter _id is not given in body', async function() {
-        let user = (await test.post('/api/arrange/login', { username: 'username1', password: 'password1' })).body;
-        const response = await test.post('/api/testcanwrite1/testcanwrite', { key: 'newkey' }, user.token);
-        assert.strictEqual(response.status, 400);
-        assert.strictEqual(response.body.error, '_id is not given in body');
-    });
-
     it('Responds with error 400 when given tablename parameter is not given', async function() {
         test.server.app.post('/api/testcanwrite2/:tablename', test.server.canwrite.bind(test.server)('invalidparametername'), function(request, response) {
             response.status(200).send();
@@ -74,6 +67,12 @@ describe('Middleware canwrite', function() {
         let user3 = (await test.post('/api/arrange/login', { username: 'username3', password: 'password3' })).body;
         const entityid = (await test.server.db('testcanwrite').findOne({ key: 'testdata' }, '_id'))._id.toString();
         const response = await test.post('/api/testcanwrite1/testcanwrite', { _id: entityid, key: 'newkey' }, user3.token);
+        assert.strictEqual(response.status, 200);
+    });
+
+    it('Proceeds when _id is nopt given in request body', async function() {
+        let user1 = (await test.post('/api/arrange/login', { username: 'username1', password: 'password1' })).body;
+        const response = await test.post('/api/testcanwrite1/testcanwrite', { key: 'newkey' }, user1.token);
         assert.strictEqual(response.status, 200);
     });
 

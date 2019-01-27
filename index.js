@@ -70,6 +70,7 @@ class Server {
             self.auth(request, response, function() {
                 self.validatebodyid(request, response, async function() {
                     const id = request.body._id;
+                    if (!id) return response.status(200).send(); // Bei fehlender _id kann immer geschrieben werden. Das ist dann halt ein Anlegen eines Datensatzes.
                     const userid = request.user._id.toString();
                     const entity = await self.database.get(tablename).findOne(id, '_ownerid _publiclywritable _writableby');
                     if (!entity) return response.status(404).json({error: 'Entity not found' });
@@ -212,13 +213,13 @@ class Server {
 
     /**
      * Middleware zum Prüfen, ob das _id Attribut im Body eine valide
-     * MongoDB-ID darstellt (24 Zeichen lang). Verwendung:
+     * MongoDB-ID darstellt (24 Zeichen lang). Wenn keine _id enthalten ist,
+     * wird es als valide anerkannt. Verwendung:
      * arrangeInstance.app.post('/api/myapi/', arrangeInstance.validatebodyid, function(req, res) { ... });
      */
     validatebodyid(request, response, next) {
         const id = request.body._id;
-        if (!id) return response.status(400).json({error: '_id is not given in body' });
-        if (id.length !== 24) return response.status(400).json({error: '_id is no valid id' });
+        if (id && id.length !== 24) return response.status(400).json({error: '_id is no valid id' });
         next();
     }
 

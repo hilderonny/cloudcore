@@ -10,10 +10,9 @@ describe('Middleware validatebodyid', function() {
         });
     });
 
-    it('Responds with error 400 when _id is not given in request body', async function() {
+    it('Responds with 200 when _id is not given in request body', async function() {
         const response = await test.post('/api/testvalidatebodyid', {});
-        assert.strictEqual(response.status, 400);
-        assert.strictEqual(response.body.error, '_id is not given in body');
+        assert.strictEqual(response.status, 200);
     });
 
     it('Responds with error 400 when _id is not valid', async function() {
