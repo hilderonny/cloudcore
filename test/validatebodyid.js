@@ -5,7 +5,7 @@ describe('Middleware validatebodyid', function() {
 
     before(function() {
         // Define API endpoint for testing
-        test.server.app.post('/api/testvalidatebodyid', test.server.validatebodyid, function(request, response) {
+        test.server.app.post('/api/testvalidatebodyid', test.server.validatebodyid('_id'), function(request, response) {
             response.status(200).send();
         });
     });

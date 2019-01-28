@@ -28,6 +28,7 @@ class Server {
         // Einbindung in HTML-Seite mit <script src="/arrange/arrange.js"></script>
         this.app.use('/arrange', express.static(__dirname + '/client'));
         // APIs registrieren
+        this.app.post('/api/arrange/addreadableby/:table/:id', this.addreadableby.bind(this));
         this.app.get('/api/arrange/details/:table/:id', this.details.bind(this));
         this.app.get('/api/arrange/listusers', this.listusers.bind(this));
         this.app.post('/api/arrange/login', this.login.bind(this));
@@ -40,14 +41,39 @@ class Server {
     /**
      * API zum Zufügen von Leseberechtigungen
      */
-    async addreadableby(request, response) {
-
+    addreadableby(request, response) {
+        const self = this;
+        self.auth(request, response, function() {
+            const tablename = request.params.table;
+            if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
+            self.validateparamid('id')(request, response, function() {
+                const entityid = request.params.id;
+                self.validatebodyid('userid')(request, response, async function() {
+                    const userid = request.body.userid;
+                    if (!userid) return response.status(400).json({error: 'Target userid is missing' });
+                    const collection = self.db(tablename);
+                    const user = await self.db('users').findOne(userid);
+                    if (!user) return response.status(404).json({error: 'User not found' });
+                    const entity = await collection.findOne(entityid);
+                    if (!entity) return response.status(404).json({error: 'Entity not found' });
+                    if (entity._ownerid !== request.user._id.toString()) {
+                        return response.status(403).json({ error: 'Only the entity owner can do this' });
+                    }
+                    const entityToWrite = {
+                        _readableby: entity._readableby ? entity._readableby : []
+                    }
+                    if (entityToWrite._readableby.indexOf(userid) < 0) entityToWrite._readableby.push(userid);
+                    await collection.update(entityid, { $set: entityToWrite });
+                    response.status(200).json(entity);
+                });
+            });
+        });
     }
 
     /**
      * API zum Zufügen von Schreibberechtigungen
      */
-    async addwritableby(request, response) {
+    addwritableby(request, response) {
 
     }
 
@@ -107,7 +133,7 @@ class Server {
             const tablename = request.params[tablenameparam];
             if (!tablename) return response.status(400).json({error: 'Parameter ' + tablenameparam + ' is not given' });
             self.auth(request, response, function() {
-                self.validatebodyid(request, response, async function() {
+                self.validatebodyid('_id')(request, response, async function() {
                     const id = request.body._id;
                     if (!id) return next(); // Bei fehlender _id kann immer geschrieben werden. Das ist dann halt ein Anlegen eines Datensatzes.
                     const userid = request.user._id.toString();
@@ -132,7 +158,7 @@ class Server {
     /**
      * Liefert Details über ein Objekt
      */
-    async details(request, response) {
+    details(request, response) {
         const self = this;
         self.canread('table', 'id')(request, response, async function() {
             const tablename = request.params.table;
@@ -153,7 +179,7 @@ class Server {
     /**
      * API zum Auflisten aller Benutzer mit _id und _username.
      */
-    async listusers(request, response) {
+    listusers(request, response) {
         const self = this;
         self.auth(request, response, async function() {
             const users = await self.db('users').find({}, '_id username');
@@ -222,7 +248,7 @@ class Server {
      * API zum Speichern und Erzeugen von Objekten.
      * Erwartet als URL Parameter den Tabellennamen.
      */
-    async save(request, response) {
+    save(request, response) {
         const self = this;
         self.canwrite('table')(request, response, async function() {
             const tablename = request.params.table;
@@ -253,7 +279,7 @@ class Server {
      * Danach ist alter Token ungültig.
      * Der Benutzer muss vorher angemeldet sein.
      */
-    async setpassword(request, response) {
+    setpassword(request, response) {
         const self = this;
         self.auth(request, response, async function() {
             if (!request.body.password) return response.status(400).json({ error: 'Password required' });
@@ -293,7 +319,7 @@ class Server {
      * Übergibt den Beistz eines Objektes an einen anderen Benutzer. Der ursprüngliche Besitzer
      * hat danach immernoch Lese- und Schreibrechte.
      */
-    async transferownership(request, response) {
+    transferownership(request, response) {
         const self = this;
         self.auth(request, response, function() {
             self.validateparamid('entityid')(request, response, function() {
@@ -325,12 +351,14 @@ class Server {
      * Middleware zum Prüfen, ob das _id Attribut im Body eine valide
      * MongoDB-ID darstellt (24 Zeichen lang). Wenn keine _id enthalten ist,
      * wird es als valide anerkannt. Verwendung:
-     * arrangeInstance.app.post('/api/myapi/', arrangeInstance.validatebodyid, function(req, res) { ... });
+     * arrangeInstance.app.post('/api/myapi/', arrangeInstance.validatebodyid('_id'), function(req, res) { ... });
      */
-    validatebodyid(request, response, next) {
-        const id = request.body._id;
-        if (id && id.length !== 24) return response.status(400).json({error: '_id is no valid id' });
-        next();
+    validatebodyid(attributename) {
+        return function(request, response, next) {
+            const id = request.body[attributename];
+            if (id && id.length !== 24) return response.status(400).json({error: attributename + ' is no valid id' });
+            next();
+        }
     }
 
     /**
