@@ -31,6 +31,7 @@ class Server {
         this.app.post('/api/arrange/addreadableby/:table/:id', this.addreadableby.bind(this));
         this.app.post('/api/arrange/addwritableby/:table/:id', this.addwritableby.bind(this));
         this.app.post('/api/arrange/details/:table/:id', this.details.bind(this));
+        this.app.post('/api/arrange/list', this.list.bind(this));
         this.app.get('/api/arrange/listusers', this.listusers.bind(this));
         this.app.post('/api/arrange/login', this.login.bind(this));
         this.app.post('/api/arrange/register', this.register.bind(this));
@@ -208,8 +209,18 @@ class Server {
     /**
      * API zum Auflisten aller Objekte eines Typs
      */
-    async list(request, response) {
-
+    list(request, response) {
+        const self = this;
+        const tablename = request.params.table;
+        if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
+        const collection = self.db(tablename);
+        try {
+            const result = await collection.find(request.body, '_id');
+            response.status(200).json(result);
+        } catch(ex) {
+            // Filter is errornous
+            response.status(400).json({ error: 'Filter is invalid' });
+        }
     }
 
     /**
