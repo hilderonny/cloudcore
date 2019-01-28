@@ -24,4 +24,7 @@ describe('API list', function() {
     xit('Responds ids only of objects matching the given filter', async function() {
     });
 
+    xit('Responds with 400 when the given filter is invalid', async function() {
+    });
+
 });
