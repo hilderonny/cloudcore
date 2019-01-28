@@ -38,6 +38,8 @@ class Server {
         this.app.post('/api/arrange/removewritableby/:table/:id', this.removewritableby.bind(this));
         this.app.post('/api/arrange/save/:table', this.save.bind(this));
         this.app.post('/api/arrange/setpassword', this.setpassword.bind(this));
+        this.app.post('/api/arrange/setpubliclyreadable/:table/:id/:value', this.setpubliclyreadable.bind(this));
+        this.app.post('/api/arrange/setpubliclywritable/:table/:id/:value', this.setpubliclywritable.bind(this));
         this.app.post('/api/arrange/transferownership/:table/:entityid/:userid', this.transferownership.bind(this));
     }
 
@@ -369,15 +371,49 @@ class Server {
     /**
      * API zum Fsetlegen von öffentlichen Lesebrechtigungen
      */
-    async setpubliclyreadable(request, response) {
-
+    setpubliclyreadable(request, response) {
+        const self = this;
+        self.auth(request, response, function() {
+            const tablename = request.params.table;
+            if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
+            self.validateparamid('id')(request, response, async function() {
+                const entityid = request.params.id;
+                const value = request.params.value;
+                if (value !== 'false' && value !== 'true') return response.status(400).json({ error: 'Invalid value' });
+                const collection = self.db(tablename);
+                const entity = await collection.findOne(entityid);
+                if (!entity) return response.status(404).json({error: 'Entity not found' });
+                if (entity._ownerid !== request.user._id.toString()) {
+                    return response.status(403).json({ error: 'Only the entity owner can do this' });
+                }
+                await collection.update(entityid, { $set: { _publiclyreadable: value === 'true' ? true : false } });
+                response.status(200).send();
+            });
+        });
     }
 
     /**
      * API zum Fsetlegen von öffentlichen Schreibbrechtigungen
      */
-    async setpubliclywritable(request, response) {
-
+    setpubliclywritable(request, response) {
+        const self = this;
+        self.auth(request, response, function() {
+            const tablename = request.params.table;
+            if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
+            self.validateparamid('id')(request, response, async function() {
+                const entityid = request.params.id;
+                const value = request.params.value;
+                if (value !== 'false' && value !== 'true') return response.status(400).json({ error: 'Invalid value' });
+                    const collection = self.db(tablename);
+                const entity = await collection.findOne(entityid);
+                if (!entity) return response.status(404).json({error: 'Entity not found' });
+                if (entity._ownerid !== request.user._id.toString()) {
+                    return response.status(403).json({ error: 'Only the entity owner can do this' });
+                }
+                await collection.update(entityid, { $set: { _publiclywritable: value === 'true' ? true : false } });
+                response.status(200).send();
+            });
+        });
     }
 
     /**
