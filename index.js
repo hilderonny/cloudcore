@@ -29,11 +29,13 @@ class Server {
         this.app.use('/arrange', express.static(__dirname + '/client'));
         // APIs registrieren
         this.app.post('/api/arrange/addreadableby/:table/:id', this.addreadableby.bind(this));
+        this.app.post('/api/arrange/addwritableby/:table/:id', this.addwritableby.bind(this));
         this.app.get('/api/arrange/details/:table/:id', this.details.bind(this));
         this.app.get('/api/arrange/listusers', this.listusers.bind(this));
         this.app.post('/api/arrange/login', this.login.bind(this));
         this.app.post('/api/arrange/register', this.register.bind(this));
         this.app.post('/api/arrange/removereadableby/:table/:id', this.removereadableby.bind(this));
+        this.app.post('/api/arrange/removewritableby/:table/:id', this.removewritableby.bind(this));
         this.app.post('/api/arrange/save/:table', this.save.bind(this));
         this.app.post('/api/arrange/setpassword', this.setpassword.bind(this));
         this.app.post('/api/arrange/transferownership/:table/:entityid/:userid', this.transferownership.bind(this));
@@ -75,7 +77,32 @@ class Server {
      * API zum Zufügen von Schreibberechtigungen
      */
     addwritableby(request, response) {
-
+        const self = this;
+        self.auth(request, response, function() {
+            const tablename = request.params.table;
+            if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
+            self.validateparamid('id')(request, response, function() {
+                const entityid = request.params.id;
+                self.validatebodyid('userid')(request, response, async function() {
+                    const userid = request.body.userid;
+                    if (!userid) return response.status(400).json({error: 'Target userid is missing' });
+                    const collection = self.db(tablename);
+                    const user = await self.db('users').findOne(userid);
+                    if (!user) return response.status(404).json({error: 'User not found' });
+                    const entity = await collection.findOne(entityid);
+                    if (!entity) return response.status(404).json({error: 'Entity not found' });
+                    if (entity._ownerid !== request.user._id.toString()) {
+                        return response.status(403).json({ error: 'Only the entity owner can do this' });
+                    }
+                    const entityToWrite = {
+                        _writableby: entity._writableby ? entity._writableby : []
+                    }
+                    if (entityToWrite._writableby.indexOf(userid) < 0) entityToWrite._writableby.push(userid);
+                    await collection.update(entityid, { $set: entityToWrite });
+                    response.status(200).send();
+                });
+            });
+        });
     }
 
     /**
@@ -260,13 +287,37 @@ class Server {
                 });
             });
         });
-
     }
 
     /**
      * API zum Entfernen von Schreibberechtigungen
      */
-    async removewritableby(request, response) {
+    removewritableby(request, response) {
+        const self = this;
+        self.auth(request, response, function() {
+            const tablename = request.params.table;
+            if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
+            self.validateparamid('id')(request, response, function() {
+                const entityid = request.params.id;
+                self.validatebodyid('userid')(request, response, async function() {
+                    const userid = request.body.userid;
+                    if (!userid) return response.status(400).json({error: 'Target userid is missing' });
+                    const collection = self.db(tablename);
+                    const entity = await collection.findOne(entityid);
+                    if (!entity) return response.status(404).json({error: 'Entity not found' });
+                    if (entity._ownerid !== request.user._id.toString()) {
+                        return response.status(403).json({ error: 'Only the entity owner can do this' });
+                    }
+                    const entityToWrite = {
+                        _writableby: entity._writableby ? entity._writableby : []
+                    }
+                    const index = entityToWrite._writableby.indexOf(userid);
+                    if (index >= 0) entityToWrite._writableby.splice(index, 1);
+                    await collection.update(entityid, { $set: entityToWrite });
+                    response.status(200).send();
+                });
+            });
+        });
 
     }
 
