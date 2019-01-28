@@ -33,6 +33,7 @@ class Server {
         this.app.get('/api/arrange/listusers', this.listusers.bind(this));
         this.app.post('/api/arrange/login', this.login.bind(this));
         this.app.post('/api/arrange/register', this.register.bind(this));
+        this.app.post('/api/arrange/removereadableby/:table/:id', this.removereadableby.bind(this));
         this.app.post('/api/arrange/save/:table', this.save.bind(this));
         this.app.post('/api/arrange/setpassword', this.setpassword.bind(this));
         this.app.post('/api/arrange/transferownership/:table/:entityid/:userid', this.transferownership.bind(this));
@@ -64,7 +65,7 @@ class Server {
                     }
                     if (entityToWrite._readableby.indexOf(userid) < 0) entityToWrite._readableby.push(userid);
                     await collection.update(entityid, { $set: entityToWrite });
-                    response.status(200).json(entity);
+                    response.status(200).send();
                 });
             });
         });
@@ -233,7 +234,32 @@ class Server {
     /**
      * API zum Entfernen von Leseberechtigungen
      */
-    async removereadableby(request, response) {
+    removereadableby(request, response) {
+        const self = this;
+        self.auth(request, response, function() {
+            const tablename = request.params.table;
+            if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
+            self.validateparamid('id')(request, response, function() {
+                const entityid = request.params.id;
+                self.validatebodyid('userid')(request, response, async function() {
+                    const userid = request.body.userid;
+                    if (!userid) return response.status(400).json({error: 'Target userid is missing' });
+                    const collection = self.db(tablename);
+                    const entity = await collection.findOne(entityid);
+                    if (!entity) return response.status(404).json({error: 'Entity not found' });
+                    if (entity._ownerid !== request.user._id.toString()) {
+                        return response.status(403).json({ error: 'Only the entity owner can do this' });
+                    }
+                    const entityToWrite = {
+                        _readableby: entity._readableby ? entity._readableby : []
+                    }
+                    const index = entityToWrite._readableby.indexOf(userid);
+                    if (index >= 0) entityToWrite._readableby.splice(index, 1);
+                    await collection.update(entityid, { $set: entityToWrite });
+                    response.status(200).send();
+                });
+            });
+        });
 
     }
 
