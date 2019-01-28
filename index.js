@@ -30,7 +30,7 @@ class Server {
         // APIs registrieren
         this.app.post('/api/arrange/addreadableby/:table/:id', this.addreadableby.bind(this));
         this.app.post('/api/arrange/addwritableby/:table/:id', this.addwritableby.bind(this));
-        this.app.get('/api/arrange/details/:table/:id', this.details.bind(this));
+        this.app.post('/api/arrange/details/:table/:id', this.details.bind(this));
         this.app.get('/api/arrange/listusers', this.listusers.bind(this));
         this.app.post('/api/arrange/login', this.login.bind(this));
         this.app.post('/api/arrange/register', this.register.bind(this));
@@ -193,9 +193,15 @@ class Server {
         self.canread('table', 'id')(request, response, async function() {
             const tablename = request.params.table;
             if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
+            const filter = request.body;
             const collection = self.db(tablename);
-            const entity = await collection.findOne(request.params.id);
-            response.status(200).json(entity);
+            try {
+                const entity = await collection.findOne(request.params.id, filter);
+                response.status(200).json(entity);
+            } catch(ex) {
+                // Filter is errornous
+                response.status(400).json({ error: 'Filter is invalid' });
+            }
         });
     }
 

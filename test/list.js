@@ -15,4 +15,13 @@ describe('API list', function() {
     xit('Responds only ids of entities where the user has read access (owner, readableby, publiclyreadable)', async function() {
     });
 
+    xit('Responds ids of all entities when filter not given', async function() {
+    });
+
+    xit('Responds ids of all entities when filter is an empty object', async function() {
+    });
+
+    xit('Responds ids only of objects matching the given filter', async function() {
+    });
+
 });
