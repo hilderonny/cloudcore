@@ -33,6 +33,7 @@ node index.js
 
 |Version|Content|
 |---|---|
+|1.1.1|Newly created objects have the currently logged in user as owner|
 |1.1.0|Implemented several APIs for first productive use including full tests|
 |1.0.3|request.user._id is now a string for compatibility|
 |1.0.2|Added APIs for user login and registration and authentication middleware|

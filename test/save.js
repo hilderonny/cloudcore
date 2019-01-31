@@ -61,7 +61,7 @@ describe('API save', function() {
         const entity = await test.server.db('testsave').findOne(entityid);
         assert.ok(entity);
         assert.strictEqual(entity.key, 'newkey');
-        assert.notStrictEqual(entity._ownerid, user1._id);
+        assert.strictEqual(entity._ownerid, user1._id);
     });
 
     it('Returns 404 when _id is set but there is no entity with this id in the target table', async function() {

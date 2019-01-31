@@ -375,6 +375,7 @@ class Server {
                 dataToDatabase[key] = data[key];
             });
             if (!_id) { // Create
+                dataToDatabase._ownerid = request.user._id.toString(); // Assign the object to the current user as owner
                 const createdEntity = await collection.insert(dataToDatabase);
                 response.json({ _id: createdEntity._id.toString() });
             } else { // Update
