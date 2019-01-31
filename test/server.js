@@ -20,7 +20,7 @@ describe('Server instanziation', function() {
         const server = new arrange.Server(port, 'unknownhost/unknowndatabase', 'testtokensecret');
         server.db('users').find();
         await new Promise(function(resolve) {
-            let count = 50;
+            let count = 200;
             const interval = setInterval(function() {
                 if (!mongoErrorFound && count > 0) {
                     count--;

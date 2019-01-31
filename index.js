@@ -28,10 +28,84 @@ class Server {
         // Einbindung in HTML-Seite mit <script src="/arrange/arrange.js"></script>
         this.app.use('/arrange', express.static(__dirname + '/client'));
         // APIs registrieren
-        this.app.get('/api/arrange/listusers', this.auth.bind(this), this.listusers.bind(this));
+        this.app.post('/api/arrange/addreadableby/:table/:id', this.addreadableby.bind(this));
+        this.app.post('/api/arrange/addwritableby/:table/:id', this.addwritableby.bind(this));
+        this.app.post('/api/arrange/details/:table/:id', this.details.bind(this));
+        this.app.post('/api/arrange/list/:table', this.list.bind(this));
+        this.app.get('/api/arrange/listusers', this.listusers.bind(this));
         this.app.post('/api/arrange/login', this.login.bind(this));
         this.app.post('/api/arrange/register', this.register.bind(this));
-        this.app.post('/api/arrange/setpassword', this.auth.bind(this), this.setpassword.bind(this));
+        this.app.post('/api/arrange/removereadableby/:table/:id', this.removereadableby.bind(this));
+        this.app.post('/api/arrange/removewritableby/:table/:id', this.removewritableby.bind(this));
+        this.app.post('/api/arrange/save/:table', this.save.bind(this));
+        this.app.post('/api/arrange/setpassword', this.setpassword.bind(this));
+        this.app.post('/api/arrange/setpubliclyreadable/:table/:id/:value', this.setpubliclyreadable.bind(this));
+        this.app.post('/api/arrange/setpubliclywritable/:table/:id/:value', this.setpubliclywritable.bind(this));
+        this.app.post('/api/arrange/transferownership/:table/:entityid/:userid', this.transferownership.bind(this));
+    }
+
+    /**
+     * API zum Zufügen von Leseberechtigungen
+     */
+    addreadableby(request, response) {
+        const self = this;
+        self.auth(request, response, function() {
+            const tablename = request.params.table;
+            if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
+            self.validateparamid('id')(request, response, function() {
+                const entityid = request.params.id;
+                self.validatebodyid('userid')(request, response, async function() {
+                    const userid = request.body.userid;
+                    if (!userid) return response.status(400).json({error: 'Target userid is missing' });
+                    const collection = self.db(tablename);
+                    const user = await self.db('users').findOne(userid);
+                    if (!user) return response.status(404).json({error: 'User not found' });
+                    const entity = await collection.findOne(entityid);
+                    if (!entity) return response.status(404).json({error: 'Entity not found' });
+                    if (entity._ownerid !== request.user._id.toString()) {
+                        return response.status(403).json({ error: 'Only the entity owner can do this' });
+                    }
+                    const entityToWrite = {
+                        _readableby: entity._readableby ? entity._readableby : []
+                    }
+                    if (entityToWrite._readableby.indexOf(userid) < 0) entityToWrite._readableby.push(userid);
+                    await collection.update(entityid, { $set: entityToWrite });
+                    response.status(200).send();
+                });
+            });
+        });
+    }
+
+    /**
+     * API zum Zufügen von Schreibberechtigungen
+     */
+    addwritableby(request, response) {
+        const self = this;
+        self.auth(request, response, function() {
+            const tablename = request.params.table;
+            if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
+            self.validateparamid('id')(request, response, function() {
+                const entityid = request.params.id;
+                self.validatebodyid('userid')(request, response, async function() {
+                    const userid = request.body.userid;
+                    if (!userid) return response.status(400).json({error: 'Target userid is missing' });
+                    const collection = self.db(tablename);
+                    const user = await self.db('users').findOne(userid);
+                    if (!user) return response.status(404).json({error: 'User not found' });
+                    const entity = await collection.findOne(entityid);
+                    if (!entity) return response.status(404).json({error: 'Entity not found' });
+                    if (entity._ownerid !== request.user._id.toString()) {
+                        return response.status(403).json({ error: 'Only the entity owner can do this' });
+                    }
+                    const entityToWrite = {
+                        _writableby: entity._writableby ? entity._writableby : []
+                    }
+                    if (entityToWrite._writableby.indexOf(userid) < 0) entityToWrite._writableby.push(userid);
+                    await collection.update(entityid, { $set: entityToWrite });
+                    response.status(200).send();
+                });
+            });
+        });
     }
 
     /**
@@ -56,15 +130,123 @@ class Server {
     }
 
     /**
+     * Middleware zum Prüfen, ob ein Datenbankobjekt vom angemeldeten Benutzer lesbar ist.
+     * Verwendung: arrangeInstance.app.get('/api/myapi/:tablename/:id', arrangeInstance.canread.bind(arrangeInstance)('tablename', 'id'), function(req, res) { ... });
+     */
+    canread(tablenameparam, entityidparam) {
+        const self = this;
+        return function(request, response, next) {
+            const tablename = request.params[tablenameparam];
+            if (!tablename) return response.status(400).json({error: 'Parameter ' + tablenameparam + ' is not given' });
+            self.auth(request, response, function() {
+                const userid = request.user._id;
+                self.validateparamid(entityidparam)(request, response, async function() {
+                    const id = request.params[entityidparam];
+                    const entity = await self.database.get(tablename).findOne(id, '_ownerid _publiclyreadable _readableby');
+                    if (!entity) return response.status(404).json({error: 'Entity not found' });
+                    if (entity._ownerid !== userid && !entity._publiclyreadable && (!entity._readableby || entity._readableby.indexOf(userid) < 0)) {
+                        return response.status(403).json({ error: 'Reading not allowed' });
+                    }
+                    next();
+                });
+            });
+        };
+    }
+
+    /**
+     * Middleware zum Prüfen, ob ein Datenbankobjekt vom angemeldeten Benutzer schreibbar ist.
+     * Im body muss _id enthalten sein, damit das geht.
+     * Verwendung: arrangeInstance.app.post('/api/myapi', arrangeInstance.canwrite.bind(arrangeInstance)('mytable'), function(req, res) { ... });
+     */
+    canwrite(tablenameparam) {
+        const self = this;
+        return function(request, response, next) {
+            const tablename = request.params[tablenameparam];
+            if (!tablename) return response.status(400).json({error: 'Parameter ' + tablenameparam + ' is not given' });
+            self.auth(request, response, function() {
+                self.validatebodyid('_id')(request, response, async function() {
+                    const id = request.body._id;
+                    if (!id) return next(); // Bei fehlender _id kann immer geschrieben werden. Das ist dann halt ein Anlegen eines Datensatzes.
+                    const userid = request.user._id.toString();
+                    const entity = await self.database.get(tablename).findOne(id, '_ownerid _publiclywritable _writableby');
+                    if (!entity) return response.status(404).json({error: 'Entity not found' });
+                    if (entity._ownerid !== userid && !entity._publiclywritable && (!entity._writableby || entity._writableby.indexOf(userid) < 0)) {
+                        return response.status(403).json({ error: 'Writing not allowed' });
+                    }
+                    next();
+                });
+            });
+        };
+    }
+
+    /**
      * Liefert Zugriff auf eine bestimmte Datenbanktabelle
      */
     db(collectionName) {
         return this.database.get(collectionName);
     }
 
-    async listusers(request, response) {
-        const users = await this.db('users').find({}, '_id username');
-        response.json(users);
+    /**
+     * Liefert Details über ein Objekt
+     */
+    details(request, response) {
+        const self = this;
+        self.canread('table', 'id')(request, response, async function() {
+            const tablename = request.params.table;
+            if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
+            const filter = request.body;
+            const collection = self.db(tablename);
+            try {
+                const entity = await collection.findOne(request.params.id, filter);
+                response.status(200).json(entity);
+            } catch(ex) {
+                // Filter is errornous
+                response.status(400).json({ error: 'Filter is invalid' });
+            }
+        });
+    }
+
+    /**
+     * API zum Auflisten aller Objekte eines Typs
+     */
+    list(request, response) {
+        const self = this;
+        self.auth(request, response, async function() {
+            const tablename = request.params.table;
+            if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
+            const collection = self.db(tablename);
+            try {
+                const userid = request.user._id;
+                const filter = {
+                    $and: [
+                        { $or: [
+                            { _ownerid: userid },
+                            { _publiclyreadable: true },
+                            { _readableby: userid }
+                        ] },
+                        request.body
+                    ]
+                };
+                const result = await collection.find(filter, '_id');
+                // Convert to simple list
+                const list = result.map(function(element) { return element._id; });
+                response.status(200).json(list);
+            } catch(ex) {
+                // Filter is errornous
+                response.status(400).json({ error: 'Filter is invalid' });
+            }
+        });
+    }
+
+    /**
+     * API zum Auflisten aller Benutzer mit _id und _username.
+     */
+    listusers(request, response) {
+        const self = this;
+        self.auth(request, response, async function() {
+            const users = await self.db('users').find({}, '_id username');
+            response.json(users);
+        });
     }
 
     /**
@@ -111,16 +293,159 @@ class Server {
     }
 
     /**
+     * API zum Entfernen von Leseberechtigungen
+     */
+    removereadableby(request, response) {
+        const self = this;
+        self.auth(request, response, function() {
+            const tablename = request.params.table;
+            if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
+            self.validateparamid('id')(request, response, function() {
+                const entityid = request.params.id;
+                self.validatebodyid('userid')(request, response, async function() {
+                    const userid = request.body.userid;
+                    if (!userid) return response.status(400).json({error: 'Target userid is missing' });
+                    const collection = self.db(tablename);
+                    const entity = await collection.findOne(entityid);
+                    if (!entity) return response.status(404).json({error: 'Entity not found' });
+                    if (entity._ownerid !== request.user._id.toString()) {
+                        return response.status(403).json({ error: 'Only the entity owner can do this' });
+                    }
+                    const entityToWrite = {
+                        _readableby: entity._readableby ? entity._readableby : []
+                    }
+                    const index = entityToWrite._readableby.indexOf(userid);
+                    if (index >= 0) entityToWrite._readableby.splice(index, 1);
+                    await collection.update(entityid, { $set: entityToWrite });
+                    response.status(200).send();
+                });
+            });
+        });
+    }
+
+    /**
+     * API zum Entfernen von Schreibberechtigungen
+     */
+    removewritableby(request, response) {
+        const self = this;
+        self.auth(request, response, function() {
+            const tablename = request.params.table;
+            if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
+            self.validateparamid('id')(request, response, function() {
+                const entityid = request.params.id;
+                self.validatebodyid('userid')(request, response, async function() {
+                    const userid = request.body.userid;
+                    if (!userid) return response.status(400).json({error: 'Target userid is missing' });
+                    const collection = self.db(tablename);
+                    const entity = await collection.findOne(entityid);
+                    if (!entity) return response.status(404).json({error: 'Entity not found' });
+                    if (entity._ownerid !== request.user._id.toString()) {
+                        return response.status(403).json({ error: 'Only the entity owner can do this' });
+                    }
+                    const entityToWrite = {
+                        _writableby: entity._writableby ? entity._writableby : []
+                    }
+                    const index = entityToWrite._writableby.indexOf(userid);
+                    if (index >= 0) entityToWrite._writableby.splice(index, 1);
+                    await collection.update(entityid, { $set: entityToWrite });
+                    response.status(200).send();
+                });
+            });
+        });
+
+    }
+
+    /**
+     * API zum Speichern und Erzeugen von Objekten.
+     * Erwartet als URL Parameter den Tabellennamen.
+     */
+    save(request, response) {
+        const self = this;
+        self.canwrite('table')(request, response, async function() {
+            const tablename = request.params.table;
+            if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
+            const collection = self.db(tablename);
+            const data = request.body;
+            const _id = data._id;
+            const keysToDatabase = Object.keys(data).filter(function(element) {
+                return ['_id', '_ownerid', '_publiclyreadable', '_publiclywritable', '_readableby', '_writableby'].indexOf(element) < 0;
+            });
+            const dataToDatabase = {};
+            keysToDatabase.forEach(function(key) {
+                dataToDatabase[key] = data[key];
+            });
+            if (!_id) { // Create
+                const createdEntity = await collection.insert(dataToDatabase);
+                response.json({ _id: createdEntity._id.toString() });
+            } else { // Update
+                await collection.update(_id, { $set: dataToDatabase });
+                response.json({ _id: _id });
+            }
+        });
+    }
+
+    /**
      * API für Passwortänderung.
      * Erwartet als Post-Parameter "password" (neues Passwort).
      * Danach ist alter Token ungültig.
      * Der Benutzer muss vorher angemeldet sein.
      */
-    async setpassword(request, response) {
-        if (!request.body.password) return response.status(400).json({ error: 'Password required' });
-        const user = request.user;
-        await this.db('users').update(user._id, { $set: { password: bcryptjs.hashSync(request.body.password) } });
-        response.status(200).send();
+    setpassword(request, response) {
+        const self = this;
+        self.auth(request, response, async function() {
+            if (!request.body.password) return response.status(400).json({ error: 'Password required' });
+            const user = request.user;
+            await self.db('users').update(user._id, { $set: { password: bcryptjs.hashSync(request.body.password) } });
+            response.status(200).send();
+        });
+    }
+
+    /**
+     * API zum Fsetlegen von öffentlichen Lesebrechtigungen
+     */
+    setpubliclyreadable(request, response) {
+        const self = this;
+        self.auth(request, response, function() {
+            const tablename = request.params.table;
+            if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
+            self.validateparamid('id')(request, response, async function() {
+                const entityid = request.params.id;
+                const value = request.params.value;
+                if (value !== 'false' && value !== 'true') return response.status(400).json({ error: 'Invalid value' });
+                const collection = self.db(tablename);
+                const entity = await collection.findOne(entityid);
+                if (!entity) return response.status(404).json({error: 'Entity not found' });
+                if (entity._ownerid !== request.user._id.toString()) {
+                    return response.status(403).json({ error: 'Only the entity owner can do this' });
+                }
+                await collection.update(entityid, { $set: { _publiclyreadable: value === 'true' ? true : false } });
+                response.status(200).send();
+            });
+        });
+    }
+
+    /**
+     * API zum Fsetlegen von öffentlichen Schreibbrechtigungen
+     */
+    setpubliclywritable(request, response) {
+        const self = this;
+        self.auth(request, response, function() {
+            const tablename = request.params.table;
+            if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
+            self.validateparamid('id')(request, response, async function() {
+                const entityid = request.params.id;
+                const value = request.params.value;
+                if (value !== 'false' && value !== 'true') return response.status(400).json({ error: 'Invalid value' });
+                    const collection = self.db(tablename);
+                const entity = await collection.findOne(entityid);
+                if (!entity) return response.status(404).json({error: 'Entity not found' });
+                if (entity._ownerid !== request.user._id.toString()) {
+                    return response.status(403).json({ error: 'Only the entity owner can do this' });
+                }
+                await collection.update(entityid, { $set: { _publiclywritable: value === 'true' ? true : false } });
+                response.status(200).send();
+            });
+        });
     }
 
     /**
@@ -133,6 +458,66 @@ class Server {
         this.server.listen(port, function () {
             console.log('Arrange server running at port ' + port);
         });
+    }
+
+    /**
+     * Übergibt den Beistz eines Objektes an einen anderen Benutzer. Der ursprüngliche Besitzer
+     * hat danach immernoch Lese- und Schreibrechte.
+     */
+    transferownership(request, response) {
+        const self = this;
+        self.auth(request, response, function() {
+            self.validateparamid('entityid')(request, response, function() {
+                self.validateparamid('userid')(request, response, async function() {
+                    const tablename = request.params.table;
+                    if (tablename === 'users') return response.status(400).send();
+                    const userid = request.user._id.toString();
+                    const targetuserid = request.params.userid;
+                    const targetuser = await self.db('users').findOne(targetuserid, '_id');
+                    if (!targetuser) return response.status(404).json({ error: 'User not found' });
+                    const entityid = request.params.entityid;
+                    const entity = await self.db(tablename).findOne(entityid, '_ownerid _readableby _writableby');
+                    if (!entity) return response.status(404).json({ error: 'Entity not found' });
+                    if (entity._ownerid.toString() !== userid) return response.status(403).send();
+                    delete entity._id;
+                    entity._ownerid = targetuserid;
+                    if (!entity._readableby) entity._readableby = [];
+                    entity._readableby.push(userid);
+                    if (!entity._writableby) entity._writableby = [];
+                    entity._writableby.push(userid);
+                    await self.db(tablename).update(entityid, { $set: entity });
+                    response.status(200).send();
+                });
+            });
+        });
+    }
+
+    /**
+     * Middleware zum Prüfen, ob das _id Attribut im Body eine valide
+     * MongoDB-ID darstellt (24 Zeichen lang). Wenn keine _id enthalten ist,
+     * wird es als valide anerkannt. Verwendung:
+     * arrangeInstance.app.post('/api/myapi/', arrangeInstance.validatebodyid('_id'), function(req, res) { ... });
+     */
+    validatebodyid(attributename) {
+        return function(request, response, next) {
+            const id = request.body[attributename];
+            if (id && id.length !== 24) return response.status(400).json({error: attributename + ' is no valid id' });
+            next();
+        }
+    }
+
+    /**
+     * Middleware zum Prüfen, ob ein bestimmter request-Parameter eine korrekte
+     * MongoDB-ID darstellt (24 Zeichen lang). Verwendung:
+     * arrangeInstance.app.post('/api/myapi/:param1', arrangeInstance.validateparamid('param1'), function(req, res) { ... });
+     */
+    validateparamid(parametername) {
+        return function(request, response, next) {
+            const param = request.params[parametername];
+            if (!param) return response.status(400).json({error: 'Parameter ' + parametername + ' is not given' });
+            if (param.length !== 24) return response.status(400).json({error: 'Parameter ' + parametername + ' is no valid id' });
+            next();
+        }
     }
 
 }
