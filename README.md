@@ -33,6 +33,7 @@ node index.js
 
 |Version|Content|
 |---|---|
+|1.2.0|Added delete API|
 |1.1.2|list and details API now return only publicly visible entities when user is not logged in|
 |1.1.1|Newly created objects have the currently logged in user as owner|
 |1.1.0|Implemented several APIs for first productive use including full tests|

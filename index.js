@@ -30,6 +30,7 @@ class Server {
         // APIs registrieren
         this.app.post('/api/arrange/addreadableby/:table/:id', this.addreadableby.bind(this));
         this.app.post('/api/arrange/addwritableby/:table/:id', this.addwritableby.bind(this));
+        this.app.delete('/api/arrange/delete/:table/:id', this.delete.bind(this));
         this.app.post('/api/arrange/details/:table/:id', this.details.bind(this));
         this.app.post('/api/arrange/list/:table', this.list.bind(this));
         this.app.get('/api/arrange/listusers', this.listusers.bind(this));
@@ -184,6 +185,25 @@ class Server {
      */
     db(collectionName) {
         return this.database.get(collectionName);
+    }
+
+    /**
+     * Löscht ein Objekt
+     */
+    delete(request, response) {
+        const self = this;
+        self.auth(request, response, function() {
+            const tablename = request.params.table;
+            if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
+            self.validateparamid('id')(request, response, async function() {
+                const collection = self.db(tablename);
+                const entity = await collection.findOne(request.params.id, '_id _ownerid');
+                if (!entity) return response.status(404).json({error: 'Entity not found' });
+                if (entity._ownerid !== request.user._id) return response.status(403).json({error: 'Only the owner can delete the entity' });
+                await collection.remove(request.params.id);
+                response.status(200).send();
+            });
+        });
     }
 
     /**
