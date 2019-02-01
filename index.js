@@ -191,19 +191,31 @@ class Server {
      */
     details(request, response) {
         const self = this;
-        self.canread('table', 'id')(request, response, async function() {
+        async function callback(publiconly) {
             const tablename = request.params.table;
             if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
-            const filter = request.body;
+            const query = publiconly ? {
+                $and: [
+                    { _publiclyreadable: true },
+                    { _id: request.params.id }
+                ]
+            } : request.params.id;
+            const resultfilter = request.body;
             const collection = self.db(tablename);
             try {
-                const entity = await collection.findOne(request.params.id, filter);
+                const entity = await collection.findOne(query, resultfilter);
+                if (!entity) return response.status(404).json({error: 'Entity not found' });
                 response.status(200).json(entity);
             } catch(ex) {
                 // Filter is errornous
                 response.status(400).json({ error: 'Filter is invalid' });
             }
-        });
+        };
+        if (request.header('x-access-token')) { // Try authentication only when token was sent
+            self.canread('table', 'id')(request, response, callback);
+        } else {
+            callback(true);
+        }
     }
 
     /**
@@ -211,19 +223,20 @@ class Server {
      */
     list(request, response) {
         const self = this;
-        self.auth(request, response, async function() {
+        async function callback() {
             const tablename = request.params.table;
             if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
             const collection = self.db(tablename);
             try {
+                const orPart = [ { _publiclyreadable: true } ];
                 const userid = request.user._id;
+                if (userid) {
+                    orPart.push({ _ownerid: userid });
+                    orPart.push({ _readableby: userid });
+                }
                 const filter = {
                     $and: [
-                        { $or: [
-                            { _ownerid: userid },
-                            { _publiclyreadable: true },
-                            { _readableby: userid }
-                        ] },
+                        { $or: orPart },
                         request.body
                     ]
                 };
@@ -235,7 +248,13 @@ class Server {
                 // Filter is errornous
                 response.status(400).json({ error: 'Filter is invalid' });
             }
-        });
+        }
+        if (request.header('x-access-token')) { // Try authentication only when token was sent
+            self.auth(request, response, callback);
+        } else {
+            request.user = {};
+            callback();
+        }
     }
 
     /**

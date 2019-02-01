@@ -13,9 +13,16 @@ describe('API list', function() {
         await test.server.db('testlist').insert({ attribute1: 'value13', attribute2: 'value2', _ownerid: user2id });
     });
 
-    it('Responds with 401 when not logged in', async function() {
+    it('Responds with list containing only publicly readable entities when not logged in', async function() {
+        const user2id = (await test.server.db('users').findOne({ username: 'username2' }, '_id'))._id.toString();
+        const e1id = (await test.server.db('testlist').insert({ attribute1: 'pr1', attribute2: 'value2', _ownerid: user2id, _publiclyreadable: true }))._id.toString();
+        const e2id = (await test.server.db('testlist').insert({ attribute1: 'pr2', attribute2: 'value2', _ownerid: user2id, _publiclyreadable: true }))._id.toString();
         const response = await test.post('/api/arrange/list/testlist', undefined);
-        assert.strictEqual(response.status, 401);
+        assert.strictEqual(response.status, 200);
+        const list = response.body;
+        assert.strictEqual(list.length, 2);
+        assert.ok(list.indexOf(e1id) >= 0);
+        assert.ok(list.indexOf(e2id) >= 0);
     });
 
     it('Responds with 403 when trying to access users table', async function() {

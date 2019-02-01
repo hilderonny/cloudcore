@@ -11,10 +11,10 @@ describe('API details', function() {
         await test.server.db('testdetails').insert({ key: 'testdata', attribute1: 'value1', _ownerid: user1id });
     });
 
-    it('Responds with error 401 when not logged in', async function() {
+    it('Responds with error 404 when not logged in and entity is not publicly readable', async function() {
         const entityid = (await test.server.db('testdetails').findOne({ key: 'testdata' }, '_id'))._id.toString();
         const response = await test.post('/api/arrange/details/testdetails/' + entityid, undefined);
-        assert.strictEqual(response.status, 401);
+        assert.strictEqual(response.status, 404);
     });
 
     it('Responds with error 400 when id is not valid', async function() {
@@ -55,7 +55,14 @@ describe('API details', function() {
         assert.strictEqual(response.status, 200);
     });
 
-    it('Returns 200 when the object is publiclyreadable', async function() {
+    it('Responds with entity when not logged in and entity is publicly readable', async function() {
+        const entityid = (await test.server.db('testdetails').findOne({ key: 'testdata' }, '_id'))._id.toString();
+        await test.server.db('testdetails').update(entityid, { $set: { _publiclyreadable: true }} );
+        const response = await test.post('/api/arrange/details/testdetails/' + entityid, undefined);
+        assert.strictEqual(response.status, 200);
+    });
+
+    it('Returns 200 when the user is logged in and the object is publiclyreadable', async function() {
         const user2 = (await test.post('/api/arrange/login', { username: 'username2', password: 'password2' })).body;
         const entityid = (await test.server.db('testdetails').findOne({ key: 'testdata' }, '_id'))._id.toString();
         await test.server.db('testdetails').update(entityid, { $set : { _publiclyreadable: true }});
