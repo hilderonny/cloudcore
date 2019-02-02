@@ -30,10 +30,21 @@ let $arr = {
         request: async function(mode, url, data) {
             return new Promise(function(resolve) {
                 var xmlhttp = new XMLHttpRequest();
-                xmlhttp.onreadystatechange = function() {
+                xmlhttp.onreadystatechange = async function() {
                     if (this.readyState == 4) {
                         const result = this.responseText ? JSON.parse(this.responseText) : undefined;
-                        resolve(result);
+                        // Token expired, relogin and try again
+                        if (this.status === 401 && result.error === 'Token cannot be validated') {
+                            const loggedin = await $arr.login($arr.currentuser.username, $arr.currentuser.password);
+                            if (loggedin) {
+                                const result2 = await $arr.helper.request(mode, url, data);
+                                resolve(result2);
+                            } else {
+                                resolve(undefined); // Read failed again even after relogin
+                            }
+                        } else {
+                            resolve(result);
+                        }
                     }
                 };
                 xmlhttp.open(mode, url);
