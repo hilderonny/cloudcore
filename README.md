@@ -29,6 +29,25 @@ Run the server with
 node index.js
 ```
 
+In the client HTML file of your project include arrange in this way.
+
+```html
+<html>
+    <head>
+        <script src="/arrange/arrange.js"></script>
+        <script>
+            // Now you can access arrange functions via the $arr object
+            window.addEventListener('load', async function() {
+                // Login to arrange
+                await $arr.login('myusername', 'password');
+                // Fetch a list of all entities of the "models" table
+                let modellist = await $arr.list('models');
+            });
+        </script>
+    </head>
+</html>
+```
+
 ## Releases
 
 |Version|Content|
