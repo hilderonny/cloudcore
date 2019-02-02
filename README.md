@@ -38,10 +38,13 @@ In the client HTML file of your project include arrange in this way.
         <script>
             // Now you can access arrange functions via the $arr object
             window.addEventListener('load', async function() {
+                // Create arrange instance connected to the local server
+                // To connect to a different server, use const arr = Arrange('https://mydomain.com')
+                const arr = Arrange();
                 // Login to arrange
-                await $arr.login('myusername', 'password');
+                await arr.login('myusername', 'password');
                 // Fetch a list of all entities of the "models" table
-                let modellist = await $arr.list('models');
+                let modellist = await arr.list('models');
             });
         </script>
     </head>
