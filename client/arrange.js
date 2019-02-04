@@ -7,19 +7,19 @@ function Arrange(baseurl = '') {
         token: undefined
     }
 
-    async function _delete(url) {
+    async function _del(url) {
         return _request('DELETE', url);
     }
     async function _get(url) {
         return _request('GET', url);
     }
     function _handleloginregister(username, password, response) {
-        if (response.status === 200) {
+        if (response) {
             _currentuser.password = password;
             _currentuser.username = username;
-            _currentuser._id = response.body._id;
-            _currentuser.token = response.body.token;
-            return true;
+            _currentuser._id = response._id;
+            _currentuser.token = response.token;
+            return response;
         }
         return false;
     }
@@ -27,7 +27,6 @@ function Arrange(baseurl = '') {
         return _request('POST', url, data);
     }
     async function _request(mode, url, data) {
-        const self = this;
         return new Promise(function(resolve) {
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = async function() {
@@ -48,8 +47,8 @@ function Arrange(baseurl = '') {
                 }
             };
             xmlhttp.open(mode, baseurl + url);
-            if (token) {
-                xmlhttp.setRequestHeader('x-access-token', token);
+            if (_currentuser.token) {
+                xmlhttp.setRequestHeader('x-access-token', _currentuser.token);
             }
             if (mode === 'POST' && data) {
                 xmlhttp.setRequestHeader('Content-Type', 'application/json');
@@ -67,7 +66,7 @@ function Arrange(baseurl = '') {
         return _post('/api/arrange/addwritableby/' + tablename + '/' + entityid, { userid: userid });
     }
     async function _delete(tablename, entityid) {
-        return _delete('/api/arrange/delete/' + tablename + '/' + entityid);
+        return _del('/api/arrange/delete/' + tablename + '/' + entityid);
     }
     async function _details(tablename, entityid, attributefilter) {
         return _post('/api/arrange/details/' + tablename + '/' + entityid, attributefilter);
