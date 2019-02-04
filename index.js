@@ -247,6 +247,7 @@ class Server {
             const tablename = request.params.table;
             if (tablename === 'users') return response.status(403).json({ error: 'Access to users table forbidden' });
             const collection = self.db(tablename);
+            if (!request.body || (!request.body.query && !request.body.result)) return response.status(400).json({ error: 'No filters sent' });
             try {
                 const orPart = [ { _publiclyreadable: true } ];
                 const userid = request.user._id;
@@ -254,16 +255,14 @@ class Server {
                     orPart.push({ _ownerid: userid });
                     orPart.push({ _readableby: userid });
                 }
-                const filter = {
+                const queryfilter = {
                     $and: [
                         { $or: orPart },
-                        request.body
+                        request.body.query ? request.body.query : { }
                     ]
                 };
-                const result = await collection.find(filter, '_id');
-                // Convert to simple list
-                const list = result.map(function(element) { return element._id; });
-                response.status(200).json(list);
+                const result = await collection.find(queryfilter, request.body.result);
+                response.status(200).json(result);
             } catch(ex) {
                 // Filter is errornous
                 response.status(400).json({ error: 'Filter is invalid' });

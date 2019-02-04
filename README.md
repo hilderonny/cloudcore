@@ -51,10 +51,13 @@ In the client HTML file of your project include arrange in this way.
 </html>
 ```
 
+The API definition and usage examples can be found [here](client/README.md).
+
 ## Releases
 
 |Version|Content|
 |---|---|
+|1.3.0|List API now supports result filters. Added client library documentation [here](client/README.md)|
 |1.2.0|Added delete API|
 |1.1.2|list and details API now return only publicly visible entities when user is not logged in|
 |1.1.1|Newly created objects have the currently logged in user as owner|
