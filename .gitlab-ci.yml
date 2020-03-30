@@ -6,7 +6,7 @@ stages:
 test:
   stage: test
   variables:
-    DB_URL: "mongodb://mongo/arrangetest"
+    DB_URL: "mongodb://mongo/cloudcoretest"
   services:
     - mongo:latest
   script:

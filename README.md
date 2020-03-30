@@ -1,20 +1,20 @@
-# arrange
+# cloudcore
 
-[![pipeline status](https://gitlab.com/hilderonny/arrange/badges/master/pipeline.svg)](https://gitlab.com/hilderonny/arrange/commits/master)
-[![coverage report](https://gitlab.com/hilderonny/arrange/badges/master/coverage.svg)](https://gitlab.com/hilderonny/arrange/commits/master)
+[![pipeline status](https://gitlab.com/hilderonny/cloudcore/badges/master/pipeline.svg)](https://gitlab.com/hilderonny/cloudcore/commits/master)
+[![coverage report](https://gitlab.com/hilderonny/cloudcore/badges/master/coverage.svg)](https://gitlab.com/hilderonny/cloudcore/commits/master)
 
 ## Usage
 
 Installation is done in that way.
 
 ```
-npm i --save @hilderonny/arrange
+npm i --save @hilderonny/cloudcore
 ```
 
 Create an ```index.js``` file with the following content.
 
 ```js
-const arrange = require('@hilderonny/arrange');
+const arrange = require('@hilderonny/cloudcore');
 const server = new arrange.Server(
     process.env.PORT || 8080, 
     process.env.DBURL || '127.0.0.1:27017/mydatabase',
