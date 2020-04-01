@@ -14,4 +14,4 @@ https://www.postgresql.org/download/linux/ubuntu/
 
 ## Erster Start
 
-Derzeit gibt es nur eine API für Tabellen, und die ist unter http://localhost:8080/api/table erreichbar.
+Zum Vorbereiten der Datenbank muss `node install.js` aufgerufen werden. Das legt die notwendigen Tabellen and und erzeugt eine Hallo-Welt-View.

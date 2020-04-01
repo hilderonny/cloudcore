@@ -1,20 +1,16 @@
 var pg = require('pg');
 
-var isConnected = false;
-var client = new pg.Client();
-client.on('end', () => isConnected = false);
-
 module.exports = async (req, _, next) => {
-    if (!isConnected) {
-        await client.connect();
-        isConnected = true;
-    }
     req.db = {
-        query: async q => {
+        query: async (q, p) => {
+            var client = new pg.Client();
+            await client.connect();
             try {
-                return await client.query(q);
+                return await client.query(q, p);
             } catch (ex) {
                 return { error: ex };
+            } finally {
+                await client.end();
             }
         }
     };

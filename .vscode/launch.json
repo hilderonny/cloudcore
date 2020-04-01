@@ -28,8 +28,8 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Normal starten",
-            "program": "${workspaceFolder}/server.js",
+            "name": "Installieren",
+            "program": "${workspaceFolder}/install.js",
             "env": {
                 "PORT" : "8080",
                 "PGHOST": "192.168.178.41",

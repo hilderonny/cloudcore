@@ -16,6 +16,7 @@ Daten aus bestimmten Tabellen auslesen und reinschreiben.
 
 Dynamische serverseitige Router, die in der Datenbank liegen.
 Dazu muss die Tabelle `router` existieren, die in der Spalte `code` den JS-Code des Routers enthält.
+In der Spalte `name` muss der Name des Routers (`routername`) enthalten sein.
 Ist so ähnlich wie Apex-Klassen mit zugewiesenen Endpoints in Salesforce.
 
 ## /api/schema/columns
@@ -42,3 +43,4 @@ Dient zum Manipulieren von Tabellen.
 
 Sowas wie statische Ressourcen, die in der Datenbank liegen.
 Kommt aus Tabelle `views` und liefert den `content` mit dem richtigen `contenttype` aus.
+In der Spalte `name` muss der Name der View (`viewname`) enthalten sein.
