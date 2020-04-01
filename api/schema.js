@@ -1,12 +1,13 @@
 var router = require('express').Router();
-var { Client } = require('pg');
 
-router.get('/', async (req, res, next) => {
-    var client = new Client();
-    await client.connect();
-    var now = await client.query('SELECT NOW()');
-    await client.end();
-    res.send('Hello World! ' + JSON.stringify(now));
+router.get('/', async (req, res, _) => {
+    var result = await req.db.query('SELECT * FROM pg_catalog.pg_tables');
+    res.json(result);
+});
+
+router.get('/tables', async (req, res, _) => {
+    var result = await req.db.query("SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';");
+    res.json(result);
 });
 
 module.exports = router;
