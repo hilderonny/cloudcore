@@ -10,7 +10,12 @@
             "name": "Programm starten",
             "program": "${workspaceFolder}/index.js",
             "env": {
-                "PORT" : "8080"
+                "PORT" : "8080",
+                "PGHOST": "192.168.178.41",
+                "PGUSER": "postgres",
+                "PGPASSWORD": "postgres",
+                "PGDATABASE": "postgres",
+                "PGPORT": "5432"
             }
         }
     ]
