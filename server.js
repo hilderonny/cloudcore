@@ -12,7 +12,9 @@ app.use(db);
 
 // APIs einbinden
 fs.readdirSync(__dirname + '/api').forEach(apifile => {
-    var apiname = apifile.split('.')[0];
+    var fileparts = apifile.split('.');
+    if (fileparts[fileparts.length - 1] !== 'js') return;
+    var apiname = fileparts[0];
     app.use('/api/' + apiname, require('./api/' + apiname));
 });
 

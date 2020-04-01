@@ -9,6 +9,14 @@ module.exports = async (req, _, next) => {
         await client.connect();
         isConnected = true;
     }
-    req.db = client;
+    req.db = {
+        query: async q => {
+            try {
+                return await client.query(q);
+            } catch (ex) {
+                return { error: ex };
+            }
+        }
+    };
     next();
 };
