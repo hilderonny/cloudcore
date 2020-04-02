@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="test.js"></script>
+        <link rel="stylesheet" href="base.css" />
+        <script src="/vue/vue.min.js"></script>
+        <script src="/monaco-editor/min/vs/loader.js"></script>
+        <script defer src="views.js"></script>
     </head>
     <body>
-        Voll der INDEX, ey!
-        <a href="lightning.html">Lightning</a>
+        <div class="root" id="app">
+            <ul>
+                <li v-for="view in views" :key="view.id" v-on:click="loadView(view);">{{ view.url }}</li>
+            </ul>
+            <div class="details" id="editor"></div>
+        </div>
     </body>
 </html>

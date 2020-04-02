@@ -1,7 +1,17 @@
 var router = require('express').Router();
 
-router.get('/list/:tablename/:filter', async (req, res) => {
-    var result = await req.db.query("SELECT * FROM " + req.params.tablename + " " + req.params.filter + ";");
+router.get('/list/:tablename', async (req, res) => {
+    var result = await req.db.query(`SELECT * FROM ${req.params.tablename};`);
+    res.json(result.error || result.rows);
+});
+
+router.get('/list/:tablename/:columns', async (req, res) => {
+    var result = await req.db.query(`SELECT ${req.params.columns} FROM ${req.params.tablename};`);
+    res.json(result.error || result.rows);
+});
+
+router.get('/list/:tablename/:columns/:filter', async (req, res) => {
+    var result = await req.db.query(`SELECT ${req.params.columns} FROM ${req.params.tablename} ${req.params.filter};`);
     res.json(result.error || result.rows);
 });
 

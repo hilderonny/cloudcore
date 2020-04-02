@@ -7,6 +7,20 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Normal starten",
+            "program": "${workspaceFolder}/server.js",
+            "env": {
+                "PORT" : "8080",
+                "PGHOST": "192.168.178.41",
+                "PGUSER": "cloudcore",
+                "PGPASSWORD": "cloudcore",
+                "PGDATABASE": "cloudcore",
+                "PGPORT": "5432"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Beim Speichern neu starten",
             "program": "${workspaceFolder}/server.js",
             "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",
@@ -38,6 +52,6 @@
                 "PGDATABASE": "cloudcore",
                 "PGPORT": "5432"
             }
-        }
+        },
     ]
 }

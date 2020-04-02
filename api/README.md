@@ -6,7 +6,9 @@ Daten aus bestimmten Tabellen auslesen und reinschreiben.
 
 | Methode | Endpunkt | Bedeutung |
 |---|---|---|
-| GET | /list/:tablename/:filter | Alle Einträge der Tabelle `tablename` auflisten. Dabei kann `filter` einen Filter oder eine Sortierung in SQL Syntax darstellen, z.B. "WHERE x=y ORDER BY z" |
+| GET | /list/:tablename | Alle Einträge der Tabelle `tablename` auflisten. |
+| GET | /list/:tablename/:columns | Alle Einträge der Tabelle `tablename` auflisten. `columns` kann "*" oder eine kommaseparierte Liste von Spaltennamen sein, z.B. "id,url". |
+| GET | /list/:tablename/:columns/:filter | Alle Einträge der Tabelle `tablename` auflisten. Dabei kann `filter` einen Filter oder eine Sortierung in SQL Syntax darstellen, z.B. "WHERE x=y ORDER BY z". `columns` kann "*" oder eine kommaseparierte Liste von Spaltennamen sein, z.B. "id,url". |
 | GET | /:tablename/:id | Einen Eintrag mit der gegebenen `id` zurück liefern |
 | POST | /:tablename | Neues Element in Tabelle `tablename` anlegen. Im JSON-Body muss dabei der Datensatz enthalten sein. |
 | PUT | /:tablename/:id | Element in Tabelle `tablename` überschreiben. Im JSON-Body muss dabei der Datensatz enthalten sein. Es werden nur die Spalten überschrieben, die im Datensatz enthalten sind. |
