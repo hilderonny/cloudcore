@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CloudCore - Columns</title>
+        <script>
+            var tablename;
+
+            async function deletecolumn(columnname) {
+                if (!confirm('Really delete column "' + columnname + '"?')) return;
+                await fetch('/api/schema/columns/' + tablename + '/' + columnname, { method: 'DELETE' });
+                loadcolumns();
+            }
+
+            async function loadcolumns() {
+                var columns = await (await fetch('/api/schema/columns/' + tablename)).json();
+                var tbody = document.querySelector('tbody');
+                tbody.innerHTML = '';
+                for (var column of columns) {
+                    if (column.table_schema !== 'public') continue;
+                    var tr = document.createElement('tr');
+                    tr.innerHTML = '<td>' + column.column_name + '</td><td>' + column.data_type + '</td>';
+                    var td = document.createElement('td');
+                    tr.appendChild(td);
+                    var deletebutton = document.createElement('button');
+                    deletebutton.innerHTML = 'Delete';
+                    deletebutton.column = column;
+                    deletebutton.onclick = function() { deletecolumn(this.column.column_name); };
+                    td.appendChild(deletebutton);
+                    tbody.appendChild(tr);
+                }
+            }
+
+            window.addEventListener('load', () => {
+                tablename = location.search.substring(1);
+                document.querySelector('a').href = 'createcolumn.html' + location.search;
+                loadcolumns();
+            });
+        </script>
+    </head>
+    <body>
+        <div>
+            <a>New Column</a>
+        </div>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Data type</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </body>
+</html>
