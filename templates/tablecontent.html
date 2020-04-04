@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CloudCore - Table content</title>
+        <script>
+            var tablename;
+
+            function htmlencode(str) {
+                return ('' + str).replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            }
+
+            async function loadcontent() {
+                var content = await (await fetch('/api/data/list/' + tablename)).json();
+                var tbody = document.querySelector('tbody');
+                tbody.innerHTML = '';
+                console.log(content);
+                var columns = {};
+                var maxlength = 80;
+                for (var entity of content) {
+                    var tr = document.createElement('tr');
+                    tbody.appendChild(tr);
+                    for (var key of Object.keys(entity)) {
+                        columns[key] = true;
+                    }
+                    tr.innerHTML = Object.values(entity).map(v => '<td>' + htmlencode(v && v.length > maxlength ? (v.substring(0, maxlength) + '...') : v) + '</td>').join('');
+                    /*
+                    tr.innerHTML = '<td><a href="tablecontent.html?' + table.table_name + '">' + table.table_name + '</a></td>';
+                    var td = document.createElement('td');
+                    tr.appendChild(td);
+                    td.innerHTML = '<td><a href="columns.html?' + table.table_name + '">Edit columns</a></td>';
+                    var deletebutton = document.createElement('button');
+                    deletebutton.innerHTML = 'Delete';
+                    deletebutton.table = table;
+                    deletebutton.onclick = function() { deletetable(this.table.table_name); };
+                    td.appendChild(deletebutton);
+                    */
+                }
+                var thead = document.querySelector('thead');
+                thead.innerHTML = '<tr>' + Object.keys(columns).map(c => '<th>' + c + '</th>').join('') + '</tr>';
+            }
+
+            window.addEventListener('load', () => {
+                tablename = location.search.substring(1);
+                document.querySelector('div').innerHTML += '<a href="createcontent.html' + location.search + '">Create content</a>';
+                loadcontent();
+            });
+        </script>
+    </head>
+    <body>
+        <div>
+            <a href="tables.html">&lt; Tables</a>
+        </div>
+        <table border="1">
+            <thead></thead>
+            <tbody></tbody>
+        </table>
+    </body>
+</html>
