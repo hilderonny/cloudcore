@@ -21,7 +21,7 @@ router.get('/:tablename/:id', async (req, res) => {
 });
 
 router.post('/:tablename', async (req, res) => {
-    var query = "INSERT INTO " + req.params.tablename + " (" + Object.keys(req.body).join(',') + ") VALUES (" + Object.values(req.body).map(value => ((typeof value) === 'string') ? "'" + value + "'" : value).join(',') + ") RETURNING id;";
+    var query = "INSERT INTO " + req.params.tablename + " (" + Object.keys(req.body).join(',') + ") VALUES (" + Object.values(req.body).map(value => ((typeof value) === 'string') ? "'" + (value.replace(/\'/g, '\'\'')) + "'" : value).join(',') + ") RETURNING id;";
     var result = await req.db.query(query);
     res.json(result.error || result.rows);
 });
@@ -29,7 +29,7 @@ router.post('/:tablename', async (req, res) => {
 router.put('/:tablename/:id', async (req, res) => {
     var query = "UPDATE " + req.params.tablename + " SET " + Object.keys(req.body).map(key => {
         var value = req.body[key];
-        return key + "=" + (((typeof value) === 'string') ? "'" + value + "'" : value);
+        return key + "=" + (((typeof value) === 'string') ? "'" + (value.replace(/\'/g, '\'\'')) + "'" : value);
     }).join(',') + " WHERE id=" + req.params.id + ";";
     var result = await req.db.query(query);
     res.json(result.error || result.rows);

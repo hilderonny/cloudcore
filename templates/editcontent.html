@@ -8,7 +8,7 @@
             async function save() {
                 var content = {};
                 for (var key  of keys) {
-                    content[key] = document.querySelector('#' + key).value; // Single quote: ' = &#39;
+                    content[key] = document.querySelector('#' + key).value;
                 }
                 console.log(content);
                 if (entityid) {
