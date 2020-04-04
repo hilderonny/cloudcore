@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script>
+            async function createtable() {
+                var tablename = window.prompt('Name of new table');
+                if(!tablename) return;
+                await fetch('/api/schema/tables/' + tablename, { method: 'POST' });
+                loadtables();
+            }
+
+            async function deletetable(tablename) {
+                if (!confirm('Really delete table "' + tablename + '"?')) return;
+                await fetch('/api/schema/tables/' + tablename, { method: 'DELETE' });
+                loadtables();
+            }
+
+            async function loadtables() {
+                var tables = await (await fetch('/api/schema/tables')).json();
+                var tbody = document.querySelector('tbody');
+                tbody.innerHTML = '';
+                for (var table of tables) {
+                    var tr = document.createElement('tr');
+                    tr.innerHTML = '<td><a href="tablecontent.html?' + table.table_name + '">' + table.table_name + '</a></td>';
+                    var td = document.createElement('td');
+                    tr.appendChild(td);
+                    td.innerHTML = '<td><a href="columns.html?' + table.table_name + '">Edit columns</a></td>';
+                    var deletebutton = document.createElement('button');
+                    deletebutton.innerHTML = 'Delete';
+                    deletebutton.table = table;
+                    deletebutton.onclick = function() { deletetable(this.table.table_name); };
+                    td.appendChild(deletebutton);
+                    tbody.appendChild(tr);
+                }
+            }
+
+            window.addEventListener('load', loadtables);
+        </script>
+    </head>
+    <body>
+        <div>
+            <button onclick="createtable();">New table</button>
+        </div>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Table</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </body>
+</html>
