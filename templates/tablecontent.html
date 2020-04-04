@@ -22,18 +22,7 @@
                     for (var key of Object.keys(entity)) {
                         columns[key] = true;
                     }
-                    tr.innerHTML = Object.values(entity).map(v => '<td>' + htmlencode(v && v.length > maxlength ? (v.substring(0, maxlength) + '...') : v) + '</td>').join('');
-                    /*
-                    tr.innerHTML = '<td><a href="tablecontent.html?' + table.table_name + '">' + table.table_name + '</a></td>';
-                    var td = document.createElement('td');
-                    tr.appendChild(td);
-                    td.innerHTML = '<td><a href="columns.html?' + table.table_name + '">Edit columns</a></td>';
-                    var deletebutton = document.createElement('button');
-                    deletebutton.innerHTML = 'Delete';
-                    deletebutton.table = table;
-                    deletebutton.onclick = function() { deletetable(this.table.table_name); };
-                    td.appendChild(deletebutton);
-                    */
+                    tr.innerHTML = Object.values(entity).map(v => '<td><a href="editcontent.html' + location.search + '/' + entity.id + '">' + htmlencode(v && v.length > maxlength ? (v.substring(0, maxlength) + '...') : v) + '</a></td>').join('');
                 }
                 var thead = document.querySelector('thead');
                 thead.innerHTML = '<tr>' + Object.keys(columns).map(c => '<th>' + c + '</th>').join('') + '</tr>';
@@ -41,7 +30,7 @@
 
             window.addEventListener('load', () => {
                 tablename = location.search.substring(1);
-                document.querySelector('div').innerHTML += '<a href="createcontent.html' + location.search + '">Create content</a>';
+                document.querySelector('div').innerHTML += '<a href="editcontent.html' + location.search + '">Create content</a>';
                 loadcontent();
             });
         </script>

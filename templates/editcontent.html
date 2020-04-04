@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CloudCore - Edit content</title>
+        <script>
+            var tablename, entityid, keys;
+
+            async function save() {
+                var content = {};
+                for (var key  of keys) {
+                    content[key] = document.querySelector('#' + key).value; // Single quote: ' = &#39;
+                }
+                console.log(content);
+                if (entityid) {
+                    await fetch('/api/data/' + tablename + '/' + entityid, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(content) });
+                } else {
+                    entityid = (await (await fetch('/api/data/' + tablename, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(content) })).json())[0].id;
+                }
+                location.href += '/' + entityid;
+            }
+
+            async function loadcontent() {
+                var content;
+                if (entityid) {
+                    content = (await (await fetch('/api/data/' + tablename + '/' + entityid)).json())[0];
+                } else {
+                    content = {};
+                    var columns = await (await fetch('/api/schema/columns/' + tablename)).json();
+                    for (var column of columns) {
+                        if (column.table_schema !== 'public') continue;
+                        content[column.column_name] = '';
+                    }
+                }
+                delete content.id;
+                var table = document.querySelector('table');
+                table.innerHTML = '';
+                keys = Object.keys(content);
+                for (var key of keys) {
+                    var tr = document.createElement('tr');
+                    table.appendChild(tr);
+                    tr.innerHTML = '<th>' + key + '</th>';
+                    var td = document.createElement('td');
+                    tr.appendChild(td);
+                    var ta = document.createElement('textarea');
+                    ta.setAttribute('id', key);
+                    ta.value = content[key];
+                    td.appendChild(ta);
+                }
+            }
+
+            window.addEventListener('load', () => {
+                var urlparts = location.search.substring(1).split('/');
+                tablename = urlparts[0];
+                entityid = urlparts[1];
+                document.querySelector('div').innerHTML = '<a href="tablecontent.html?' + tablename + '">&lt Table content</a>';
+                loadcontent();
+            });
+
+        </script>
+    </head>
+    <body>
+        <div></div>
+        <table></table>
+        <div>
+            <button onclick="save();">Save</button>
+            <button onclick="loadcontent();">Revert</button>
+        </div>
+    </body>
+</html>
