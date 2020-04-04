@@ -32,14 +32,14 @@
 
             window.addEventListener('load', () => {
                 tablename = location.search.substring(1);
-                document.querySelector('a').href = 'createcolumn.html' + location.search;
+                document.querySelector('div').innerHTML += '<a href="createcolumn.html' + location.search + '">Create column</a>';
                 loadcolumns();
             });
         </script>
     </head>
     <body>
         <div>
-            <a>New Column</a>
+            <a href="tables.html">&lt; Tables</a>
         </div>
         <table border="1">
             <thead>

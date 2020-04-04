@@ -15,11 +15,13 @@
             window.addEventListener('load', () => {
                 tablename = location.search.substring(1);
                 document.querySelector('#tablename').innerHTML = tablename;
+                document.querySelector('div').innerHTML = '<a href="columns.html' + location.search + '">&lt Columns</a>';
             });
 
         </script>
     </head>
     <body>
+        <div></div>
         <table>
             <tr>
                 <th>Table</th>
