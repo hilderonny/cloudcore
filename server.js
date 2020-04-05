@@ -21,8 +21,8 @@ app.use('/vue', express.static(__dirname + '/node_modules/vue/dist'));
 // Monaco code editor
 app.use('/monaco-editor', express.static(__dirname + '/node_modules/monaco-editor'));
 
-// Temporär das Template-Verzeichnis als statische Quelle nutzen. Geht für das Entwickeln der Templates schneller
-app.use('/templates', express.static(__dirname + '/templates'));
+// Basis-Funktionen bereitstellen
+app.use('/vger', express.static(__dirname + '/vger'));
 
 // APIs einbinden
 fs.readdirSync(__dirname + '/api').forEach(apifile => {
