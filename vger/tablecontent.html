@@ -23,9 +23,20 @@
                         columns[key] = true;
                     }
                     tr.innerHTML = Object.values(entity).map(v => '<td><a href="editcontent.html' + location.search + '/' + entity.id + '">' + htmlencode(v && v.length > maxlength ? (v.substring(0, maxlength) + '...') : v) + '</a></td>').join('');
+                    var td = document.createElement('td');
+                    tr.appendChild(td);
+                    var deletebutton = document.createElement('button');
+                    deletebutton.entity = entity;
+                    deletebutton.onclick = async function() {
+                        if (!confirm('Really delete entity ' + this.entity.id + '?')) return;
+                        await fetch('/api/data/' + tablename + '/' + this.entity.id, { method: 'DELETE' });
+                        loadcontent();
+                    };
+                    deletebutton.innerHTML = 'Delete';
+                    td.appendChild(deletebutton);
                 }
                 var thead = document.querySelector('thead');
-                thead.innerHTML = '<tr>' + Object.keys(columns).map(c => '<th>' + c + '</th>').join('') + '</tr>';
+                thead.innerHTML = '<tr>' + Object.keys(columns).map(c => '<th>' + c + '</th>').join('') + '<th>Actions</th></tr>';
             }
 
             window.addEventListener('load', () => {
