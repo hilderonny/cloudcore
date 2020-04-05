@@ -19,8 +19,7 @@ var fs = require('fs');
         async function insertView(url, contenttype, content) {
             await client.query("INSERT INTO views (url, contenttype, content) VALUES ($1, $2, $3) ON CONFLICT (url) DO NOTHING;", [url, contenttype, content]);
         }
-        await insertView('/', 'text/html', fs.readFileSync(__dirname + '/templates/index.html'));
-        await insertView('/views.js', 'text/javascript', fs.readFileSync(__dirname + '/templates/views.js'));
+        await insertView('/', 'text/html', '<a href="/vger">VGER</a>');
 
         // Demo-Router in Datenbank eintragen. Reagiert auf /fubbele/eins und /fubbele/zwei/:zahl und /fubbele/hubbele/:tablename
         await client.query("INSERT INTO routers (url, code) VALUES ($1, $2) ON CONFLICT (url) DO NOTHING;", ['/fubbele', fs.readFileSync(__dirname + '/templates/router.js')]);
