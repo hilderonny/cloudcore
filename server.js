@@ -15,9 +15,6 @@ app.use(db);
 // Salesforce Lighning Design System unter /assets einbinden, siehe https://www.lightningdesignsystem.com/platforms/heroku/
 app.use('/assets', express.static(__dirname + '/node_modules/@salesforce-ux/design-system/assets'));
 
-// VUE.js
-app.use('/vue', express.static(__dirname + '/node_modules/vue/dist'));
-
 // Monaco code editor
 app.use('/monaco-editor', express.static(__dirname + '/node_modules/monaco-editor'));
 
