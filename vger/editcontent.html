@@ -15,8 +15,8 @@
                     await fetch('/api/data/' + tablename + '/' + entityid, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(content) });
                 } else {
                     entityid = (await (await fetch('/api/data/' + tablename, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(content) })).json())[0].id;
+                    location.href += '/' + entityid;
                 }
-                location.href += '/' + entityid;
             }
 
             async function loadcontent() {
