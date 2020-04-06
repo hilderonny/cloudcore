@@ -11,11 +11,9 @@ var fs = require('fs');
         await client.query("ALTER TABLE views ADD COLUMN IF NOT EXISTS content VARCHAR;");
         await client.query("ALTER TABLE views ADD COLUMN IF NOT EXISTS contenttype VARCHAR(255);");
         await client.query("ALTER TABLE views ADD COLUMN IF NOT EXISTS url VARCHAR(255) UNIQUE;");
-        await client.query("ALTER TABLE views ADD COLUMN IF NOT EXISTS package VARCHAR(255);");
         await client.query("CREATE TABLE IF NOT EXISTS routers (id SERIAL);");
         await client.query("ALTER TABLE routers ADD COLUMN IF NOT EXISTS code VARCHAR;");
         await client.query("ALTER TABLE routers ADD COLUMN IF NOT EXISTS url VARCHAR(255) UNIQUE;");
-        await client.query("ALTER TABLE routers ADD COLUMN IF NOT EXISTS package VARCHAR(255);");
 
         // Standardviews vorbereiten
         async function insertView(url, contenttype, content) {
