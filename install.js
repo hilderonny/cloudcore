@@ -6,6 +6,9 @@ var fs = require('fs');
         var client = new pg.Client();
         await client.connect();
 
+        // UUID-Erweiterung anlegen
+        await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+
         // Tabellen anlegen
         await client.query("CREATE TABLE IF NOT EXISTS views (id SERIAL);");
         await client.query("ALTER TABLE views ADD COLUMN IF NOT EXISTS content VARCHAR;");
