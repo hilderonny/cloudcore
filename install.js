@@ -10,11 +10,11 @@ var fs = require('fs');
         await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
 
         // Tabellen anlegen
-        await client.query("CREATE TABLE IF NOT EXISTS views (id SERIAL);");
+        await client.query("CREATE TABLE IF NOT EXISTS views (id UUID PRIMARY KEY DEFAULT uuid_generate_v4());");
         await client.query("ALTER TABLE views ADD COLUMN IF NOT EXISTS content VARCHAR;");
         await client.query("ALTER TABLE views ADD COLUMN IF NOT EXISTS contenttype VARCHAR(255);");
         await client.query("ALTER TABLE views ADD COLUMN IF NOT EXISTS url VARCHAR(255) UNIQUE;");
-        await client.query("CREATE TABLE IF NOT EXISTS routers (id SERIAL);");
+        await client.query("CREATE TABLE IF NOT EXISTS routers (id UUID PRIMARY KEY DEFAULT uuid_generate_v4());");
         await client.query("ALTER TABLE routers ADD COLUMN IF NOT EXISTS code VARCHAR;");
         await client.query("ALTER TABLE routers ADD COLUMN IF NOT EXISTS url VARCHAR(255) UNIQUE;");
 

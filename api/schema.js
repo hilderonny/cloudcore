@@ -25,7 +25,7 @@ router.get('/tables', async (req, res) => {
 });
 
 router.post('/tables/:tablename', async (req, res) => {
-    res.json(await req.db.query("CREATE TABLE " + req.params.tablename + " (id SERIAL);"));
+    res.json(await req.db.query("CREATE TABLE " + req.params.tablename + " (id UUID PRIMARY KEY DEFAULT uuid_generate_v4());"));
 });
 
 router.delete('/tables/:tablename', async (req, res) => {
