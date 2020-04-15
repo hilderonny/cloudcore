@@ -17,11 +17,12 @@
     },
     "entities": {
         "testtable1": [
-            { "field1": "inhalt1" }
+            { "id": "11111111-1111-1111-1111-111111111111", "field1": "inhalt1" }
         ],
         "testtable2": [
-            { 
-                "uuid1": "963477e8-b1e7-41c9-9eb8-b843b9313efc",
+            {
+                "id": "22222222-2222-2222-2222-222222222222",
+                "uuid1": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
                 "integer1": 12345,
                 "boolean1": true,
                 "text1": "lorem ipsum",
@@ -29,7 +30,7 @@
                 "real1": 98.765,
                 "json1": { "f1": 123, "f2": "hallo welt", "f3": [ 47, 11 ], "f4": { "hullu": "bullu" } }
             },
-            { "text1": "Nur Text" }
+            { "id": "33333333-3333-3333-3333-333333333333", "text1": "Nur Text" }
         ]
     }
 }
