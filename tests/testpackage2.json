@@ -1,5 +1,5 @@
 {
-    "name": "testpackage",
+    "name": "testpackage2",
     "description": "Dieses Paket nach testpackage1 importieren, um die Tabelle testtable2 zu erweitern und testtable1 zu füllen",
     "fields": {
         "testtable2": {

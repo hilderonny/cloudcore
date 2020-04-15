@@ -1,5 +1,5 @@
 {
-    "name": "testpackage",
+    "name": "testpackage1",
     "description": "Dieses Paket soll zuerst eingespielt werden, damit die Tabelle testtable2 erstellt wird, welche vom testpackage2 erweitert wird",
     "fields": {
         "testtable1": {
