@@ -1,0 +1,27 @@
+{
+    "name": "testpackage",
+    "description": "Dieses Paket nach testpackage1 importieren, um die Tabelle testtable2 zu erweitern und testtable1 zu füllen",
+    "fields": {
+        "testtable2": {
+            "text2": "text"
+        },
+        "testtable3": {
+            "field31": "integer",
+            "field32": "text"
+        }
+    },
+    "entities": {
+        "testtable1": [
+            { "field1": "Holla, die Waldfee" }
+        ],
+        "testtable2": [
+            {
+                "text1": "Erster Text",
+                "text2": "Zweiter Text"
+            }
+        ],
+        "testtable3": [
+            { "field31": 6677, "field32": "fubbele" }
+        ]
+    }
+}

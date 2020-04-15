@@ -1,0 +1,35 @@
+{
+    "name": "testpackage",
+    "description": "Dieses Paket soll zuerst eingespielt werden, damit die Tabelle testtable2 erstellt wird, welche vom testpackage2 erweitert wird",
+    "fields": {
+        "testtable1": {
+            "field1": "text"
+        },
+        "testtable2": {
+            "uuid1": "uuid",
+            "integer1": "integer",
+            "boolean1": "boolean",
+            "text1": "text",
+            "numeric1": "numeric",
+            "real1": "real",
+            "json1": "json"
+        }
+    },
+    "entities": {
+        "testtable1": [
+            { "field1": "inhalt1" }
+        ],
+        "testtable2": [
+            { 
+                "uuid1": "963477e8-b1e7-41c9-9eb8-b843b9313efc",
+                "integer1": 12345,
+                "boolean1": true,
+                "text1": "lorem ipsum",
+                "numeric1": 12.345,
+                "real1": 98.765,
+                "json1": { "f1": 123, "f2": "hallo welt", "f3": [ 47, 11 ], "f4": { "hullu": "bullu" } }
+            },
+            { "text1": "Nur Text" }
+        ]
+    }
+}
