@@ -199,6 +199,50 @@ CREATE TABLE public.test (
 ALTER TABLE public.test OWNER TO cloudcore;
 
 --
+-- Name: testtable1; Type: TABLE; Schema: public; Owner: cloudcore
+--
+
+CREATE TABLE public.testtable1 (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    field1 text
+);
+
+
+ALTER TABLE public.testtable1 OWNER TO cloudcore;
+
+--
+-- Name: testtable2; Type: TABLE; Schema: public; Owner: cloudcore
+--
+
+CREATE TABLE public.testtable2 (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    uuid1 uuid,
+    integer1 integer,
+    boolean1 boolean,
+    text1 text,
+    numeric1 numeric,
+    real1 real,
+    json1 json,
+    text2 text
+);
+
+
+ALTER TABLE public.testtable2 OWNER TO cloudcore;
+
+--
+-- Name: testtable3; Type: TABLE; Schema: public; Owner: cloudcore
+--
+
+CREATE TABLE public.testtable3 (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    field31 integer,
+    field32 text
+);
+
+
+ALTER TABLE public.testtable3 OWNER TO cloudcore;
+
+--
 -- Name: views; Type: TABLE; Schema: public; Owner: cloudcore
 --
 
@@ -242,6 +286,12 @@ COPY public.packageentities (id, tablename, packageid, entityid) FROM stdin;
 57a1ff1f-454e-493a-8a2e-b990713d2342	views	f9c96884-4637-4a7e-b8ef-104d9a7bf93b	9c8c25ec-2fe7-4ad3-bd63-1935f743e1cd
 b59d1a9e-cd67-4051-851f-8c8bac247572	routers	f9c96884-4637-4a7e-b8ef-104d9a7bf93b	80e51228-ea90-47b7-955e-c486ccfc8caa
 39fc876c-e261-41f8-9ad4-94594e38e3ba	views	f9c96884-4637-4a7e-b8ef-104d9a7bf93b	52cf145b-f648-4f4a-85af-d9086b51764b
+7ed8bcc4-1658-4b40-ac94-175337530b05	testtable1	664fa3bd-e8bb-45b2-b2b0-1a3dbf98215c	11111111-1111-1111-1111-111111111111
+64c1d202-a63f-4578-843b-cc9d5d6fd464	testtable2	664fa3bd-e8bb-45b2-b2b0-1a3dbf98215c	22222222-2222-2222-2222-222222222222
+759413f7-7776-4723-ba36-f6e4b4d3ebdc	testtable2	664fa3bd-e8bb-45b2-b2b0-1a3dbf98215c	33333333-3333-3333-3333-333333333333
+edf72841-395f-4bbb-acba-4dd9ea7bd530	testtable1	0807bc61-b543-4f44-9e5b-5244c54e8805	44444444-4444-4444-4444-444444444444
+b661ae9d-a3d4-4cba-a6ea-10b661047a9e	testtable2	0807bc61-b543-4f44-9e5b-5244c54e8805	55555555-5555-5555-5555-555555555555
+05ba37f8-502e-4183-bb7f-c41c91ed4501	testtable3	0807bc61-b543-4f44-9e5b-5244c54e8805	66666666-6666-6666-6666-666666666666
 \.
 
 
@@ -268,6 +318,17 @@ f8a8d4d1-828b-4b85-b477-55170a7496c6	packageid	packagefields	4e596017-1984-43e7-
 8ef614ad-270f-4130-9ceb-e5cada3f4866	fieldname	packagefields	4e596017-1984-43e7-bb99-1c005f2ef32a
 aefeb7af-209a-42ca-b197-8130030fa06a	label	tabs	fdcfddb4-6ab2-4597-b647-7a8930d07033
 7c2f5bcc-f346-45ec-b39a-53f37088860a	url	tabs	fdcfddb4-6ab2-4597-b647-7a8930d07033
+abc94df7-fbef-4570-aa62-238b32e1c472	field1	testtable1	664fa3bd-e8bb-45b2-b2b0-1a3dbf98215c
+bf722095-4c14-4b12-bb72-9e7ad892d922	uuid1	testtable2	664fa3bd-e8bb-45b2-b2b0-1a3dbf98215c
+dcc1cdfc-3935-4bda-acde-40650b3790c4	integer1	testtable2	664fa3bd-e8bb-45b2-b2b0-1a3dbf98215c
+b52de2fb-45f8-4ccd-ac65-68ef8ed8da5d	boolean1	testtable2	664fa3bd-e8bb-45b2-b2b0-1a3dbf98215c
+2c091395-18bb-40bb-bce0-2ad82312c40b	text1	testtable2	664fa3bd-e8bb-45b2-b2b0-1a3dbf98215c
+1f072cf4-eaea-41fb-8249-51a3a7518d32	numeric1	testtable2	664fa3bd-e8bb-45b2-b2b0-1a3dbf98215c
+cba3281a-d928-484e-8ea8-df94d546bdc5	real1	testtable2	664fa3bd-e8bb-45b2-b2b0-1a3dbf98215c
+2773e2ac-efb5-4c10-8092-b946cb0deba7	json1	testtable2	664fa3bd-e8bb-45b2-b2b0-1a3dbf98215c
+3d7ac89a-26e5-43c5-ae1e-900e0d2192b4	text2	testtable2	0807bc61-b543-4f44-9e5b-5244c54e8805
+14731bad-c3d2-42e0-bd5e-b72eae6be5dc	field31	testtable3	0807bc61-b543-4f44-9e5b-5244c54e8805
+dc0b927d-b0e6-4c99-9490-e483a94f49ed	field32	testtable3	0807bc61-b543-4f44-9e5b-5244c54e8805
 \.
 
 
@@ -280,6 +341,8 @@ f9c96884-4637-4a7e-b8ef-104d9a7bf93b	tp
 f8c08809-9c1a-4083-a142-bac1841e26eb	core
 4e596017-1984-43e7-bb99-1c005f2ef32a	packaging
 fdcfddb4-6ab2-4597-b647-7a8930d07033	setup
+664fa3bd-e8bb-45b2-b2b0-1a3dbf98215c	testpackage1
+0807bc61-b543-4f44-9e5b-5244c54e8805	testpackage2
 \.
 
 
@@ -292,7 +355,7 @@ d2e9ebbe-e7de-4be4-96e9-bf75c835f665	var router = require('express').Router();\n
 0d689490-685b-4260-9bc5-7ab712666b6e	/**\r\n * Dieser Router soll Datenbankbackups erstellen.\r\n */\r\nvar childprocess = require('child_process');\r\nvar router = require('express').Router();\r\n\r\nrouter.get('/', (_, res) => {\r\n    var resultbuffer = childprocess.execSync('pg_dump'); // Benutzt die Einstellungen aus den Environment Variablen\r\n    res.setHeader("Content-Type","text/plain");\r\n    res.send(resultbuffer);\r\n});\r\n\r\nmodule.exports = router;\r\n	/backup
 80e51228-ea90-47b7-955e-c486ccfc8caa	var router = require('express').Router();\n\n// Tabellen\n\n// GET /api/tables/\nrouter.get('/', async (req, res) => {\n    var result = await req.db.query("SELECT * FROM information_schema.tables WHERE table_schema != 'pg_catalog' AND table_schema != 'information_schema';");\n    res.json(result.rows);\n});\n\n// POST /api/tables/:tablename\nrouter.post('/:tablename', async (req, res) => {\n    res.json(await req.db.query("CREATE TABLE " + req.params.tablename + " (id UUID PRIMARY KEY DEFAULT uuid_generate_v4());"));\n});\n\nmodule.exports = router;	/api-tables
 c11bd450-76b4-45cb-afce-619cbdcaadd6	var router = require('express').Router();\n\nrouter.post('/', async (req, res) => {\n    var query = req.body.query;\n    var result = await req.db.query(query);\n    res.json(result.error ? result.error : result.rows);\n});\n\nmodule.exports = router;	/api-sqlconsole
-a3a9d900-6fa8-4818-8838-4a4f41a2caab	// select table_name, column_name from information_schema.columns where table_schema='public' and not column_name = 'id';\nvar router = require('express').Router();\n\nrouter.get('/allfields', async (req, res) => {\n    var result = await req.db.query("select table_name, column_name from information_schema.columns where table_schema='public' and not column_name = 'id';");\n    var tablemap = {};\n    for (var row of result.rows) {\n        if (!tablemap[row.table_name]) tablemap[row.table_name] = [];\n        tablemap[row.table_name].push(row.column_name);\n    }\n    res.json(tablemap);\n});\n\nrouter.get('/packagefields/:packageid', async (req, res) => {\n    var result = await req.db.query("select * from packagefields where packageid = '" + req.params.packageid + "';");\n    res.json(result.error || result.rows);\n});\n\nrouter.get('/packageentities/:packageid', async (req, res) => {\n    var result = await req.db.query("select * from packageentities where packageid = '" + req.params.packageid + "';");\n    res.json(result.error || result.rows);\n});\n\nrouter.delete('/:packageid', async (req, res) => {\n    await req.db.query("DELETE FROM packagefields WHERE packageid = '" + req.params.packageid + "';");\n    await req.db.query("DELETE FROM packageentities WHERE packageid = '" + req.params.packageid + "';");\n    await req.db.query("DELETE FROM packages WHERE id = '" + req.params.packageid + "';");\n    res.send();\n});\n\nrouter.get('/download/:packageid', async (req, res) => {\n    var packageid = req.params.packageid;\n    var json = { entities: {} };\n    var package = (await req.db.query("select id, name from packages where id='" + packageid + "';")).rows[0];\n    json.id = package.id;\n    json.name = package.name;\n    var packagefields = (await req.db.query("select tablename, fieldname from packagefields where packageid = '" + req.params.packageid + "';")).rows.reduce((map, field) => {\n        if (Object.keys(map).indexOf(field.tablename) < 0) map[field.tablename] = [];\n        map[field.tablename].push(field.fieldname);\n        return map;\n    }, {});\n    var columndefs = (await req.db.query("select column_name, table_name, data_type from information_schema.columns where table_schema='public';")).rows.reduce((map, column) => {\n        if (packagefields[column.table_name] && packagefields[column.table_name].indexOf(column.column_name) >= 0) {\n            if (Object.keys(map).indexOf(column.table_name) < 0) map[column.table_name] = {};\n            map[column.table_name][column.column_name] = column.data_type;\n        }\n        return map;\n    }, {});\n    json.fields = columndefs;\n    var packageentities = (await req.db.query("select tablename, entityid from packageentities where packageid = '" + req.params.packageid + "';")).rows.reduce((map, entity) => {\n        if (Object.keys(map).indexOf(entity.tablename) < 0) map[entity.tablename] = [];\n        map[entity.tablename].push(entity.entityid);\n        return map;\n    }, {});\n    for (var [tablename, entityids] of Object.entries(packageentities)) {\n        var query = "select * from \\"" + tablename + "\\" where id in (" + entityids.map(id => "'" + id + "'").join(',') + ");";\n        json.entities[tablename] = (await req.db.query(query)).rows;\n    }\n    res.setHeader('Content-Type', 'application/json');\n    res.setHeader('Content-disposition','attachment; filename=' + package.name + '-' + Date.now() + '.json');\n    res.json(json);\n});\n\nrouter.post('/upload', async (req, res) => {\n    var packagejson = req.body;\n    // TODO: Paketinfos anlegen, falls diese nicht schon existieren\n    // Tabellen und Felder anlegen und erweitern\n    for (var [tablename, fields] of Object.entries(packagejson.fields)) {\n        await req.db.query("CREATE TABLE IF NOT EXISTS " + tablename + " (id UUID PRIMARY KEY DEFAULT uuid_generate_v4());");\n        for (var [fieldname, datatype] of Object.entries(fields)) {\n            await req.db.query("ALTER TABLE " + tablename + " ADD COLUMN IF NOT EXISTS " + fieldname + " " + datatype + ";");\n        }\n    }\n    // Inhalte einspielen\n    for (var [tablename, entities] of Object.entries(packagejson.entities)) {\n        for (var entity of entities) {\n            var query = "INSERT INTO " + tablename + " (" + Object.keys(entity).join(',') + ") VALUES (" + Object.values(entity).map(value => ((typeof value) === 'string') ? "'" + (value.replace(/\\'/g, '\\'\\'')) + "'" : value).join(',') + ");";\n            await req.db.query(query);\n        }\n    }\n    res.send();\n});\n\nmodule.exports = router;	/api-packages
+a3a9d900-6fa8-4818-8838-4a4f41a2caab	// select table_name, column_name from information_schema.columns where table_schema='public' and not column_name = 'id';\nvar router = require('express').Router();\n\nrouter.get('/allfields', async (req, res) => {\n    var result = await req.db.query("select table_name, column_name from information_schema.columns where table_schema='public' and not column_name = 'id';");\n    var tablemap = {};\n    for (var row of result.rows) {\n        if (!tablemap[row.table_name]) tablemap[row.table_name] = [];\n        tablemap[row.table_name].push(row.column_name);\n    }\n    res.json(tablemap);\n});\n\nrouter.get('/packagefields/:packageid', async (req, res) => {\n    var result = await req.db.query("select * from packagefields where packageid = '" + req.params.packageid + "';");\n    res.json(result.error || result.rows);\n});\n\nrouter.get('/packageentities/:packageid', async (req, res) => {\n    var result = await req.db.query("select * from packageentities where packageid = '" + req.params.packageid + "';");\n    res.json(result.error || result.rows);\n});\n\nrouter.delete('/:packageid', async (req, res) => {\n    await req.db.query("DELETE FROM packagefields WHERE packageid = '" + req.params.packageid + "';");\n    await req.db.query("DELETE FROM packageentities WHERE packageid = '" + req.params.packageid + "';");\n    await req.db.query("DELETE FROM packages WHERE id = '" + req.params.packageid + "';");\n    res.send();\n});\n\nrouter.get('/download/:packageid', async (req, res) => {\n    var packageid = req.params.packageid;\n    var json = { entities: {} };\n    var package = (await req.db.query("select id, name from packages where id='" + packageid + "';")).rows[0];\n    json.id = package.id;\n    json.name = package.name;\n    var packagefields = (await req.db.query("select tablename, fieldname from packagefields where packageid = '" + req.params.packageid + "';")).rows.reduce((map, field) => {\n        if (Object.keys(map).indexOf(field.tablename) < 0) map[field.tablename] = [];\n        map[field.tablename].push(field.fieldname);\n        return map;\n    }, {});\n    var columndefs = (await req.db.query("select column_name, table_name, data_type from information_schema.columns where table_schema='public';")).rows.reduce((map, column) => {\n        if (packagefields[column.table_name] && packagefields[column.table_name].indexOf(column.column_name) >= 0) {\n            if (Object.keys(map).indexOf(column.table_name) < 0) map[column.table_name] = {};\n            map[column.table_name][column.column_name] = column.data_type;\n        }\n        return map;\n    }, {});\n    json.fields = columndefs;\n    var packageentities = (await req.db.query("select tablename, entityid from packageentities where packageid = '" + req.params.packageid + "';")).rows.reduce((map, entity) => {\n        if (Object.keys(map).indexOf(entity.tablename) < 0) map[entity.tablename] = [];\n        map[entity.tablename].push(entity.entityid);\n        return map;\n    }, {});\n    for (var [tablename, entityids] of Object.entries(packageentities)) {\n        var query = "select * from \\"" + tablename + "\\" where id in (" + entityids.map(id => "'" + id + "'").join(',') + ");";\n        json.entities[tablename] = (await req.db.query(query)).rows;\n    }\n    res.setHeader('Content-Type', 'application/json');\n    res.setHeader('Content-disposition','attachment; filename=' + package.name + '-' + Date.now() + '.json');\n    res.json(json);\n});\n\nrouter.post('/upload', async (req, res) => {\n    var packagejson = req.body;\n    var packagename = packagejson.name;\n    // TODO: Paketinfos anlegen, alte löschen\n    var rows = (await req.db.query("select id from packages where name='" + packagename + "';")).rows;\n    for (var row of rows) {\n        await req.db.query("delete from packageentities where packageid='" + row.id + "';");\n        await req.db.query("delete from packagefields where packageid='" + row.id + "';");\n        await req.db.query("delete from packages where id='" + row.id + "';");\n    }\n    var packageid = (await req.db.query("insert into packages (name) values ('" + packagename + "') returning id;")).rows[0].id;\n    // Tabellen und Felder anlegen und erweitern\n    for (var [tablename, fields] of Object.entries(packagejson.fields)) {\n        await req.db.query("CREATE TABLE IF NOT EXISTS " + tablename + " (id UUID PRIMARY KEY DEFAULT uuid_generate_v4());");\n        for (var [fieldname, datatype] of Object.entries(fields)) {\n            await req.db.query("ALTER TABLE " + tablename + " ADD COLUMN IF NOT EXISTS " + fieldname + " " + datatype + ";");\n            await req.db.query("insert into packagefields (packageid, tablename, fieldname) values ('" + packageid + "', '" + tablename + "', '" + fieldname + "');");\n        }\n    }\n    // Inhalte einspielen\n    for (var [tablename, entities] of Object.entries(packagejson.entities)) {\n        for (var entity of entities) {\n            var query = "INSERT INTO " + tablename + " (" + Object.keys(entity).join(',') + ") VALUES (" + Object.values(entity).map(value => {\n                if ((typeof value) === 'object') value = JSON.stringify(value);\n                return ((typeof value) === 'string') ? "'" + (value.replace(/\\'/g, '\\'\\'')) + "'" : value\n            }).join(',') + ") returning id;";\n            var rows = (await req.db.query(query)).rows;\n            var entityid = entity.id || rows[0].id;\n            await req.db.query("insert into packageentities (packageid, tablename, entityid) values ('" + packageid + "', '" + tablename + "', '" + entityid + "');");\n        }\n    }\n    res.send();\n});\n\nmodule.exports = router;	/api-packages
 \.
 
 
@@ -314,6 +377,36 @@ da5b9bd2-2784-4a74-bf07-f32281efb363	/setup/editor	Editor
 
 COPY public.test (id, "boolean", "int", json, "numeric", "real", text, uuid) FROM stdin;
 47f43c75-f042-46d5-9f2b-ecffff33f2c3	t	1234	{"a":"b","c":234}	123.45	1.23450005	hullu bullu	963477e8-b1e7-41c9-9eb8-b843b9313efc
+\.
+
+
+--
+-- Data for Name: testtable1; Type: TABLE DATA; Schema: public; Owner: cloudcore
+--
+
+COPY public.testtable1 (id, field1) FROM stdin;
+11111111-1111-1111-1111-111111111111	inhalt1
+44444444-4444-4444-4444-444444444444	Holla, die Waldfee
+\.
+
+
+--
+-- Data for Name: testtable2; Type: TABLE DATA; Schema: public; Owner: cloudcore
+--
+
+COPY public.testtable2 (id, uuid1, integer1, boolean1, text1, numeric1, real1, json1, text2) FROM stdin;
+22222222-2222-2222-2222-222222222222	aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa	12345	t	lorem ipsum	12.345	98.7649994	{"f1":123,"f2":"hallo welt","f3":[47,11],"f4":{"hullu":"bullu"}}	\N
+33333333-3333-3333-3333-333333333333	\N	\N	\N	Nur Text	\N	\N	\N	\N
+55555555-5555-5555-5555-555555555555	\N	\N	\N	Erster Text	\N	\N	\N	Zweiter Text
+\.
+
+
+--
+-- Data for Name: testtable3; Type: TABLE DATA; Schema: public; Owner: cloudcore
+--
+
+COPY public.testtable3 (id, field31, field32) FROM stdin;
+66666666-6666-6666-6666-666666666666	6677	fubbele
 \.
 
 
@@ -413,6 +506,30 @@ ALTER TABLE ONLY public.routers
 
 ALTER TABLE ONLY public.test
     ADD CONSTRAINT test_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: testtable1 testtable1_pkey; Type: CONSTRAINT; Schema: public; Owner: cloudcore
+--
+
+ALTER TABLE ONLY public.testtable1
+    ADD CONSTRAINT testtable1_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: testtable2 testtable2_pkey; Type: CONSTRAINT; Schema: public; Owner: cloudcore
+--
+
+ALTER TABLE ONLY public.testtable2
+    ADD CONSTRAINT testtable2_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: testtable3 testtable3_pkey; Type: CONSTRAINT; Schema: public; Owner: cloudcore
+--
+
+ALTER TABLE ONLY public.testtable3
+    ADD CONSTRAINT testtable3_pkey PRIMARY KEY (id);
 
 
 --
