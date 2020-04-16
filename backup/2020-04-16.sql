@@ -49,6 +49,18 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: apps; Type: TABLE; Schema: public; Owner: cloudcore
+--
+
+CREATE TABLE public.apps (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    label text
+);
+
+
+ALTER TABLE public.apps OWNER TO cloudcore;
+
+--
 -- Name: packageentities; Type: TABLE; Schema: public; Owner: cloudcore
 --
 
@@ -153,7 +165,8 @@ ALTER SEQUENCE public.routers_id_seq OWNED BY public.routers.id;
 CREATE TABLE public.tabs (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     url text,
-    label text
+    label text,
+    appid uuid
 );
 
 
@@ -180,54 +193,6 @@ ALTER TABLE public.tabs_id_seq OWNER TO cloudcore;
 
 ALTER SEQUENCE public.tabs_id_seq OWNED BY public.tabs.id;
 
-
---
--- Name: test; Type: TABLE; Schema: public; Owner: cloudcore
---
-
-CREATE TABLE public.test (
-    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    "boolean" boolean,
-    "int" integer,
-    json json,
-    "numeric" numeric,
-    "real" real,
-    text text,
-    uuid uuid
-);
-
-
-ALTER TABLE public.test OWNER TO cloudcore;
-
---
--- Name: testtable1; Type: TABLE; Schema: public; Owner: cloudcore
---
-
-CREATE TABLE public.testtable1 (
-    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    field1 text
-);
-
-
-ALTER TABLE public.testtable1 OWNER TO cloudcore;
-
---
--- Name: testtable2; Type: TABLE; Schema: public; Owner: cloudcore
---
-
-CREATE TABLE public.testtable2 (
-    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    uuid1 uuid,
-    integer1 integer,
-    boolean1 boolean,
-    text1 text,
-    numeric1 numeric,
-    real1 real,
-    json1 json
-);
-
-
-ALTER TABLE public.testtable2 OWNER TO cloudcore;
 
 --
 -- Name: views; Type: TABLE; Schema: public; Owner: cloudcore
@@ -266,13 +231,42 @@ ALTER SEQUENCE public.views_id_seq OWNED BY public.views.id;
 
 
 --
+-- Data for Name: apps; Type: TABLE DATA; Schema: public; Owner: cloudcore
+--
+
+COPY public.apps (id, label) FROM stdin;
+9a80bfa4-72a9-43ba-b71c-521520afbb6c	Setup
+\.
+
+
+--
 -- Data for Name: packageentities; Type: TABLE DATA; Schema: public; Owner: cloudcore
 --
 
 COPY public.packageentities (id, tablename, packageid, entityid) FROM stdin;
-4bef4960-1433-4875-a73e-831a80850f43	testtable1	85ab44c0-d120-4536-b5d8-29f1fdacc5fb	11111111-1111-1111-1111-111111111111
-aefe5699-5e33-4e55-be0f-7be4b8ba92ac	testtable2	85ab44c0-d120-4536-b5d8-29f1fdacc5fb	22222222-2222-2222-2222-222222222222
-75d98c70-e981-4756-9cd6-f9a6b6a05de0	testtable2	85ab44c0-d120-4536-b5d8-29f1fdacc5fb	33333333-3333-3333-3333-333333333333
+73c7ae44-294f-4b2f-b5c3-63866ecc5a36	routers	e842cea5-da51-4801-9403-1a8bd82a178b	0d689490-685b-4260-9bc5-7ab712666b6e
+64fe9262-1a7b-4bb5-924e-c7d26e76c0ba	routers	e842cea5-da51-4801-9403-1a8bd82a178b	80e51228-ea90-47b7-955e-c486ccfc8caa
+23be29d9-2740-471c-a09c-097c717cdb4d	routers	e842cea5-da51-4801-9403-1a8bd82a178b	9a9b9ddf-df1a-421e-99b9-94da235814ca
+8a83976c-37b0-4605-9586-e2807e8ed9a2	views	e842cea5-da51-4801-9403-1a8bd82a178b	c7f65743-ccc5-4dce-86ec-6ace01fb01c6
+79a84325-cf45-4e7a-9fc8-8ce941e8ac04	views	e842cea5-da51-4801-9403-1a8bd82a178b	b344c26c-d088-4116-ab52-035cdde82a9e
+b7680884-47e0-441b-9c59-fb3cd84bf5c8	views	e842cea5-da51-4801-9403-1a8bd82a178b	77c30dd7-0131-425b-a264-2150d0615f02
+8da603fe-94de-4538-9d76-e2ae3c941987	tabs	4e596017-1984-43e7-bb99-1c005f2ef32a	4b380de5-7264-4a52-81aa-ee83e4160176
+2bc7711e-df32-4142-8810-f58115106f7b	routers	4e596017-1984-43e7-bb99-1c005f2ef32a	a3a9d900-6fa8-4818-8838-4a4f41a2caab
+da5f4525-826a-45ab-a1f4-6c43c9faa532	views	4e596017-1984-43e7-bb99-1c005f2ef32a	2ae98d59-3e80-4be4-aa65-822f11656514
+5326e514-73a8-4b81-b48f-c68a80e078ef	views	4e596017-1984-43e7-bb99-1c005f2ef32a	81731013-bfd2-442e-85b2-5cf182da71cb
+323784ff-915d-484c-937e-11d5f2a44ab0	views	4e596017-1984-43e7-bb99-1c005f2ef32a	d467c535-8c83-4b8a-a638-cdaf9375bedc
+c3b5c029-b292-4e20-9576-5493f25d1274	apps	fdcfddb4-6ab2-4597-b647-7a8930d07033	9a80bfa4-72a9-43ba-b71c-521520afbb6c
+a8a8f393-df3c-4712-883f-d520a2f84817	routers	fdcfddb4-6ab2-4597-b647-7a8930d07033	c11bd450-76b4-45cb-afce-619cbdcaadd6
+8e5f925f-8a45-4027-ac9b-cbbfc469d2cd	views	fdcfddb4-6ab2-4597-b647-7a8930d07033	9c8c25ec-2fe7-4ad3-bd63-1935f743e1cd
+f79b4748-592b-4977-8c47-c3389be816ee	views	fdcfddb4-6ab2-4597-b647-7a8930d07033	bac21733-0859-4457-a613-9300d7ec3de7
+92548c51-bc8e-47f3-8d52-3c1ab6613adb	views	fdcfddb4-6ab2-4597-b647-7a8930d07033	d4d1f905-b12a-4d78-b6e7-0820d8ba4de4
+6c112b27-1727-47e7-a7bd-31dd0ec989d7	views	fdcfddb4-6ab2-4597-b647-7a8930d07033	6f3433f6-12ea-4f23-b121-2731bc26150e
+4aa2533d-e641-44fb-9e03-55fef240d662	views	fdcfddb4-6ab2-4597-b647-7a8930d07033	7aa3d0b9-35cd-49f7-9db0-667a3b2a02a3
+ee45c1e6-da31-46e5-a593-6406f22eadf5	views	fdcfddb4-6ab2-4597-b647-7a8930d07033	956dda69-6cc6-406a-aa38-75a021581cf6
+cb991504-385f-4ff5-96b7-926898b2882a	views	fdcfddb4-6ab2-4597-b647-7a8930d07033	a583b281-22f3-44fd-9db0-d4e2b9a1bc14
+f2855b75-63f6-4aed-b6f0-8c412d546dd6	tabs	fdcfddb4-6ab2-4597-b647-7a8930d07033	cae375cc-28f5-4fbe-97a3-a3175a28b924
+9e4614f3-d137-4f55-a889-12eb92738db9	tabs	fdcfddb4-6ab2-4597-b647-7a8930d07033	10da6bd3-e1f8-4eb3-8251-148ccd08efbc
+36c1d36a-9df3-4317-9191-670934039100	tabs	fdcfddb4-6ab2-4597-b647-7a8930d07033	da5b9bd2-2784-4a74-bf07-f32281efb363
 \.
 
 
@@ -281,13 +275,6 @@ aefe5699-5e33-4e55-be0f-7be4b8ba92ac	testtable2	85ab44c0-d120-4536-b5d8-29f1fdac
 --
 
 COPY public.packagefields (id, fieldname, tablename, packageid) FROM stdin;
-e562da50-df4b-4ae6-81f5-873aae5585d5	field1	testtable1	85ab44c0-d120-4536-b5d8-29f1fdacc5fb
-d8c9c424-eff0-42a7-8e2a-ecc74bf5bc51	uuid1	testtable2	85ab44c0-d120-4536-b5d8-29f1fdacc5fb
-76fa7274-8978-4cee-ba0a-b28240029e86	integer1	testtable2	85ab44c0-d120-4536-b5d8-29f1fdacc5fb
-064227cd-ab6f-4e54-bf91-41bfc38c97c0	boolean1	testtable2	85ab44c0-d120-4536-b5d8-29f1fdacc5fb
-3a16e2a9-c2fa-4199-8e31-850fd556a65e	text1	testtable2	85ab44c0-d120-4536-b5d8-29f1fdacc5fb
-b3b2db6f-92ac-4bcc-bc06-9a0578f065e4	numeric1	testtable2	85ab44c0-d120-4536-b5d8-29f1fdacc5fb
-794faa4b-8699-414f-82c4-8f1f76d4c4cb	real1	testtable2	85ab44c0-d120-4536-b5d8-29f1fdacc5fb
 fd641d60-dc19-4be6-ae4b-9503af0bbda1	name	packages	4e596017-1984-43e7-bb99-1c005f2ef32a
 c29edd42-716a-4e4b-be08-eaca37453050	entityid	packageentities	4e596017-1984-43e7-bb99-1c005f2ef32a
 16295d50-b8f7-4dd8-98c8-076bc69a8831	tablename	packageentities	4e596017-1984-43e7-bb99-1c005f2ef32a
@@ -295,9 +282,24 @@ cdcac35d-609c-4de8-a04a-63c86cdaa879	packageid	packageentities	4e596017-1984-43e
 a0ffe771-c6f0-423c-8b35-22c0c57bfc2d	tablename	packagefields	4e596017-1984-43e7-bb99-1c005f2ef32a
 f8a8d4d1-828b-4b85-b477-55170a7496c6	packageid	packagefields	4e596017-1984-43e7-bb99-1c005f2ef32a
 8ef614ad-270f-4130-9ceb-e5cada3f4866	fieldname	packagefields	4e596017-1984-43e7-bb99-1c005f2ef32a
-aefeb7af-209a-42ca-b197-8130030fa06a	label	tabs	fdcfddb4-6ab2-4597-b647-7a8930d07033
-7c2f5bcc-f346-45ec-b39a-53f37088860a	url	tabs	fdcfddb4-6ab2-4597-b647-7a8930d07033
-9ca2b173-3d64-4aee-a000-72ae187cd293	json1	testtable2	85ab44c0-d120-4536-b5d8-29f1fdacc5fb
+b4b8e2f9-30d7-4a7d-93c6-3396b1c6dd7a	name	packages	e842cea5-da51-4801-9403-1a8bd82a178b
+7e9b74ee-6131-4758-bd7a-0f2baf99a92f	description	packages	e842cea5-da51-4801-9403-1a8bd82a178b
+1cd466a2-1ea5-444b-a2e8-ce9d74ea6715	url	routers	e842cea5-da51-4801-9403-1a8bd82a178b
+794c8af6-a2e1-47ba-91ce-f96f899392c2	code	routers	e842cea5-da51-4801-9403-1a8bd82a178b
+50a04051-d74b-46bb-9c77-660116002dd6	entityid	packageentities	e842cea5-da51-4801-9403-1a8bd82a178b
+fde3a46b-950b-4f2f-b0bc-cf767b887620	tablename	packageentities	e842cea5-da51-4801-9403-1a8bd82a178b
+93c4b275-fa3f-4a5a-a8f9-df9bf1a72c76	packageid	packageentities	e842cea5-da51-4801-9403-1a8bd82a178b
+004c2856-1cc4-41c5-b557-2bf14ba8b0ab	content	views	e842cea5-da51-4801-9403-1a8bd82a178b
+68b247d3-cce8-4fcb-b18c-78a4e0fa2126	url	views	e842cea5-da51-4801-9403-1a8bd82a178b
+1c0115a9-31e9-493f-8086-3bf3414b2ffd	contenttype	views	e842cea5-da51-4801-9403-1a8bd82a178b
+7352ead9-e8b4-49c4-b6b5-2a497eddd5e3	tablename	packagefields	e842cea5-da51-4801-9403-1a8bd82a178b
+f059099d-0fe9-429e-b529-0d4a449020aa	packageid	packagefields	e842cea5-da51-4801-9403-1a8bd82a178b
+4aafdfec-7ae7-4bda-b816-cd4b4e33b89a	fieldname	packagefields	e842cea5-da51-4801-9403-1a8bd82a178b
+8bf22c1e-1d0f-457b-a2dc-3f9225738c7b	label	tabs	e842cea5-da51-4801-9403-1a8bd82a178b
+d4933121-4070-4a05-ade9-e0df623651c8	url	tabs	e842cea5-da51-4801-9403-1a8bd82a178b
+1443ee29-4e2a-46cb-b5bc-effefef79f5e	appid	tabs	e842cea5-da51-4801-9403-1a8bd82a178b
+a0da8ee5-196a-463f-8911-00d4eb0377fc	label	apps	e842cea5-da51-4801-9403-1a8bd82a178b
+f2e3f953-91bb-458e-84a0-f3df7452594e	description	packages	4e596017-1984-43e7-bb99-1c005f2ef32a
 \.
 
 
@@ -308,8 +310,7 @@ aefeb7af-209a-42ca-b197-8130030fa06a	label	tabs	fdcfddb4-6ab2-4597-b647-7a8930d0
 COPY public.packages (id, name, description) FROM stdin;
 4e596017-1984-43e7-bb99-1c005f2ef32a	packaging	Pakete erstellen und herunterladen
 fdcfddb4-6ab2-4597-b647-7a8930d07033	setup	Setup mit Editor, SQL Konsole, Tabellen, Backup
-e842cea5-da51-4801-9403-1a8bd82a178b	core	Router für data- und schema-APIs
-85ab44c0-d120-4536-b5d8-29f1fdacc5fb	testpackage1	\N
+e842cea5-da51-4801-9403-1a8bd82a178b	core	Router für data- und schema-APIs und notwendige Tabellen und Felder
 \.
 
 
@@ -318,7 +319,6 @@ e842cea5-da51-4801-9403-1a8bd82a178b	core	Router für data- und schema-APIs
 --
 
 COPY public.routers (id, code, url) FROM stdin;
-d2e9ebbe-e7de-4be4-96e9-bf75c835f665	var router = require('express').Router();\n\nrouter.get('/hubbele/:tablename', async (req, res) => {\n    var result = await req.db.query("SELECT * FROM information_schema.tables WHERE table_name = $1;", [req.params.tablename]);\n    res.json(result.rows);\n});\n\nrouter.get('/eins', async (req, res) => {\n    res.send("ODIN");\n});\n\nrouter.get('/zwei/:zahl', async (req, res) => {\n    res.send("TWO " + req.params.zahl);\n});\n\nmodule.exports = router;\n	/fubbele
 0d689490-685b-4260-9bc5-7ab712666b6e	/**\r\n * Dieser Router soll Datenbankbackups erstellen.\r\n */\r\nvar childprocess = require('child_process');\r\nvar router = require('express').Router();\r\n\r\nrouter.get('/', (_, res) => {\r\n    var resultbuffer = childprocess.execSync('pg_dump'); // Benutzt die Einstellungen aus den Environment Variablen\r\n    res.setHeader("Content-Type","text/plain");\r\n    res.send(resultbuffer);\r\n});\r\n\r\nmodule.exports = router;\r\n	/backup
 80e51228-ea90-47b7-955e-c486ccfc8caa	var router = require('express').Router();\n\n// Spalten\n\nrouter.get('/columns/:tablename', async (req, res) => {\n    var result = await req.db.query("SELECT * FROM information_schema.columns WHERE table_name = '" + req.params.tablename + "';");\n    res.json(result.error || result.rows);\n});\n\nrouter.post('/columns/:tablename/:columnname/:columntype', async (req, res) => {\n    var result = await req.db.query("ALTER TABLE " + req.params.tablename + " ADD " + req.params.columnname + " " + req.params.columntype + ";");\n    res.json(result.error || result.rows);\n});\n\nrouter.delete('/columns/:tablename/:columnname', async (req, res) => {\n    var result = await req.db.query("ALTER TABLE " + req.params.tablename + " DROP COLUMN " + req.params.columnname + ";");\n    res.json(result.error || result.rows);\n});\n\n// Tabellen\n\nrouter.get('/tables', async (req, res) => {\n    var result = await req.db.query("SELECT * FROM information_schema.tables WHERE table_schema != 'pg_catalog' AND table_schema != 'information_schema';");\n    res.json(result.rows);\n});\n\nrouter.post('/tables/:tablename', async (req, res) => {\n    res.json(await req.db.query("CREATE TABLE " + req.params.tablename + " (id UUID PRIMARY KEY DEFAULT uuid_generate_v4());"));\n});\n\nrouter.delete('/tables/:tablename', async (req, res) => {\n    res.json(await req.db.query("DROP TABLE " + req.params.tablename + ";"));\n});\n\nmodule.exports = router;	/api-schema
 c11bd450-76b4-45cb-afce-619cbdcaadd6	var router = require('express').Router();\n\nrouter.post('/', async (req, res) => {\n    var query = req.body.query;\n    var result = await req.db.query(query);\n    res.json(result.error ? result.error : result.rows);\n});\n\nmodule.exports = router;	/api-sqlconsole
@@ -331,39 +331,11 @@ a3a9d900-6fa8-4818-8838-4a4f41a2caab	// select table_name, column_name from info
 -- Data for Name: tabs; Type: TABLE DATA; Schema: public; Owner: cloudcore
 --
 
-COPY public.tabs (id, url, label) FROM stdin;
-cae375cc-28f5-4fbe-97a3-a3175a28b924	/setup/tables	Tabellen
-da5b9bd2-2784-4a74-bf07-f32281efb363	/setup/editor	Editor
-4b380de5-7264-4a52-81aa-ee83e4160176	/setup/packages	Pakete
-10da6bd3-e1f8-4eb3-8251-148ccd08efbc	/setup/sqlconsole	SQL Konsole
-\.
-
-
---
--- Data for Name: test; Type: TABLE DATA; Schema: public; Owner: cloudcore
---
-
-COPY public.test (id, "boolean", "int", json, "numeric", "real", text, uuid) FROM stdin;
-47f43c75-f042-46d5-9f2b-ecffff33f2c3	t	1234	{"a":"b","c":234}	123.45	1.23450005	hullu bullu	963477e8-b1e7-41c9-9eb8-b843b9313efc
-\.
-
-
---
--- Data for Name: testtable1; Type: TABLE DATA; Schema: public; Owner: cloudcore
---
-
-COPY public.testtable1 (id, field1) FROM stdin;
-11111111-1111-1111-1111-111111111111	inhalt1
-\.
-
-
---
--- Data for Name: testtable2; Type: TABLE DATA; Schema: public; Owner: cloudcore
---
-
-COPY public.testtable2 (id, uuid1, integer1, boolean1, text1, numeric1, real1, json1) FROM stdin;
-22222222-2222-2222-2222-222222222222	aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa	12345	t	lorem ipsum	12.345	98.7649994	{"f1":123,"f2":"hallo welt","f3":[47,11],"f4":{"hullu":"bullu"}}
-33333333-3333-3333-3333-333333333333	\N	\N	\N	Nur Text	\N	\N	\N
+COPY public.tabs (id, url, label, appid) FROM stdin;
+cae375cc-28f5-4fbe-97a3-a3175a28b924	/setup/tables	Tabellen	9a80bfa4-72a9-43ba-b71c-521520afbb6c
+10da6bd3-e1f8-4eb3-8251-148ccd08efbc	/setup/sqlconsole	SQL Konsole	9a80bfa4-72a9-43ba-b71c-521520afbb6c
+4b380de5-7264-4a52-81aa-ee83e4160176	/setup/packages	Pakete	9a80bfa4-72a9-43ba-b71c-521520afbb6c
+da5b9bd2-2784-4a74-bf07-f32281efb363	/setup/editor	Editor	9a80bfa4-72a9-43ba-b71c-521520afbb6c
 \.
 
 
@@ -372,11 +344,11 @@ COPY public.testtable2 (id, uuid1, integer1, boolean1, text1, numeric1, real1, j
 --
 
 COPY public.views (id, content, contenttype, url) FROM stdin;
-c7f65743-ccc5-4dce-86ec-6ace01fb01c6	<p><a href="/vger">VGER</a></p>\n<p><a href="/setup/editor">Editor</a></p>\n<p><a href="/setup/tables">Tabellen</a></p>\n	text/html	/
 9c8c25ec-2fe7-4ad3-bd63-1935f743e1cd	<!DOCTYPE html>\n<html>\n    <head>\n        <link rel="stylesheet" href="/assets/slds.css">\n        <script src="/ccc/cc-globalnav"></script>\n        <script src="/monaco-editor/min/vs/loader.js"></script>\n        <script>\n        var monacoEditor;\n        var currentView;\n        var currentRouter;\n\n        function openInNewTab() {\n            if (!currentView) return;\n            window.open(currentView.url, '_blank');\n        }\n\n        async function del() {\n            if (currentView) {\n                if (!confirm('Soll die View wirklich gelöscht werden?')) return;\n                await fetch('/api-data/views/' + currentView.id, { method: 'DELETE' });\n                location.href = '?';\n            } else if (currentRouter) {\n                if (!confirm('Soll der Router wirklich gelöscht werden?')) return;\n                await fetch('/api-data/routers/' + currentRouter.id, { method: 'DELETE' });\n                location.href = '?';\n            }\n        }\n\n        async function createView() {\n            var url = prompt('Welche URL?', '/');\n            if (!url) return;\n            var contenttype = prompt('Welcher Content Type?', 'text/html');\n            if (!contenttype) return;\n            var id = (await (await fetch('/api-data/views', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: url, contenttype: contenttype, content: '' }) })).json())[0].id;\n            location.href = '?views/' + id;\n        }\n\n        async function createRouter() {\n            var url = prompt('Welche URL?', '/');\n            if (!url) return;\n            var id = (await (await fetch('/api-data/routers', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: url, code: '' }) })).json())[0].id;\n            location.href = '?routers/' + id;\n        }\n\n        async function save() {\n            if (currentView) {\n                var content = monacoEditor.getValue();\n                await fetch('/api-data/views/' + currentView.id, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: content }) });\n            } else if (currentRouter) {\n                var code = monacoEditor.getValue();\n                await fetch('/api-data/routers/' + currentRouter.id, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: code }) });\n            }\n            var button = document.querySelector('#savebutton');\n            button.classList.add('green');\n            setTimeout(() => {\n                button.classList.remove('green');\n            }, 1000);\n        }\n\n        async function loadView(id) {\n            currentRouter = false;\n            currentView = (await (await fetch('/api-data/views/' + id)).json())[0];\n            monacoEditor.setValue(currentView.content);\n            var language = monaco.languages.getLanguages().find(l => l.mimetypes && (l.mimetypes.indexOf(currentView.contenttype) >= 0));\n            monaco.editor.setModelLanguage(monacoEditor.getModel(), language ? language.id : 'plaintext');\n            document.querySelectorAll('content table .selected').forEach(e => e.classList.remove('selected'));\n            document.getElementById('view-' + id).classList.add('selected');\n            window.history.pushState(null, null, '?views/' + id);\n        }\n\n        async function loadRouter(id) {\n            currentView = false;\n            currentRouter = (await (await fetch('/api-data/routers/' + id)).json())[0];\n            monacoEditor.setValue(currentRouter.code);\n            monaco.editor.setModelLanguage(monacoEditor.getModel(), 'javascript');\n            document.querySelectorAll('content table .selected').forEach(e => e.classList.remove('selected'));\n            document.getElementById('router-' + id).classList.add('selected');\n            window.history.pushState(null, null, '?routers/' + id);\n        }\n\n        async function listViewsAndRouters() {\n            var views = await (await fetch('/api-data/list/views/id,url')).json();\n            views.sort((v1, v2) => v1.url > v2.url ? 1 : -1);\n            var viewlist = document.getElementById('views');\n            viewlist.innerHTML = '';\n            for (var view of views) {\n                viewlist.innerHTML += '<tr id="view-' + view.id + '"><td><a href="#" onclick="loadView(\\'' + view.id + '\\');">' + view.url + '</a></td></tr>';\n            }\n            var routers = await (await fetch('/api-data/list/routers/id,url')).json();\n            routers.sort((r1, r2) => r1.url > r2.url ? 1 : -1);\n            var routerlist = document.getElementById('routers');\n            routerlist.innerHTML = '';\n            for (var router of routers) {\n                routerlist.innerHTML += '<tr id="router-' + router.id + '"><td><a href="#" onclick="loadRouter(\\'' + router.id + '\\');">' + router.url + '</a></td></tr>';\n            }\n        }\n\n        window.addEventListener('load', function() {\n            // MonacoEditor initialisieren\n            require.config({ paths: { 'vs': '/monaco-editor/min/vs' }});\n            require(['vs/editor/editor.main'], function() {\n                monacoEditor = monaco.editor.create(document.getElementById('editor'));\n                if (location.search.length > 1) {\n                    var parts = location.search.substring(1).split('/');\n                    if (parts[0] === 'views') {\n                        loadView(parts[1]);\n                    } else {\n                        loadRouter(parts[1]);\n                    }\n                };\n                monacoEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, save);\n            });        \n            listViewsAndRouters();\n        });\n\n        window.addEventListener('resize', function() {\n            if (monacoEditor) monacoEditor.layout();\n        });\n\n        </script>\n    </head>\n    <body>\n        <cc-globalnav selectedurl="/setup/editor"></cc-globalnav>\n        <header>\n            <img src="https://fonts.gstatic.com/s/i/materialicons/code/v4/24px.svg"/>\n            <subtitle>Setup</subtitle>\n            <page-title>Editor</page-title>\n            <button onclick="createView();">+ View</button>\n            <button onclick="createRouter();">+ Router</button>\n            <button onclick="save();" id="savebutton">Speichern</button>\n            <button onclick="del();">Löschen</button>\n            <button onclick="openInNewTab();">Öffnen</button>\n            <button>\n                <select onchange="monaco.editor.setTheme(this.value);">\n                    <option value="vs">Hell</option>\n                    <option value="vs-dark">Dunkel</option>\n                    <option value="hc-black">Hoher Kontrast</option>\n                </select>\n            </button>\n        </header>\n        <columns class="two-fix-flex">\n            <content style="width:300px;">\n                <table>\n                    <thead><tr><th>Views</th></tr></thead>\n                    <tbody id="views"></tbody>\n                </table>\n                <table>\n                    <thead><tr><th>Routers</th></tr></thead>\n                    <tbody id="routers"></tbody>\n                </table>\n            </content>\n            <content id="editor" style="overflow: hidden;"></content>\n        </columns>\n    </body>\n</html>	text/html	/setup/editor
 b344c26c-d088-4116-ab52-035cdde82a9e	// Siehe https://developers.google.com/web/updates/2017/01/webcomponents-org\n// Und https://googlechromelabs.github.io/howto-components/howto-checkbox/#demo\n// ccc steht für CloudCoreComponent\n(function() {\n\n    var template = document.createElement('template');\n    template.innerHTML = `\n    <style>\n        :host {\n            border-bottom: 3px solid #0070d2;\n            display: flex;\n            background-color: white;\n        }\n        :host > launcherbutton:before {\n            content: "⸬";\n            display: flex;\n            font-size: 21px;\n            padding: 0 14px;\n        }\n        :host > label {\n            font-size: 18px;\n            padding-right: 24px;\n            line-height: 32px;\n        }\n        :host > tablist {\n            display: flex;\n        }\n        :host > tablist > tab {\n            padding: 0 12px;\n            line-height: 30px;\n            border-style: solid;\n            border-width: 3px 0;\n            border-color: transparent;\n            margin-bottom: -3px;\n        }\n        :host > tablist > tab > a, \n        :host > tablist > tab > a:hover {\n            text-decoration: none;\n            color: #080707;\n            padding: 0 12px;\n            line-height: 30px;\n            margin: 0 -12px;\n            display: block;\n        }\n        :host > tablist > tab:hover {\n            border-bottom-color: rgba(0, 0, 0, 0.4);\n            background-color: rgba(0, 112, 210, 0.1);\n        }\n        :host > tablist > tab[selected] {\n            border-top-color: #0070d2;\n            background-color: rgba(0, 112, 210, 0.1);\n        }\n    </style>\n    `;\n\n    class GlobalNav extends HTMLElement {\n\n        static get observedAttributes() {\n            return ['selectedurl'];\n        }\n\n        constructor() {\n            super();\n            this.tabs = [];\n            this.attachShadow({mode: 'open'});\n            this.shadowRoot.appendChild(template.content.cloneNode(true));\n            this.launcherButton = document.createElement('launcherbutton');\n            this.shadowRoot.appendChild(this.launcherButton);\n            this.label = document.createElement('label');\n            this.label.innerHTML = 'Setup';\n            this.shadowRoot.appendChild(this.label);\n            this.tabList = document.createElement('tablist');\n            this.shadowRoot.appendChild(this.tabList);\n        }\n\n        async connectedCallback() {\n            var tabs = await (await fetch('/api-data/list/tabs')).json();\n            tabs.sort((t1, t2) => t1.label > t2.label ? 1 : -1);\n            for (var tab of tabs) {\n                tab.tabElement = this.addTab(tab);\n                this.tabs.push(tab);\n            }\n            if (this.selectedurl) this.setselectedurl(this.selectedurl);\n        }\n\n        setselectedurl(selectedurl) {\n            this.selectedurl = selectedurl;\n            for (var tab of this.tabs) {\n                if (tab.url === selectedurl) {\n                    tab.tabElement.setAttribute('selected', 'selected');\n                } else {\n                    tab.tabElement.removeAttribute('selected');\n                }\n            }\n        }\n\n        attributeChangedCallback(name, _, newValue) {\n            if (name === 'selectedurl') this.setselectedurl(newValue);\n        }\n\n        addTab(tab) {\n            var tabElement = document.createElement('tab');\n            var a = document.createElement('a');\n            a.innerHTML = tab.label;\n            a.setAttribute('href', tab.url);\n            tabElement.appendChild(a);\n            this.tabList.appendChild(tabElement);\n            return tabElement;\n        }\n\n    }\n\n    window.customElements.define('cc-globalnav', GlobalNav);\n\n})();	text/javascript	/ccc/cc-globalnav
 bac21733-0859-4457-a613-9300d7ec3de7	<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <link rel="stylesheet" href="/assets/slds.css">\r\n        <script src="/ccc/cc-globalnav"></script>\r\n        <script>\r\n\r\n            async function createtable() {\r\n                var tablename = window.prompt('Name der neuen Tabelle');\r\n                if(!tablename) return;\r\n                await fetch('/api-schema/tables/' + tablename, { method: 'POST' });\r\n                loadtables();\r\n            }\r\n\r\n            async function deletetable(tablename) {\r\n                if (!confirm('Soll die Tabelle "' + tablename + '" wirklich gelöscht werden?')) return;\r\n                await fetch('/api-schema/tables/' + tablename, { method: 'DELETE' });\r\n                loadtables();\r\n            }\r\n\r\n            async function loadtables() {\r\n                var tables = await (await fetch('/api-schema/tables')).json();\r\n                tables.sort((a, b) => a.table_name > b.table_name ? 1 : -1);\r\n                var tbody = document.querySelector('tbody');\r\n                tbody.innerHTML = '';\r\n                for (var table of tables) {\r\n                    var tr = document.createElement('tr');\r\n                    tr.innerHTML = '<td>' + table.table_name + '</td><td><a href="/setup/tables/content?' + table.table_name + '">Daten</a></td><td><a href="/setup/tables/columns?' + table.table_name + '">Felder</a></td><td><a href="#" onclick="deletetable(\\'' + table.table_name + '\\');">Löschen</a></td>';\r\n                    tbody.appendChild(tr);\r\n                }\r\n            }\r\n\r\n            window.addEventListener('load', loadtables);\r\n\r\n        </script>\r\n    </head>\r\n    <body>\r\n        <cc-globalnav selectedurl="/setup/tables"></cc-globalnav>\r\n        <header>\r\n            <img src="https://fonts.gstatic.com/s/i/materialicons/table_chart/v4/24px.svg"/>\r\n            <subtitle>Setup</subtitle>\r\n            <page-title>Tabellen</page-title>\r\n            <button onclick="createtable();">Neue Tabelle</button>\r\n            <button onclick="window.open('/backup/', '_blank');">Download Backup</button>\r\n        </header>\r\n        <content>\r\n            <table>\r\n                <thead><tr><th>Name</th><th></th><th></th><th></th></tr></thead>\r\n                <tbody></tbody>\r\n            </table>\r\n        </content>\r\n    </body>\r\n</html>	text/html	/setup/tables
 d4d1f905-b12a-4d78-b6e7-0820d8ba4de4	<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <link rel="stylesheet" href="/assets/slds.css">\r\n        <script src="/ccc/cc-globalnav"></script>\r\n        <script>\r\n\r\n            var tablename;\r\n\r\n            function createcolumn() {\r\n                location.href = '/setup/tables/columns/create?' + tablename;\r\n            }\r\n\r\n            async function deletecolumn(columnname) {\r\n                if (!confirm('Really delete column "' + columnname + '"?')) return;\r\n                await fetch('/api-schema/columns/' + tablename + '/' + columnname, { method: 'DELETE' });\r\n                loadcolumns();\r\n            }\r\n\r\n            async function loadcolumns() {\r\n                var columns = await (await fetch('/api-schema/columns/' + tablename)).json();\r\n                var tbody = document.querySelector('tbody');\r\n                tbody.innerHTML = '';\r\n                for (var column of columns) {\r\n                    if (column.table_schema !== 'public') continue;\r\n                    var tr = document.createElement('tr');\r\n                    tr.innerHTML = '<td>' + column.column_name + '</td><td>' + column.data_type + '</td><td><a href="#" onclick="deletecolumn(\\'' + column.column_name + '\\');">Delete</a></td>';\r\n                    tbody.appendChild(tr);\r\n                }\r\n            }\r\n\r\n            window.addEventListener('load', () => {\r\n                tablename = location.search.substring(1);\r\n                document.getElementById('tablename').innerHTML = tablename;\r\n                loadcolumns();\r\n            });\r\n        \r\n        </script>\r\n    </head>\r\n    <body>\r\n        <cc-globalnav selectedurl="/setup/tables"></cc-globalnav>\r\n        <header>\r\n            <img src="https://fonts.gstatic.com/s/i/materialicons/table_chart/v4/24px.svg"/>\r\n            <subtitle>Setup &gt; <a href="/setup/tables">Tabellen</a></subtitle>\r\n            <page-title><span id="tablename"></span> - Spalten</page-title>\r\n            <button onclick="createcolumn();">Neue Spalte</button>\r\n        </header>\r\n        <content>\r\n            <table>\r\n                <thead><tr><th>Name</th><th>Datentyp</th><th></th></tr></thead>\r\n                <tbody></tbody>\r\n            </table>\r\n        </content>\r\n    </body>\r\n</html>\r\n	text/html	/setup/tables/columns
+c7f65743-ccc5-4dce-86ec-6ace01fb01c6	<p><a href="/setup/editor">Editor</a></p>\n<p><a href="/setup/tables">Tabellen</a></p>\n	text/html	/
 52cf145b-f648-4f4a-85af-d9086b51764b	<!DOCTYPE html>\n<html>\n    <head>\n        <link rel="stylesheet" href="assets/slds.css">\n        <script src="/ccc/cc-globalnav"></script>\n    </head>\n    <body>\n        <header>\n            <img src="https://fonts.gstatic.com/s/i/materialicons/table_chart/v4/24px.svg"/>\n            <subtitle><a href="#">Setup</a> &gt; <a href="#">Setup</a> &gt; Setup</subtitle>\n            <page-title>Tables</page-title>\n            <button>New</button>\n        </header>\n        <header>\n            <img src="https://fonts.gstatic.com/s/i/materialicons/table_chart/v4/24px.svg"/>\n            <page-title>Title with very long text. I do not know how long it can get so stay away from me!</page-title>\n            <button>New</button>\n            <button>Save</button>\n            <button>Save</button>\n            <button>Delete</button>\n        </header>\n        <content>\n            <table>\n                <thead>\n                    <tr>\n                        <th>Header 1</th>\n                        <th>Header 2</th>\n                        <th>Header 3</th>\n                        <th>Header 4</th>\n                        <th>Header 5</th>\n                        <th>Header 6</th>\n                        <th>Header 7</th>\n                    </tr>\n                </thead>\n                <tbody>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                    <tr><td><a href="#">Content blubberei mit ganz lagmen Text</a></td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td><td>Content blubberei mit ganz lagmen Text</td></tr>\n                </tbody>\n            </table>\n        </content>\n        <content>\n            <input-field>\n                <input placeholder="Trallala" />\n                <label>Trallala</label>\n            </input-field>\n            <input-field>\n                <input value="Hoppsassa" placeholder="Trallala" />\n                <label>Trallala</label>\n            </input-field>\n            <input-field>\n                <input value="Hoppsassa" placeholder="Trallala" />\n                <label>Trallala</label>\n            </input-field>\n            <input-field>\n                <input value="Hoppsassa" placeholder="Trallala" />\n                <label>Trallala</label>\n            </input-field>\n        </content>\n        <content class="cols-2">\n            <input-field>\n                <input placeholder="Trallala" />\n                <label>Trallala</label>\n            </input-field>\n            <input-field>\n                <input value="Hoppsassa" placeholder="Trallala" />\n                <label>Trallala</label>\n            </input-field>\n            <input-field>\n                <input value="Hoppsassa" placeholder="Trallala" />\n                <label>Trallala</label>\n            </input-field>\n            <input-field>\n                <select>\n                    <option value="integer">INTEGER</option>\n                    <option value="varchar" selected="">VARCHAR</option>\n                </select>\n                <label>Trallala</label>\n            </input-field>\n            <input-field>\n                <textarea></textarea>\n                <label>Fullibulli</label>\n            </input-field>\n        </content>\n    </body>\n</html>	text/html	/layouttest
 6f3433f6-12ea-4f23-b121-2731bc26150e	<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <link rel="stylesheet" href="/assets/slds.css">\r\n        <script src="/ccc/cc-globalnav"></script>\r\n        <script>\r\n\r\n            var tablename;\r\n\r\n            async function createcolumn() {\r\n                var name = document.querySelector('#columnname').value;\r\n                var datatype = document.querySelector('#datatype').value;\r\n                await fetch('/api-schema/columns/' + tablename + '/' + name + '/' + datatype, { method: 'POST' });\r\n                location.href = '/setup/tables/columns?' + tablename;\r\n            }\r\n\r\n            window.addEventListener('load', () => {\r\n                tablename = location.search.substring(1);\r\n                document.getElementById('tablename').innerHTML = tablename;\r\n                document.getElementById('columnslink').setAttribute('href', '/setup/tables/columns?' + tablename);\r\n            });\r\n\r\n        </script>\r\n    </head>\r\n    <body>\r\n        <cc-globalnav selectedurl="/setup/tables"></cc-globalnav>\r\n        <header>\r\n            <img src="https://fonts.gstatic.com/s/i/materialicons/table_chart/v4/24px.svg"/>\r\n            <subtitle>Setup &gt; <a href="/setup/tables">Tabellen</a> &gt; <a href="#" id="columnslink"><span id="tablename"></span> - Spalten</a></subtitle>\r\n            <page-title>Neue Spalte</page-title>\r\n            <button onclick="createcolumn();">Erstellen</button>\r\n        </header>\r\n        <content>\r\n            <input-field>\r\n                <input id="columnname" placeholder="Name" />\r\n                <label>Name</label>\r\n            </input-field>\r\n            <input-field>\r\n                <select id="datatype">\r\n                    <option value="boolean">BOOLEAN</option>\r\n                    <option value="int">INT</option>\r\n                    <option value="json">JSON</option>\r\n                    <option value="numeric">NUMERIC</option>\r\n                    <option value="real">REAL</option>\r\n                    <option value="text" selected>TEXT</option>\r\n                    <option value="uuid">UUID</option>\r\n                </select>\r\n                <label>Datentyp</label>\r\n            </input-field>\r\n        </content>\r\n    </body>\r\n</html>\r\n	text/html	/setup/tables/columns/create
 7aa3d0b9-35cd-49f7-9db0-667a3b2a02a3	<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <link rel="stylesheet" href="/assets/slds.css">\r\n        <script src="/ccc/cc-globalnav"></script>\r\n        <script>\r\n\r\n            var tablename;\r\n\r\n            function createcontent() {\r\n                location.href = '/setup/tables/content/edit?' + tablename;\r\n            }\r\n\r\n            function htmlencode(str) {\r\n                return ('' + str).replace(/</g, '&lt;').replace(/>/g, '&gt;')\r\n            }\r\n\r\n            async function deletecontent(id) {\r\n                if (!confirm('Soll der Inhalt mit der Id "' + id + '" wirklich gelöscht werden?')) return;\r\n                await fetch('/api-data/' + tablename + '/' + id, { method: 'DELETE' });\r\n                loadcontent();\r\n            }\r\n\r\n            async function loadcontent() {\r\n                var content = await (await fetch('/api-data/list/' + tablename)).json();\r\n                var tbody = document.querySelector('tbody');\r\n                tbody.innerHTML = '';\r\n                console.log(content);\r\n                var columns = {};\r\n                var maxlength = 1000;\r\n                for (var entity of content) {\r\n                    var tr = document.createElement('tr');\r\n                    tbody.appendChild(tr);\r\n                    for (var key of Object.keys(entity)) {\r\n                        columns[key] = true;\r\n                    }\r\n                    tr.innerHTML = Object.values(entity).map(v => {\r\n                        if ((typeof v) === 'object') v = JSON.stringify(v);\r\n                        var text = htmlencode(v && v.length > maxlength ? v.substring(0, maxlength) : v);\r\n                        return '<td title="' + text.replace(/\\"/g, '&quot;') + '">' + text + '</td>';\r\n                    }).join('');\r\n                    tr.innerHTML += '<td><a href="/setup/tables/content/edit?' + tablename + '/' + entity.id + '">Bearbeiten</a></td><td><a href="#" onclick="deletecontent(\\'' + entity.id + '\\');">Löschen</a></td>';\r\n                }\r\n                var thead = document.querySelector('thead');\r\n                thead.innerHTML = '<tr>' + Object.keys(columns).map(c => '<th>' + c + '</th>').join('') + '<th></th><th></th></tr>';\r\n            }\r\n\r\n            window.addEventListener('load', () => {\r\n                tablename = location.search.substring(1);\r\n                document.getElementById('tablename').innerHTML = tablename;\r\n                loadcontent();\r\n            });\r\n        \r\n        </script>\r\n    </head>\r\n    <body>\r\n        <cc-globalnav selectedurl="/setup/tables"></cc-globalnav>\r\n        <header>\r\n            <img src="https://fonts.gstatic.com/s/i/materialicons/table_chart/v4/24px.svg"/>\r\n            <subtitle>Setup &gt; <a href="/setup/tables">Tabellen</a></subtitle>\r\n            <page-title><span id="tablename"></span> - Inhalt</page-title>\r\n            <button onclick="createcontent();">Neuer Inhalt</button>\r\n        </header>\r\n        <content>\r\n            <table>\r\n                <thead></thead>\r\n                <tbody></tbody>\r\n            </table>\r\n        </content>\r\n    </body>\r\n</html>\r\n	text/html	/setup/tables/content
@@ -418,6 +390,14 @@ SELECT pg_catalog.setval('public.views_id_seq', 26, true);
 
 
 --
+-- Name: apps apps_pkey; Type: CONSTRAINT; Schema: public; Owner: cloudcore
+--
+
+ALTER TABLE ONLY public.apps
+    ADD CONSTRAINT apps_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: packageentities packageentities_pkey; Type: CONSTRAINT; Schema: public; Owner: cloudcore
 --
 
@@ -455,30 +435,6 @@ ALTER TABLE ONLY public.routers
 
 ALTER TABLE ONLY public.routers
     ADD CONSTRAINT routers_url_key2 UNIQUE (url);
-
-
---
--- Name: test test_pkey; Type: CONSTRAINT; Schema: public; Owner: cloudcore
---
-
-ALTER TABLE ONLY public.test
-    ADD CONSTRAINT test_pkey PRIMARY KEY (id);
-
-
---
--- Name: testtable1 testtable1_pkey; Type: CONSTRAINT; Schema: public; Owner: cloudcore
---
-
-ALTER TABLE ONLY public.testtable1
-    ADD CONSTRAINT testtable1_pkey PRIMARY KEY (id);
-
-
---
--- Name: testtable2 testtable2_pkey; Type: CONSTRAINT; Schema: public; Owner: cloudcore
---
-
-ALTER TABLE ONLY public.testtable2
-    ADD CONSTRAINT testtable2_pkey PRIMARY KEY (id);
 
 
 --
