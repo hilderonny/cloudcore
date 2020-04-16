@@ -18,11 +18,9 @@ var fs = require('fs');
         await client.query("ALTER TABLE routers ADD COLUMN IF NOT EXISTS code VARCHAR;");
         await client.query("ALTER TABLE routers ADD COLUMN IF NOT EXISTS url VARCHAR(255) UNIQUE;");
 
+        // TODO: Paketupload als einzige API nativ bereitstellen
         // Standardviews vorbereiten
         await client.query("INSERT INTO views (url, contenttype, content) VALUES ($1, $2, $3) ON CONFLICT (url) DO NOTHING;", ['/', 'text/html', '<a href="/vger">VGER</a>']);
-
-        // Demo-Router in Datenbank eintragen. Reagiert auf /fubbele/eins und /fubbele/zwei/:zahl und /fubbele/hubbele/:tablename
-        await client.query("INSERT INTO routers (url, code) VALUES ($1, $2) ON CONFLICT (url) DO NOTHING;", ['/fubbele', fs.readFileSync(__dirname + '/vger/router.js')]);
 
         await client.end();
     } catch (ex) {

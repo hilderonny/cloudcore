@@ -18,9 +18,6 @@ app.use('/assets', express.static(__dirname + '/node_modules/@salesforce-ux/desi
 // Monaco code editor
 app.use('/monaco-editor', express.static(__dirname + '/node_modules/monaco-editor'));
 
-// Basis-Funktionen bereitstellen
-app.use('/vger', express.static(__dirname + '/vger'));
-
 // APIs einbinden
 fs.readdirSync(__dirname + '/api').forEach(apifile => {
     var fileparts = apifile.split('.');
