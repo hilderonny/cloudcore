@@ -4,7 +4,7 @@
 
 cd /root/gitlab/hilderonny/cloudcore
 git pull
-wget http://localhost/backup/ -O ./backup/$(date +"%Y-%m-%d").sql
+wget http://localhost/backup/ -O ./backup/autobackup.sql
 git add .
-git commit -m "Backup"
+git commit -m "Automatic backup"
 git push
