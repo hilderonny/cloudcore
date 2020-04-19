@@ -15,7 +15,7 @@ var pg = require('pg');
         await client.query("ALTER TABLE users ADD CONSTRAINT username UNIQUE (username);");
 
         // Standardbenutzer 'system' vorbereiten, der dient als Besitzer für alle allgemeinen Datensätze
-        await client.query("INSERT INTO users (username) VALUES ($1) ON CONFLICT (username) DO NOTHING;", ['system']);
+        await client.query("INSERT INTO users (username) VALUES ('system') ON CONFLICT (username) DO NOTHING;");
 
         await client.end();
     } catch (ex) {

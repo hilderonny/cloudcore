@@ -16,6 +16,7 @@
     "jsonwebtoken": "^8.5.1",
     "monaco-editor": "^0.20.0",
     "pg": "^8.0.0",
+    "pg-query-parser": "^0.2.4",
     "unzipper": "^0.10.10"
   },
   "devDependencies": {
