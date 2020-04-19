@@ -15,7 +15,8 @@
                 "PGUSER": "cloudcore",
                 "PGPASSWORD": "cloudcore",
                 "PGDATABASE": "cloudcore",
-                "PGPORT": "5432"
+                "PGPORT": "5432",
+                "TOKENKEY": "sachichnich"
             }
         },
         {

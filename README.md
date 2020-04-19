@@ -35,12 +35,13 @@ After=network.target
 [Service]
 Type=idle
 WorkingDirectory=/root/gitlab/hilderonny/cloudcore
-Environment="PORT=80"
-Environment="PGHOST=localhost"
-Environment="PGUSER=cloudcore"
-Environment="PGPASSWORD=cloudcore"
-Environment="PGDATABASE=cloudcore"
-Environment="PGPORT=5432"
+Environment=PORT=80
+Environment=PGHOST=localhost
+Environment=PGUSER=cloudcore
+Environment=PGPASSWORD=cloudcore
+Environment=PGDATABASE=cloudcore
+Environment=PGPORT=5432
+Environment=TOKENKEY=sachichnich
 ExecStart=/usr/bin/node /root/gitlab/hilderonny/cloudcore/server.js
 [Install]
 WantedBy=default.target
