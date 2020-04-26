@@ -10,7 +10,7 @@ router.post('/', async (req, res) => {
         await req.db.query("delete from packagefields where packageid='" + row.id + "';");
         await req.db.query("delete from packages where id='" + row.id + "';");
     }
-    var packageid = (await req.db.query("insert into packages (name) values ('" + packagename + "') returning id;")).rows[0].id;
+    var packageid = (await req.db.query("insert into packages (name, description) values ('" + packagename + "', '" + packagejson.description + "') returning id;")).rows[0].id;
     // Tabellen und Felder anlegen und erweitern
     for (var [tablename, fields] of Object.entries(packagejson.fields)) {
         await req.db.query("CREATE TABLE IF NOT EXISTS " + tablename + " (id UUID PRIMARY KEY DEFAULT uuid_generate_v4());");
