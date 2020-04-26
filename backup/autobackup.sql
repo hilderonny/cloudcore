@@ -289,6 +289,7 @@ f2855b75-63f6-4aed-b6f0-8c412d546dd6	tabs	fdcfddb4-6ab2-4597-b647-7a8930d07033	c
 9e4614f3-d137-4f55-a889-12eb92738db9	tabs	fdcfddb4-6ab2-4597-b647-7a8930d07033	10da6bd3-e1f8-4eb3-8251-148ccd08efbc
 36c1d36a-9df3-4317-9191-670934039100	tabs	fdcfddb4-6ab2-4597-b647-7a8930d07033	da5b9bd2-2784-4a74-bf07-f32281efb363
 e14222c9-5b0d-4b05-9a81-7f98888d53a3	users	e16df70d-7ba7-42a7-9973-2ad98d8d2bd1	6f6b93ae-94e5-45b0-904f-83a8b37e1627
+b88c8b6b-5846-46c5-9f12-577c2038946b	routers	fdcfddb4-6ab2-4597-b647-7a8930d07033	0d689490-685b-4260-9bc5-7ab712666b6e
 \.
 
 
@@ -297,31 +298,15 @@ e14222c9-5b0d-4b05-9a81-7f98888d53a3	users	e16df70d-7ba7-42a7-9973-2ad98d8d2bd1	
 --
 
 COPY public.packagefields (id, fieldname, tablename, packageid) FROM stdin;
-fd641d60-dc19-4be6-ae4b-9503af0bbda1	name	packages	4e596017-1984-43e7-bb99-1c005f2ef32a
-c29edd42-716a-4e4b-be08-eaca37453050	entityid	packageentities	4e596017-1984-43e7-bb99-1c005f2ef32a
-16295d50-b8f7-4dd8-98c8-076bc69a8831	tablename	packageentities	4e596017-1984-43e7-bb99-1c005f2ef32a
-cdcac35d-609c-4de8-a04a-63c86cdaa879	packageid	packageentities	4e596017-1984-43e7-bb99-1c005f2ef32a
-a0ffe771-c6f0-423c-8b35-22c0c57bfc2d	tablename	packagefields	4e596017-1984-43e7-bb99-1c005f2ef32a
-f8a8d4d1-828b-4b85-b477-55170a7496c6	packageid	packagefields	4e596017-1984-43e7-bb99-1c005f2ef32a
-8ef614ad-270f-4130-9ceb-e5cada3f4866	fieldname	packagefields	4e596017-1984-43e7-bb99-1c005f2ef32a
-b4b8e2f9-30d7-4a7d-93c6-3396b1c6dd7a	name	packages	e842cea5-da51-4801-9403-1a8bd82a178b
-7e9b74ee-6131-4758-bd7a-0f2baf99a92f	description	packages	e842cea5-da51-4801-9403-1a8bd82a178b
 1cd466a2-1ea5-444b-a2e8-ce9d74ea6715	url	routers	e842cea5-da51-4801-9403-1a8bd82a178b
 794c8af6-a2e1-47ba-91ce-f96f899392c2	code	routers	e842cea5-da51-4801-9403-1a8bd82a178b
-50a04051-d74b-46bb-9c77-660116002dd6	entityid	packageentities	e842cea5-da51-4801-9403-1a8bd82a178b
-fde3a46b-950b-4f2f-b0bc-cf767b887620	tablename	packageentities	e842cea5-da51-4801-9403-1a8bd82a178b
-93c4b275-fa3f-4a5a-a8f9-df9bf1a72c76	packageid	packageentities	e842cea5-da51-4801-9403-1a8bd82a178b
 004c2856-1cc4-41c5-b557-2bf14ba8b0ab	content	views	e842cea5-da51-4801-9403-1a8bd82a178b
 68b247d3-cce8-4fcb-b18c-78a4e0fa2126	url	views	e842cea5-da51-4801-9403-1a8bd82a178b
 1c0115a9-31e9-493f-8086-3bf3414b2ffd	contenttype	views	e842cea5-da51-4801-9403-1a8bd82a178b
-7352ead9-e8b4-49c4-b6b5-2a497eddd5e3	tablename	packagefields	e842cea5-da51-4801-9403-1a8bd82a178b
-f059099d-0fe9-429e-b529-0d4a449020aa	packageid	packagefields	e842cea5-da51-4801-9403-1a8bd82a178b
-4aafdfec-7ae7-4bda-b816-cd4b4e33b89a	fieldname	packagefields	e842cea5-da51-4801-9403-1a8bd82a178b
 8bf22c1e-1d0f-457b-a2dc-3f9225738c7b	label	tabs	e842cea5-da51-4801-9403-1a8bd82a178b
 d4933121-4070-4a05-ade9-e0df623651c8	url	tabs	e842cea5-da51-4801-9403-1a8bd82a178b
 1443ee29-4e2a-46cb-b5bc-effefef79f5e	appid	tabs	e842cea5-da51-4801-9403-1a8bd82a178b
 a0da8ee5-196a-463f-8911-00d4eb0377fc	label	apps	e842cea5-da51-4801-9403-1a8bd82a178b
-f2e3f953-91bb-458e-84a0-f3df7452594e	description	packages	4e596017-1984-43e7-bb99-1c005f2ef32a
 d0e30a9e-6779-4837-a082-8c375cc7d97e	password	users	e16df70d-7ba7-42a7-9973-2ad98d8d2bd1
 d791f7d8-ecb9-4697-a652-543872b2d881	username	users	e16df70d-7ba7-42a7-9973-2ad98d8d2bd1
 85916ec1-63d4-467a-867b-407bd9c118d7	ispublic	apps	e16df70d-7ba7-42a7-9973-2ad98d8d2bd1
