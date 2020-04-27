@@ -9,6 +9,7 @@ var views = require('./middleware/views');
 
 // Server konfigurieren
 var app = express();
+app.use(bodyParser.text()); // Content-type: text/plain
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(db);
