@@ -33,7 +33,7 @@ Dient als Grundlage für andere Erweiterungen, wie etwa das `packaging` - Paket,
 
 Keine.
 
-## Backup und Restore
+## Backup
 
 Auf dem Server ist in `etc/crontab` ein Job eingerichtet, der täglich die `backup.sh` ausführt.
 
@@ -53,3 +53,17 @@ git push
 
 Git verhält sich dabei so, dass nur dann ein Commit durchgeführt wurde, wenn es wirklich Änderungen gab. Also nur dann, wenn in der Datenbank was geändert wurde und somit der Dump anders aussieht. Dadurch kann es passieren, dass an manchen Tagen, wo nix passiert, auch kein automatisches Backup im git auftaucht.
 
+Das Wiederherstellen muss manuell von der Kommandozeile aus gemacht werden, da dabei die Datenbank gelöscht und vollständig wieder aufgebaut werden muss. Dabei dürfen keine offenen Datenbankverbindungen bestehen.
+
+```sh
+# CloudCore stoppen, um die Verbindungen zur Datenbank zu kappen
+service cloudcore stop
+sudo -u postgres psql
+# In der SQL-Konsole ausführen
+DROP DATABASE cloudcore;
+CREATE DATABASE cloudcore;
+CREATE USER cloudcore WITH PASSWORD 'cloudcore';
+GRANT ALL PRIVILEGES ON DATABASE cloudcore to cloudcore;
+# Dann mit STRG-D SQL Konsole beenden und Backup wiederherstellen
+sudo -u postgres psql --dbname=cloudcore < ./backup/autobackup.sql
+```

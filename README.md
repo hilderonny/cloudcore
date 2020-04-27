@@ -83,4 +83,4 @@ PORT=80 PGPORT=5432 PGHOST=localhost PGUSER=cloudcore PGPASSWORD=cloudcore PGDAT
 
 ## Datenbank-Backup
 
-Das Backup und Wiederherstellen der Datenbank ist Teil des [Setup-Paketes](packages/SETUP.md#backup-und-restore) und eben dort auch beschrieben.
+Das Backup der Datenbank ist Teil des [Setup-Paketes](packages/SETUP.md#backup-und-restore) und eben dort auch beschrieben.
