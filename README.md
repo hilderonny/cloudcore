@@ -1,6 +1,6 @@
 # cloudcore
 
-[![pipeline status](https://gitlab.com/hilderonny/cloudcore/badges/2020/pipeline.svg)](https://gitlab.com/hilderonny/cloudcore/commits/2020)
+[![pipeline status](https://gitlab.com/hilderonny/cloudcore/badges/master/pipeline.svg)](https://gitlab.com/hilderonny/cloudcore/commits/master)
 
 CloudCore soll sowas wie eine Mischung aus Arrange und Salesforce sein.
 Ich möchte damit auf einem Server mit Datenbank eine Anwendung per Oberfläche bauen können, also Entitäten, APIs und Code schreiben können, ohne die Anwendung ständig neu starten zu müssen.
@@ -20,8 +20,8 @@ cd gitlab/hilderonny
 git clone https://gitlab.com/hilderonny/cloudcore.git
 cd cloudcore
 git config credential.helper store
-# Branch 2020 auschecken
-git checkout 2020
+# Branch master auschecken
+git checkout master
 npm i
 ```
 
