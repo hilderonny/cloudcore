@@ -1,0 +1,58 @@
+{
+    // Verwendet IntelliSense zum Ermitteln möglicher Attribute.
+    // Zeigen Sie auf vorhandene Attribute, um die zugehörigen Beschreibungen anzuzeigen.
+    // Weitere Informationen finden Sie unter https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Normal starten",
+            "program": "${workspaceFolder}/server.js",
+            "env": {
+                "PORT" : "8080",
+                "PGHOST": "192.168.178.2",
+                "PGUSER": "cloudcore",
+                "PGPASSWORD": "cloudcore",
+                "PGDATABASE": "cloudcore",
+                "PGPORT": "5432",
+                "TOKENKEY": "sachichnich"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Beim Speichern neu starten",
+            "program": "${workspaceFolder}/server.js",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",
+            "restart": true, 
+            "cwd": "${workspaceRoot}", 
+            "runtimeArgs": ["--inspect=5858"], 
+            "port": 5858, 
+            "console": "integratedTerminal", 
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "PORT" : "8080",
+                "PGHOST": "192.168.178.2",
+                "PGUSER": "cloudcore",
+                "PGPASSWORD": "cloudcore",
+                "PGDATABASE": "cloudcore",
+                "PGPORT": "5432"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Installieren",
+            "program": "${workspaceFolder}/install.js",
+            "env": {
+                "PORT" : "8080",
+                "PGHOST": "192.168.178.2",
+                "PGUSER": "cloudcore",
+                "PGPASSWORD": "cloudcore",
+                "PGDATABASE": "cloudcore",
+                "PGPORT": "5432"
+            }
+        },
+    ]
+}

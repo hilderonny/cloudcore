@@ -1,86 +1,86 @@
 # cloudcore
 
-[![pipeline status](https://gitlab.com/hilderonny/cloudcore/badges/master/pipeline.svg)](https://gitlab.com/hilderonny/cloudcore/commits/master)
-[![coverage report](https://gitlab.com/hilderonny/cloudcore/badges/master/coverage.svg)](https://gitlab.com/hilderonny/cloudcore/commits/master)
+[![pipeline status](https://gitlab.com/hilderonny/cloudcore/badges/2020/pipeline.svg)](https://gitlab.com/hilderonny/cloudcore/commits/2020)
 
-## Usage
+CloudCore soll sowas wie eine Mischung aus Arrange und Salesforce sein.
+Ich möchte damit auf einem Server mit Datenbank eine Anwendung per Oberfläche bauen können, also Entitäten, APIs und Code schreiben können, ohne die Anwendung ständig neu starten zu müssen.
 
-Installation is done in that way.
+Besteht grundlegen aus `routers` - das sind API Endpunkte, die serverseitigen Code ausführen und irgendwelche Aktionen machen und Ergebnisse liefern - und `views`, zumeist reine HTML-Dateien, die die Router benutzen, um mit der Anwendung zu interagieren und dem Benutzer irgendwas anzuzeigen.
 
-```
-npm i --save @hilderonny/cloudcore
-```
+## Installation unter Linux
 
-Create an ```index.js``` file with the following content.
-
-```js
-const arrange = require('@hilderonny/cloudcore');
-const server = new arrange.Server(
-    process.env.PORT || 8080, 
-    process.env.DBURL || '127.0.0.1:27017/mydatabase',
-    process.env.TOKENSECRET || 'mytokensecret'
-);
-server.start();
-```
-
-Run the server with
-
-```
-node index.js
+```sh
+# NodeJS
+curl -sL https://deb.nodesource.com/setup_13.x | bash -
+# Postgres, git
+apt install postgresql nodejs gcc g++ make git
+mkdir -p gitlab/hilderonny
+cd gitlab/hilderonny
+# Repository klonen
+git clone https://gitlab.com/hilderonny/cloudcore.git
+cd cloudcore
+git config credential.helper store
+# Branch 2020 auschecken
+git checkout 2020
+npm i
 ```
 
-In the client HTML file of your project include arrange in this way.
-
-```html
-<html>
-    <head>
-        <script src="/arrange/arrange.js"></script>
-        <script>
-            // Now you can access arrange functions via the $arr object
-            window.addEventListener('load', async function() {
-                // Create arrange instance connected to the local server
-                // To connect to a different server, use const arr = Arrange('https://mydomain.com')
-                const arr = Arrange();
-                // Login to arrange
-                await arr.login('myusername', 'password');
-                // Fetch a list of all entities of the "models" table
-                let modellist = await arr.list('models');
-            });
-        </script>
-    </head>
-</html>
-```
-
-The API definition and usage examples can be found [here](client/README.md).
-
-## Releases
-
-|Version|Content|
-|---|---|
-|1.3.1|Bugfixes in client library|
-|1.3.0|List API now supports result filters. Added client library documentation [here](client/README.md)|
-|1.2.0|Added delete API|
-|1.1.2|list and details API now return only publicly visible entities when user is not logged in|
-|1.1.1|Newly created objects have the currently logged in user as owner|
-|1.1.0|Implemented several APIs for first productive use including full tests|
-|1.0.3|request.user._id is now a string for compatibility|
-|1.0.2|Added APIs for user login and registration and authentication middleware|
-|1.0.1|Initial NPM package without any functionality|
-
-## Howto create NPM package
+Daemon-Skript unter /etc/systemd/system/cloudcore.service einrichten.
 
 ```
-npm install npm@latest -g
-npm init --scope=@hilderonny
-npm adduser
-npm publish --access public
+[Unit]
+Description=cloudcore
+After=network.target
+[Service]
+Type=idle
+WorkingDirectory=/root/gitlab/hilderonny/cloudcore
+Environment=PORT=80
+Environment=PGHOST=localhost
+Environment=PGUSER=cloudcore
+Environment=PGPASSWORD=cloudcore
+Environment=PGDATABASE=cloudcore
+Environment=PGPORT=5432
+Environment=TOKENKEY=sachichnich
+ExecStart=/usr/bin/node /root/gitlab/hilderonny/cloudcore/server.js
+[Install]
+WantedBy=default.target
 ```
 
-For all following deployments to NPM you need to update the version in the ```package.json``` file and run ```npm publish```.
+Daemon starten
 
-In dependent projects the lib can be updated to the newest version with ```npm up```.
+```
+chmod 644 /etc/systemd/system/cloudcore.service
+systemctl enable cloudcore.service
+systemctl daemon-reload
+systemctl start cloudcore.service
+```
 
-## Links
+## Erster Start
 
-* [Creating Node.js modules](https://docs.npmjs.com/creating-node-js-modules)
-* [Before publishing to NPM](https://docs.npmjs.com/misc/developers#before-publishing-make-sure-your-package-installs-and-works)
+Auf dem Datenbankserver soll eine Datenbank angelegt werden (mit `su - postgres` und `psql`), siehe [Anleitung](https://medium.com/@mohammedhammoud/postgresql-create-user-create-database-grant-privileges-access-aabb2507c0aa):
+
+```
+CREATE DATABASE cloudcore;
+CREATE USER cloudcore WITH PASSWORD 'cloudcore';
+GRANT ALL PRIVILEGES ON DATABASE cloudcore to cloudcore;
+```
+
+Zum Vorbereiten der Datenbank muss `node install.js` aufgerufen werden. Das installiert die Postgres-Erweiterung `uuid-ossp`. Außerdem werden die für die Paketinstallation notwendigen Tabellen erstellt.
+
+Die Pakete `core.json`, `setup.json` und `packaging.json` können danach mit curl über die API `/packageupload` installiert werden.
+
+```
+curl --header "Content-Type: application/json" --request POST --data @packages/core.json http://localhost/packageupload/
+curl --header "Content-Type: application/json" --request POST --data @packages/setup.json http://localhost/packageupload/
+curl --header "Content-Type: application/json" --request POST --data @packages/packaging.json http://localhost/packageupload/
+```
+
+## Manuell zum Testen starten
+
+```sh
+PORT=80 PGPORT=5432 PGHOST=localhost PGUSER=cloudcore PGPASSWORD=cloudcore PGDATABASE=cloudcore TOKENKEY=sachichnich node ./server.js
+```
+
+## Datenbank-Backup
+
+Das Backup der Datenbank ist Teil des [Setup-Paketes](packages/SETUP.md#backup-und-restore) und eben dort auch beschrieben.
