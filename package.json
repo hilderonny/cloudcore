@@ -19,6 +19,7 @@
     "unzipper": "^0.10.10"
   },
   "devDependencies": {
+    "mocha": "^7.1.2",
     "nodemon": "^2.0.2"
   }
 }
