@@ -7,6 +7,8 @@ Ich möchte damit auf einem Server mit Datenbank eine Anwendung per Oberfläche 
 
 Besteht grundlegen aus `routers` - das sind API Endpunkte, die serverseitigen Code ausführen und irgendwelche Aktionen machen und Ergebnisse liefern - und `views`, zumeist reine HTML-Dateien, die die Router benutzen, um mit der Anwendung zu interagieren und dem Benutzer irgendwas anzuzeigen.
 
+[Dokumentation](https://hilderonny.gitlab.io/cloudcore)
+
 ## Installation unter Linux
 
 ```sh
