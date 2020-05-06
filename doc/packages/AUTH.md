@@ -1,4 +1,4 @@
-# AUTH
+# Paket auth - Authentifizierung
 
 Bietet Funktionen zur Registrierung, Anmeldung und Validierung von Benutzern. Fügt den Grundtabellen `apps`, `routers`, `tabs` und `views` Besitzerinformationen hinzu, die zur Berechtigungsprüfung benutzt werden können.
 

@@ -1,4 +1,4 @@
-# SETUP
+# Paket setup - Einstellungen
 
 In der App Setup sind der Code-Editor, die SQL-Konsole sowie die Oberfläche zur Bearbeitung von TZabellen und deren Inhalte enthalten.
 

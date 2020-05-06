@@ -1,4 +1,4 @@
-# CORE
+# Paket core - Kernfunktionen
 
 Dieses Paket sollte stets installiert sein, um Grundfunktionen für den Betrieb zu liefern.
 

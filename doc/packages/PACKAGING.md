@@ -1,4 +1,4 @@
-# PACKAGING
+# Paket packaging - Paketierung
 
 Erstellung und Konfiguration von Paketen samt Herunterladen als JSON.
 
