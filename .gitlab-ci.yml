@@ -1,22 +1,23 @@
 image: node:latest
 
+services:
+  - postgres:10.12-alpine
+variables:
+  POSTGRES_DB: cloudcoretest
+  POSTGRES_USER: cloudcoretest
+  POSTGRES_PASSWORD: "cloudcoretest"
+  POSTGRES_HOST_AUTH_METHOD: trust
+  PGHOST: postgres
+
 stages:
   - test
   - deploy
 
 test:
   stage: test
-  services:
-    - postgres:10.12-alpine
   before_script:
     - apt-get update && apt-get install -y postgresql-contrib
     - psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname="$POSTGRES_DB" -c "CREATE EXTENSION IF NOT EXISTS 'uuid-ossp';"
-  variables:
-    POSTGRES_DB: cloudcoretest
-    POSTGRES_USER: cloudcoretest
-    POSTGRES_PASSWORD: "cloudcoretest"
-    POSTGRES_HOST_AUTH_METHOD: trust
-    PGHOST: postgres
   script:
     - npm i
     - npm test
