@@ -13,6 +13,8 @@ var config = {
     TOKENKEY: "sachichnich"
 };
 
+console.log(config);
+
 module.exports = {
     prepare: async () => {
         if (fs.existsSync('./config.json')) {
