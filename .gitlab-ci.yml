@@ -7,7 +7,9 @@ stages:
 test:
   stage: test
   services:
-    - lkameris/postgres-uuid
+    - postgres:10.12-alpine
+  before_script:
+    - psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname="$POSTGRES_DB" -c "CREATE EXTENSION IF NOT EXISTS 'uuid-ossp';"
   variables:
     POSTGRES_DB: cloudcoretest
     POSTGRES_USER: cloudcoretest
