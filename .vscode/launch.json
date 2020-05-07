@@ -9,25 +9,6 @@
             "request": "launch",
             "name": "Normal starten",
             "program": "${workspaceFolder}/server.js"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Beim Speichern neu starten",
-            "program": "${workspaceFolder}/server.js",
-            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",
-            "restart": true, 
-            "cwd": "${workspaceRoot}", 
-            "runtimeArgs": ["--inspect=5858"], 
-            "port": 5858, 
-            "console": "integratedTerminal", 
-            "internalConsoleOptions": "neverOpen"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Installieren",
-            "program": "${workspaceFolder}/install.js"
-        },
+        }
     ]
 }

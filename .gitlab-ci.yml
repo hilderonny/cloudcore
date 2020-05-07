@@ -1,9 +1,21 @@
 image: alpine:latest
 
+stages:
+  - test
+  - deploy
+
+test:
+  stage: test
+  script:
+    - npm i npm@latest -g
+    - npm i
+    - npm test
+  coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
+
 pages:
   stage: deploy
   script:
-  - mv doc public
+    - mv doc public
   artifacts:
     paths:
     - public

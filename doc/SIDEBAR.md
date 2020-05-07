@@ -8,3 +8,4 @@
 * [HowTo's](HOWTOS.md)
     * [Hallo Notizen](howtos/HELLONOTES.md)
     * [Paketerstellung](howtos/PAKETERSTELLUNG.md)
+    * [Tests schreiben](howtos/TESTSSCHREIBEN.md)

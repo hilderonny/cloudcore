@@ -1,7 +1,8 @@
 var pg = require('pg');
 var fs = require('fs');
 
-(async () => {
+// Aufruf mit: node -e 'require("./install")();'
+module.exports = async () => {
     try {
         var config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
 
@@ -35,4 +36,4 @@ var fs = require('fs');
         console.log(ex);
     }
     console.log('FETTIG!');
-})();
+};

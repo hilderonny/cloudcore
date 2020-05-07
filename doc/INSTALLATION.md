@@ -65,7 +65,7 @@ CREATE USER cloudcore WITH PASSWORD 'cloudcore';
 GRANT ALL PRIVILEGES ON DATABASE cloudcore to cloudcore;
 ```
 
-Zum Vorbereiten der Datenbank muss `node install.js` aufgerufen werden. Das installiert die Postgres-Erweiterung `uuid-ossp`. Außerdem werden die für die Paketinstallation notwendigen Tabellen erstellt.
+Zum Vorbereiten der Datenbank muss `node -e 'require("./install")();'` aufgerufen werden. Das installiert die Postgres-Erweiterung `uuid-ossp`. Außerdem werden die für die Paketinstallation notwendigen Tabellen erstellt.
 
 Die Pakete `core.json`, `setup.json` und `packaging.json` können danach mit curl über die API `/packageupload` installiert werden.
 
