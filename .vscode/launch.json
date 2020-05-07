@@ -8,16 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Normal starten",
-            "program": "${workspaceFolder}/server.js",
-            "env": {
-                "PORT" : "8080",
-                "PGHOST": "192.168.178.2",
-                "PGUSER": "cloudcore",
-                "PGPASSWORD": "cloudcore",
-                "PGDATABASE": "cloudcore",
-                "PGPORT": "5432",
-                "TOKENKEY": "sachichnich"
-            }
+            "program": "${workspaceFolder}/server.js"
         },
         {
             "type": "node",
@@ -30,29 +21,13 @@
             "runtimeArgs": ["--inspect=5858"], 
             "port": 5858, 
             "console": "integratedTerminal", 
-            "internalConsoleOptions": "neverOpen",
-            "env": {
-                "PORT" : "8080",
-                "PGHOST": "192.168.178.2",
-                "PGUSER": "cloudcore",
-                "PGPASSWORD": "cloudcore",
-                "PGDATABASE": "cloudcore",
-                "PGPORT": "5432"
-            }
+            "internalConsoleOptions": "neverOpen"
         },
         {
             "type": "node",
             "request": "launch",
             "name": "Installieren",
-            "program": "${workspaceFolder}/install.js",
-            "env": {
-                "PORT" : "8080",
-                "PGHOST": "192.168.178.2",
-                "PGUSER": "cloudcore",
-                "PGPASSWORD": "cloudcore",
-                "PGDATABASE": "cloudcore",
-                "PGPORT": "5432"
-            }
+            "program": "${workspaceFolder}/install.js"
         },
     ]
 }

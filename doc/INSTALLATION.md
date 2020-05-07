@@ -18,6 +18,20 @@ git checkout master
 npm i
 ```
 
+Konfigurationsdatei `config.json` im ausgecheckten Stammordner (neben `server.js`) erstellen.
+
+```json
+{
+    "PORT": "80",
+    "PGHOST": "localhost",
+    "PGUSER": "cloudcore",
+    "PGPASSWORD": "cloudcore",
+    "PGDATABASE": "cloudcore",
+    "PGPORT": "5432",
+    "TOKENKEY": "sachichnich"
+}
+```
+
 Daemon-Skript unter /etc/systemd/system/cloudcore.service einrichten.
 
 ```
@@ -27,13 +41,6 @@ After=network.target
 [Service]
 Type=idle
 WorkingDirectory=/root/gitlab/hilderonny/cloudcore
-Environment=PORT=80
-Environment=PGHOST=localhost
-Environment=PGUSER=cloudcore
-Environment=PGPASSWORD=cloudcore
-Environment=PGDATABASE=cloudcore
-Environment=PGPORT=5432
-Environment=TOKENKEY=sachichnich
 ExecStart=/usr/bin/node /root/gitlab/hilderonny/cloudcore/server.js
 [Install]
 WantedBy=default.target
@@ -71,6 +78,6 @@ curl --header "Content-Type: application/json" --request POST --data @packages/p
 ## Manuell zum Testen starten
 
 ```sh
-PORT=80 PGPORT=5432 PGHOST=localhost PGUSER=cloudcore PGPASSWORD=cloudcore PGDATABASE=cloudcore TOKENKEY=sachichnich node ./server.js
+node ./server.js
 ```
 

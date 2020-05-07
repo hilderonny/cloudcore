@@ -7,16 +7,24 @@ var db = require('./middleware/db');
 var routers = require('./middleware/routers');
 var views = require('./middleware/views');
 
+// Konfiguration aus config.json lesen
+var configfilename = __dirname + '/config.json';
+if (!fs.existsSync(configfilename)) {
+    console.error(configfilename + ' existiert nicht. Kann nicht starten!');
+    process.exit();
+}
+var config = JSON.parse(fs.readFileSync(configfilename));
+
 // Server konfigurieren
 var app = express();
 app.use(bodyParser.raw()); // Content-type: application/octet-stream
 app.use(bodyParser.text()); // Content-type: text/plain
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(db);
+app.use(db(config));
 app.use(auth); // Erst nach db, weil die Datenbankfunktionen benutzt werden.
 
-// Salesforce Lighning Design System unter /assets einbinden, siehe https://www.lightningdesignsystem.com/platforms/heroku/
+// Salesforce Lightning Design System unter /assets einbinden, siehe https://www.lightningdesignsystem.com/platforms/heroku/
 app.use('/assets', express.static(__dirname + '/node_modules/@salesforce-ux/design-system/assets'));
 
 // Monaco code editor
@@ -37,8 +45,7 @@ app.use(routers);
 app.use(views);
 
 // Server starten
-var port = process.env.PORT || 8080;
 var server = http.createServer(app);
-server.listen(port, function () {
-    console.log('Server running at port ' + port);
+server.listen(config.PORT, function () {
+    console.log('Server running at port ' + config.PORT);
 });

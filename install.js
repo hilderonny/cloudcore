@@ -1,8 +1,17 @@
 var pg = require('pg');
+var fs = require('fs');
 
 (async () => {
     try {
-        var client = new pg.Client();
+        var config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
+
+        var client = new pg.Client({
+            user: config.PGUSER,
+            host: config.PGHOST,
+            database: config.PGDATABASE,
+            password: config.PGPASSWORD,
+            port: config.PGPORT,
+        });
         await client.connect();
 
         // UUID-Erweiterung anlegen
