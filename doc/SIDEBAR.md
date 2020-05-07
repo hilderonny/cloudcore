@@ -9,3 +9,4 @@
     * [Hallo Notizen](howtos/HELLONOTES.md)
     * [Paketerstellung](howtos/PAKETERSTELLUNG.md)
     * [Tests schreiben](howtos/TESTSSCHREIBEN.md)
+    * [Docker verwenden](howtos/DOCKERVERWENDEN.md)
