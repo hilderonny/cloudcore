@@ -1,19 +1,13 @@
-jest.mock('fs');
-jest.mock('pg');
+var child_process = require('child_process');
+var testdb = require('./testdb');
+
+beforeAll(testdb.prepare);
+afterAll(testdb.cleanup);
 
 test('install.js muss notwendige Tabellen erstellen', async () => {
-    await require('../install')();
-    var queries = require('pg').queries;
-    expect(queries).toContain('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
-    expect(queries).toContain('CREATE TABLE IF NOT EXISTS packages (id UUID PRIMARY KEY DEFAULT uuid_generate_v4());');
-    expect(queries).toContain('CREATE TABLE IF NOT EXISTS packageentities (id UUID PRIMARY KEY DEFAULT uuid_generate_v4());');
-    expect(queries).toContain('CREATE TABLE IF NOT EXISTS packagefields (id UUID PRIMARY KEY DEFAULT uuid_generate_v4());');
-    expect(queries).toContain('ALTER TABLE packages ADD COLUMN IF NOT EXISTS description TEXT;');
-    expect(queries).toContain('ALTER TABLE packages ADD COLUMN IF NOT EXISTS name TEXT;');
-    expect(queries).toContain('ALTER TABLE packageentities ADD COLUMN IF NOT EXISTS entityid TEXT;');
-    expect(queries).toContain('ALTER TABLE packageentities ADD COLUMN IF NOT EXISTS packageid UUID;');
-    expect(queries).toContain('ALTER TABLE packageentities ADD COLUMN IF NOT EXISTS tablename TEXT;');
-    expect(queries).toContain('ALTER TABLE packagefields ADD COLUMN IF NOT EXISTS fieldname TEXT;');
-    expect(queries).toContain('ALTER TABLE packagefields ADD COLUMN IF NOT EXISTS packageid UUID;');
-    expect(queries).toContain('ALTER TABLE packagefields ADD COLUMN IF NOT EXISTS tablename TEXT;');
+    child_process.execSync('node ./install.js');
+    var tables = (await testdb.query("select tablename from pg_tables where schemaname='public';")).rows.map(r => r.tablename);
+    expect(tables).toContain('packages');
+    expect(tables).toContain('packageentities');
+    expect(tables).toContain('packagefields');
 });

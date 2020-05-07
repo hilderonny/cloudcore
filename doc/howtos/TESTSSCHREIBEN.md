@@ -15,9 +15,19 @@ In der `package.json` wird ein Abschnitt für die Tests eingefügt:
 ```json
 {
     "scripts": {
-        "test": "jest"
+        "test": "jest --coverage"
     }
 }
+```
+
+Auf dem lokalen Testrechner muss auch PostGres installiert sein. Die tests verwenden `cloudcoretest` als Datenbank und Benutzer, also muss dieser vorher angelegt werden:
+
+```sql
+CREATE DATABASE cloudcoretest;
+CREATE USER cloudcoretest WITH PASSWORD 'cloudcoretest';
+GRANT ALL PRIVILEGES ON DATABASE cloudcoretest to cloudcoretest;
+\connect cloudcoretest;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 ```
 
 Dann können die Tests von der Kommandozeile aus gestartet werden:
