@@ -1,6 +1,8 @@
 var child_process = require('child_process');
 var testdb = require('./testdb');
 
+jest.setTimeout(20000);
+
 beforeAll(testdb.prepare);
 afterAll(testdb.cleanup);
 
