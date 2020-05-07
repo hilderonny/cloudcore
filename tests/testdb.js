@@ -25,13 +25,13 @@ module.exports = {
             console.log('A2');
             fs.writeFileSync('./config.json', JSON.stringify(config));
             console.log('A3');
-            db = new pg.Client({
+            db = new pg.Client(/*{
                 user: config.PGUSER,
                 host: config.PGHOST,
                 database: config.PGDATABASE,
                 password: config.PGPASSWORD,
                 port: config.PGPORT,
-            });
+            }*/);
             console.log('A4');
             await db.connect();
             console.log('A5');
