@@ -24,6 +24,8 @@ stages:
 
 test:
   stage: test
+  before_script:
+    - service postgresql start
   script:
     - npm i
     - npm test
