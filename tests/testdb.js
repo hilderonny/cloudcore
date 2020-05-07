@@ -5,7 +5,7 @@ var db;
 
 var config = {
     PORT: "65080",
-    PGHOST: "localhost",
+    PGHOST: process.env.CI_POSTGRES_HOST || "localhost", // Wenn GitLab CI Host vorgibt
     PGUSER: "cloudcoretest",
     PGPASSWORD: "cloudcoretest",
     PGDATABASE: "cloudcoretest",
