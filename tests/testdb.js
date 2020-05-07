@@ -5,7 +5,7 @@ var db;
 
 var config = {
     PORT: "65080",
-    PGHOST: "localhost",
+    PGHOST: process.env.PGHOST || "localhost", // Wird in .gitlab-ci.yml gesetzt, damit auf den docker-service zugegriffen werden kann
     PGUSER: "cloudcoretest",
     PGPASSWORD: "cloudcoretest",
     PGDATABASE: "cloudcoretest",
