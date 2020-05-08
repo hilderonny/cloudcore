@@ -104,3 +104,15 @@ Danach kann man das native Paket installieren, welches die native Bibliothek kom
 ```sh
 npm i --save pg pg-native
 ```
+
+## Entwicklerrechner unter Windows einrichten
+
+Es muss PostgreSQL und Python installiert sein. Außerdem für x64 noch ein paar Build-Tools, folgenden Befehl als Administrator ausführen:
+
+```sh
+npm install --global --production windows-build-tools
+```
+
+Achja, und das .NET Framework 2.0 SDK muss installiert werden, damit `VCBuild.exe` vorhanden ist:
+
+https://www.microsoft.com/de-de/download/details.aspx?id=15354

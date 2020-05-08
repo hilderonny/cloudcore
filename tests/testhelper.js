@@ -63,6 +63,10 @@ var testhelper = {
     post: async (url, data) => {
         return supertest(app).post(url).send(data);
     },
+    // Macht einen PUT Request an die App
+    put: async (url, data) => {
+        return supertest(app).put(url).send(data);
+    },
     // Macht einen delete-Request
     del: async (url) => {
         return supertest(app).del(url).send();
