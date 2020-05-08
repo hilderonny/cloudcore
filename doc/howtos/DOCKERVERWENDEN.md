@@ -6,6 +6,23 @@ Zuerst auf https://hub.docker.com ein Repository `hilderonny/cloudcoretest` anle
 
 Danach im Stammverzeichnis die Datei `Dockerfile` anlegen und konfigurieren.
 
+```
+FROM node:latest
+RUN apt-get update
+RUN apt-get install -y libpq sudo git nano
+RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN service postgresql start && \
+    sudo -u postgres psql -c "CREATE DATABASE cloudcoretest;" && \
+    sudo -u postgres psql -c "CREATE USER cloudcoretest WITH PASSWORD 'cloudcoretest';" && \
+    sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE cloudcoretest to cloudcoretest;" && \
+    sudo -u postgres psql --dbname "cloudcoretest" -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
+RUN git clone https://hilderonny:Code-2019@gitlab.com/hilderonny/cloudcore.git && \
+    cd cloudcore && \
+    npm i
+```
+
+
 Zum Bauen und Hochladen des Images dann das hier ausführen:
 
 ```sh
