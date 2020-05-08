@@ -63,6 +63,10 @@ var testhelper = {
     post: async (url, data) => {
         return supertest(app).post(url).send(data);
     },
+    // Macht einen delete-Request
+    del: async (url) => {
+        return supertest(app).del(url).send();
+    },
     // Paket hochladen und damit installieren, liefert response als Promise zurück
     uploadpackage: async (filepath) => {
         var pkg = JSON.parse(fs.readFileSync(filepath));
