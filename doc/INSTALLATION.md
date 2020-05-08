@@ -83,3 +83,24 @@ curl --header "Content-Type: application/json" --request POST --data @packages/p
 node ./server.js
 ```
 
+## Entwicklerrechner unter MacOS einrichten
+
+Da das NodeJS Paket `pg-native` die native Library `libpg` benötigt (pg-native wiederum wird von den Docker-Containern benötigt, da das einfache pg dort nicht funktioniert), muss diese vorher installiert werden.
+
+Dazu wird aber Homebrew benötigt.
+
+```sh
+curl https://raw.githubusercontent.com/Homebrew/install/master/install.sh > install.sh
+chmod +x install.sh
+./install.sh
+brew install postgres
+# Eventuell reinstallieren, wie in https://medium.com/flawless-app-stories/gyp-no-xcode-or-clt-version-detected-macos-catalina-anansewaa-38b536389e8d
+sudo rm -r -f /Library/Developer/CommandLineTools
+xcode-select --install
+```
+
+Danach kann man das native Paket installieren, welches die native Bibliothek kompiliert.
+
+```sh
+npm i --save pg pg-native
+```

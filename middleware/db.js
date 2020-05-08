@@ -1,4 +1,4 @@
-var pg = require('pg');
+var pg = require('pg').native;
 
 module.exports = (config) => {
     return async (req, _, next) => {
