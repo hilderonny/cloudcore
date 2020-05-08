@@ -1,6 +1,8 @@
 var fs = require('fs');
 var pg = require('pg').native;
 var child_process = require('child_process');
+var supertest = require('supertest');
+var app;
 
 var db;
 
@@ -14,7 +16,8 @@ var config = {
     TOKENKEY: "sachichnich"
 };
 
-module.exports = {
+var testhelper = {
+    // config und Datenbank vorbereiten. Wird für install.js Test benutzt.
     prepare: async () => {
         if (fs.existsSync('./config.json')) {
             fs.renameSync('./config.json', './config.json.orig');
@@ -32,18 +35,34 @@ module.exports = {
             await db.query("drop table " + tablename + " cascade;");
         }
     },
+    // Vorbereiten und install.js aufrufen. Wird für alle Tests ausser install.js benutzt. Muss in beforeEach() aufgerufen werden.
     prepareandinstall: async() => {
-        await this.prepare();
+        await testhelper.prepare();
         child_process.execSync('node ./install.js');
+        var modulename = require.resolve('../app'); // Aus cache entfernen, muss stets neu geladen werden
+        delete require.cache[modulename];
+        app = require('../app'); // Erst hier, damit config vorbereitet werden kann
     },
+    // Datenbankabfrage machen
     query: async (sql) => {
         return db.query(sql);
     },
+    // config.json zurücksetzen. Muss in afterEach() aufgerufen werden.
     cleanup: async () => {
         await db.end();
         fs.unlinkSync('./config.json');
         if (fs.existsSync('./config.json.orig')) {
             fs.renameSync('./config.json.orig', './config.json');
         }    
-    }
-}
+    },
+    // Macht einen GET Request an die App
+    get: async (url) => {
+        return supertest(app).get(url).send();
+    },
+    // Macht einen POST Request an die App
+    post: async (url, data) => {
+        return supertest(app).post(url).send(data);
+    },
+};
+
+module.exports = testhelper;

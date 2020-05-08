@@ -20,9 +20,10 @@
     "unzipper": "^0.10.10"
   },
   "devDependencies": {
-    "jest": "^26.0.1"
+    "jest": "^26.0.1",
+    "supertest": "^4.0.2"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest --runInBand"
   }
 }
