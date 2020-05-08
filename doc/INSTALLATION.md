@@ -57,7 +57,7 @@ systemctl start cloudcore.service
 
 ## Erster Start
 
-Auf dem Datenbankserver soll eine Datenbank angelegt werden (mit `su - postgres` und `psql`), siehe [Anleitung](https://medium.com/@mohammedhammoud/postgresql-create-user-create-database-grant-privileges-access-aabb2507c0aa):
+Auf dem Datenbankserver soll eine Datenbank angelegt werden (mit `sudo -u postgres psql`), siehe [Anleitung](https://medium.com/@mohammedhammoud/postgresql-create-user-create-database-grant-privileges-access-aabb2507c0aa):
 
 ```sql
 CREATE DATABASE cloudcore;

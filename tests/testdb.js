@@ -1,5 +1,6 @@
 var fs = require('fs');
 var pg = require('pg').native;
+var child_process = require('child_process');
 
 var db;
 
@@ -30,6 +31,10 @@ module.exports = {
         for (var tablename of (await db.query("select tablename from pg_tables where schemaname='public';")).rows.map(r => r.tablename)) {
             await db.query("drop table " + tablename + " cascade;");
         }
+    },
+    prepareandinstall: async() => {
+        await this.prepare();
+        child_process.execSync('node ./install.js');
     },
     query: async (sql) => {
         return db.query(sql);
