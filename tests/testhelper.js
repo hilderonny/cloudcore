@@ -63,6 +63,11 @@ var testhelper = {
     post: async (url, data) => {
         return supertest(app).post(url).send(data);
     },
+    // Paket hochladen und damit installieren, liefert response als Promise zurück
+    uploadpackage: async (filepath) => {
+        var pkg = JSON.parse(fs.readFileSync(filepath));
+        return testhelper.post('/api/packageupload', pkg);
+    }
 };
 
 module.exports = testhelper;

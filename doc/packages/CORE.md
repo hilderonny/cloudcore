@@ -2,6 +2,8 @@
 
 Dieses Paket sollte stets installiert sein, um Grundfunktionen für den Betrieb zu liefern.
 
+Das Paket ist abhängig vom Paket `auth` und funktioniert nicht ohne dieses.
+
 ## Router
 
 * `/api-data` - Inhalte von Tabellen manipulieren

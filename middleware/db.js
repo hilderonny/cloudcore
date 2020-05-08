@@ -13,6 +13,7 @@ module.exports = (config) => {
                 });
                 await client.connect();
                 try {
+                    // Konsole vorübergehend umleiten, da Warnungen ansonsten rummüllen
                     return await client.query(query);
                 } catch (ex) {
                     return { error: ex };
