@@ -1,7 +1,6 @@
 * [Home](CONTENT.md)
 * [Installation](INSTALLATION.md)
 * [Pakete](PACKAGES.md)
-    * [Authentifizierung](packages/AUTH.md)
     * [Einstellungen](packages/SETUP.md)
     * [Kernfunktionen](packages/CORE.md)
     * [Paketierung](packages/PACKAGING.md)

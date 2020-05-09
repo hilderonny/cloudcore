@@ -2,7 +2,6 @@ var testhelper = require('../testhelper');
 
 beforeAll(async() => {
     await testhelper.prepareandinstall();
-    await testhelper.uploadpackage('./packages/auth.json');
     await testhelper.uploadpackage('./packages/core.json');
 });
 beforeEach(async() => {
@@ -10,37 +9,57 @@ beforeEach(async() => {
 });
 afterAll(testhelper.cleanup);
 
-test('Tabellen apps, routers, tabs, views', async () => {
+test('Tabellen apps, routers, tabs, users, views', async () => {
     var tables = (await testhelper.query("select tablename from pg_tables where schemaname='public';")).rows.map(r => r.tablename);
     expect(tables).toContain('apps');
     expect(tables).toContain('routers');
     expect(tables).toContain('tabs');
+    expect(tables).toContain('users');
     expect(tables).toContain('views');
 });
 
-test('Spalten in Tabelle apps: label', async () => {
+test('Spalten in Tabelle apps: label, ispublic, userid', async () => {
     var columns = (await testhelper.query("select column_name from information_schema.columns where table_name = 'apps';")).rows.map(r => r.column_name);
     expect(columns).toContain('label');
+    expect(columns).toContain('ispublic');
+    expect(columns).toContain('userid');
 });
 
-test('Spalten in Tabelle routers: code, url', async () => {
+test('Spalten in Tabelle routers: code, url, ispublic, userid', async () => {
     var columns = (await testhelper.query("select column_name from information_schema.columns where table_name = 'routers';")).rows.map(r => r.column_name);
     expect(columns).toContain('code');
     expect(columns).toContain('url');
+    expect(columns).toContain('ispublic');
+    expect(columns).toContain('userid');
 });
 
-test('Spalten in Tabelle tabs: appid, label, url', async () => {
+test('Spalten in Tabelle tabs: appid, label, url, ispublic, userid', async () => {
     var columns = (await testhelper.query("select column_name from information_schema.columns where table_name = 'tabs';")).rows.map(r => r.column_name);
     expect(columns).toContain('appid');
     expect(columns).toContain('label');
     expect(columns).toContain('url');
+    expect(columns).toContain('ispublic');
+    expect(columns).toContain('userid');
 });
 
-test('Spalten in Tabelle views: content, contenttype, url', async () => {
+test('Spalten in Tabelle users: password, username', async () => {
+    var columns = (await testhelper.query("select column_name from information_schema.columns where table_name = 'users';")).rows.map(r => r.column_name);
+    expect(columns).toContain('password');
+    expect(columns).toContain('username');
+});
+
+test('Spalten in Tabelle views: content, contenttype, url, ispublic, userid', async () => {
     var columns = (await testhelper.query("select column_name from information_schema.columns where table_name = 'views';")).rows.map(r => r.column_name);
     expect(columns).toContain('content');
     expect(columns).toContain('contenttype');
     expect(columns).toContain('url');
+    expect(columns).toContain('ispublic');
+    expect(columns).toContain('userid');
+});
+
+test('user "system" angelegt', async () => {
+    var usernames = (await testhelper.query("select username from users;")).rows.map(r => r.username);
+    expect(usernames).toContain('system');
 });
 
 test('Views: /assets/slds.css, /ccc/cc-globalnav, /', async () => {

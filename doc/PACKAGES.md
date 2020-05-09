@@ -10,13 +10,9 @@ Das geht, indem man das JSON eines Paketes an die API `/api/packageupload` sende
 curl --header "Content-Type: application/json" --request POST --data @pfad_zu_paket_json.json http://serverurl/packageupload/
 ```
 
-
-## [auth - Authentifizierung](packages/AUTH.md)
+## [core - Kernfunktionen und Authentifizierung](packages/CORE.md)
 
 * Anmeldung und Registrierung verschiedener Benutzer
-
-## [core - Kernfunktionen](packages/CORE.md)
-
 * Grundlegende router-Funktionen für Tabellenschema- und Datenmanipulation
 * Basis-Stylesheet, an Salesforce Lightning Design System angelehnt
 * Installieren von Paketen
