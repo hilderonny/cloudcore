@@ -57,7 +57,7 @@ systemctl start cloudcore.service
 
 ## Erster Start
 
-Auf dem Datenbankserver soll eine Datenbank angelegt werden (mit `su - postgres` und `psql`), siehe [Anleitung](https://medium.com/@mohammedhammoud/postgresql-create-user-create-database-grant-privileges-access-aabb2507c0aa):
+Auf dem Datenbankserver soll eine Datenbank angelegt werden (mit `sudo -u postgres psql`), siehe [Anleitung](https://medium.com/@mohammedhammoud/postgresql-create-user-create-database-grant-privileges-access-aabb2507c0aa):
 
 ```sql
 CREATE DATABASE cloudcore;
@@ -104,3 +104,15 @@ Danach kann man das native Paket installieren, welches die native Bibliothek kom
 ```sh
 npm i --save pg pg-native
 ```
+
+## Entwicklerrechner unter Windows einrichten
+
+Es muss PostgreSQL und Python installiert sein. Außerdem für x64 noch ein paar Build-Tools, folgenden Befehl als Administrator ausführen:
+
+```sh
+npm install --global --production windows-build-tools
+```
+
+Achja, und das .NET Framework 2.0 SDK muss installiert werden, damit `VCBuild.exe` vorhanden ist:
+
+https://www.microsoft.com/de-de/download/details.aspx?id=15354
