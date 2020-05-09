@@ -13,6 +13,7 @@ variables:
 
 stages:
   - test
+  - deploy
 
 test:
   stage: test
@@ -22,3 +23,14 @@ test:
   script:
     - npm i
     - npm test
+
+pages:
+  stage: deploy
+  script:
+    - mv doc public
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
+    
