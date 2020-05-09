@@ -6,7 +6,7 @@
 # NodeJS
 curl -sL https://deb.nodesource.com/setup_13.x | bash -
 # Postgres, git
-apt install postgresql nodejs gcc g++ make git
+apt install postgresql nodejs gcc g++ make git libpq-dev postgresql-contrib
 mkdir -p gitlab/hilderonny
 cd gitlab/hilderonny
 # Repository klonen
