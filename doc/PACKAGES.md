@@ -4,10 +4,10 @@ Die Grundinstallation bringt nur das automatische Ausführen von views und route
 
 ## Installation von Paketen
 
-Das geht, indem man das JSON eines Paketes an die API `/api/packageupload` sendet:
+Das geht, indem man die ZIP-Datei eines Paketes an die API `/api/packageupload` sendet:
 
 ```sh
-curl --header "Content-Type: application/json" --request POST --data @pfad_zu_paket_json.json http://serverurl/packageupload/
+curl -F file=@tests/pfad_zu_paket_json.zip http://localhost/api/packageupload/
 ```
 
 ## [core - Kernfunktionen und Authentifizierung](packages/CORE.md)

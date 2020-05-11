@@ -1,22 +1,29 @@
 var router = require('express').Router();
+var unzipper = require('unzipper');
+var multer = require('multer');
+var storage = multer.memoryStorage();
+var upload = multer({ storage: storage });
 
-router.post('/', async (req, res) => {
-    var packagejson = req.body;
+// Wird sowohl von dieser API als auch von install.js benutzt
+router.handleZipBuffer = async (db, buffer) => {
+    var zipcontent = await unzipper.Open.buffer(buffer);
+    var filecontent = (await zipcontent.files[0].buffer()).toString('utf8');
+    var packagejson = JSON.parse(filecontent);
     var packagename = packagejson.name;
     // Paketinfos anlegen, alte löschen
-    var rows = (await req.db.query("select id from packages where name='" + packagename + "';")).rows;
+    var rows = (await db.query("select id from packages where name='" + packagename + "';")).rows;
     for (var row of rows) {
-        await req.db.query("delete from packageentities where packageid='" + row.id + "';");
-        await req.db.query("delete from packagefields where packageid='" + row.id + "';");
-        await req.db.query("delete from packages where id='" + row.id + "';");
+        await db.query("delete from packageentities where packageid='" + row.id + "';");
+        await db.query("delete from packagefields where packageid='" + row.id + "';");
+        await db.query("delete from packages where id='" + row.id + "';");
     }
-    var packageid = (await req.db.query("insert into packages (name, description) values ('" + packagename + "', '" + packagejson.description + "') returning id;")).rows[0].id;
+    var packageid = (await db.query("insert into packages (id, name, description) values ('" + packagejson.id + "', '" + packagename + "', '" + packagejson.description + "') returning id;")).rows[0].id;
     // Tabellen und Felder anlegen und erweitern
     for (var [tablename, fields] of Object.entries(packagejson.fields)) {
-        await req.db.query("CREATE TABLE IF NOT EXISTS " + tablename + " (id UUID PRIMARY KEY DEFAULT uuid_generate_v4());");
+        await db.query("CREATE TABLE IF NOT EXISTS " + tablename + " (id UUID PRIMARY KEY DEFAULT uuid_generate_v4());");
         for (var [fieldname, datatype] of Object.entries(fields)) {
-            await req.db.query("ALTER TABLE " + tablename + " ADD COLUMN IF NOT EXISTS " + fieldname + " " + datatype + ";");
-            await req.db.query("insert into packagefields (packageid, tablename, fieldname) values ('" + packageid + "', '" + tablename + "', '" + fieldname + "');");
+            await db.query("ALTER TABLE " + tablename + " ADD COLUMN IF NOT EXISTS " + fieldname + " " + datatype + ";");
+            await db.query("insert into packagefields (packageid, tablename, fieldname) values ('" + packageid + "', '" + tablename + "', '" + fieldname + "');");
         }
     }
     // Inhalte einspielen
@@ -26,11 +33,15 @@ router.post('/', async (req, res) => {
                 if ((typeof value) === 'object') value = JSON.stringify(value);
                 return ((typeof value) === 'string') ? "'" + (value.replace(/\'/g, '\'\'')) + "'" : value
             }).join(',') + ") returning id;";
-            var rows = (await req.db.query(query)).rows;
+            var rows = (await db.query(query)).rows;
             var entityid = entity.id || rows[0].id;
-            await req.db.query("insert into packageentities (packageid, tablename, entityid) values ('" + packageid + "', '" + tablename + "', '" + entityid + "');");
+            await db.query("insert into packageentities (packageid, tablename, entityid) values ('" + packageid + "', '" + tablename + "', '" + entityid + "');");
         }
     }
+}
+
+router.post('/', upload.single('file'), async (req, res) => {
+    await router.handleZipBuffer(req.db, req.file.buffer);
     res.send();
 });
 

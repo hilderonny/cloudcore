@@ -1,11 +1,8 @@
 var testhelper = require('../testhelper');
 
-beforeAll(async() => {
-    await testhelper.prepareandinstall();
-    await testhelper.uploadpackage('./packages/core.json');
-});
+beforeAll(testhelper.prepareandinstall);
 beforeEach(async() => {
-    await testhelper.uploadpackage('./tests/testpackage1.json');
+    await testhelper.uploadpackage('./tests/testpackage1.zip');
 });
 afterAll(testhelper.cleanup);
 

@@ -1,6 +1,6 @@
 # Paket packaging - Paketierung
 
-Erstellung und Konfiguration von Paketen samt Herunterladen als JSON.
+Erstellung und Konfiguration von Paketen samt Herunterladen als ZIP.
 
 Benötigt das Paket `setup`, damit der Tab `Pakete` angezeigt werden kann.
 

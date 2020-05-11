@@ -1,5 +1,6 @@
 var pg = require('pg').native;
 var fs = require('fs');
+var packageupload = require('./api/packageupload');
 
 (async () => {
     var config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
@@ -25,6 +26,17 @@ var fs = require('fs');
     await client.query("ALTER TABLE packagefields ADD COLUMN IF NOT EXISTS fieldname TEXT;");
     await client.query("ALTER TABLE packagefields ADD COLUMN IF NOT EXISTS packageid UUID;");
     await client.query("ALTER TABLE packagefields ADD COLUMN IF NOT EXISTS tablename TEXT;");
+
+    // Installierbare Pakete raussuchen und hochladen, wenn sie nicht schon installiert wurden
+    var installedpackages = (await client.query("SELECT name FROM packages;")).rows.map(r => r.name);
+    var availablezipfiles = fs.readdirSync('./packages/').filter(f => f.endsWith('.zip'));
+    for (var zipfile of availablezipfiles) {
+        var packagename = zipfile.split('.')[0];
+        if (installedpackages.indexOf(packagename) < 0) {
+            console.log('Installiere Paket ' + packagename);
+            await packageupload.handleZipBuffer(client, fs.readFileSync('./packages/' + zipfile));
+        }
+    }
 
     await client.end();
     console.log('FETTIG!');
