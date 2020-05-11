@@ -29,13 +29,17 @@ router.handleZipBuffer = async (db, buffer) => {
     // Inhalte einspielen
     for (var [tablename, entities] of Object.entries(packagejson.entities)) {
         for (var entity of entities) {
-            var query = "INSERT INTO " + tablename + " (" + Object.keys(entity).join(',') + ") VALUES (" + Object.values(entity).map(value => {
-                if ((typeof value) === 'object') value = JSON.stringify(value);
-                return ((typeof value) === 'string') ? "'" + (value.replace(/\'/g, '\'\'')) + "'" : value
-            }).join(',') + ") returning id;";
-            var rows = (await db.query(query)).rows;
-            var entityid = entity.id || rows[0].id;
-            await db.query("insert into packageentities (packageid, tablename, entityid) values ('" + packageid + "', '" + tablename + "', '" + entityid + "');");
+            try {
+                var query = "INSERT INTO " + tablename + " (" + Object.keys(entity).join(',') + ") VALUES (" + Object.values(entity).map(value => {
+                    if ((typeof value) === 'object') value = JSON.stringify(value);
+                    return ((typeof value) === 'string') ? "'" + (value.replace(/\'/g, '\'\'')) + "'" : value
+                }).join(',') + ") returning id;";
+                var rows = (await db.query(query)).rows;
+                var entityid = entity.id || rows[0].id;
+                await db.query("insert into packageentities (packageid, tablename, entityid) values ('" + packageid + "', '" + tablename + "', '" + entityid + "');");
+            } catch(ex) {
+                console.warn(ex); // Passiert, wenn schon Entitäten mit derselben ID existieren
+            }
         }
     }
 }
