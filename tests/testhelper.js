@@ -2,8 +2,9 @@ var fs = require('fs');
 var pg = require('pg').native;
 var child_process = require('child_process');
 var supertest = require('supertest');
-var app;
+var binaryParser = require('superagent-binary-parser');
 
+var app;
 var db;
 
 var config = {
@@ -73,8 +74,10 @@ var testhelper = {
     },
     // Paket hochladen und damit installieren, liefert response als Promise zurück
     uploadpackage: async (filepath) => {
-        var pkg = JSON.parse(fs.readFileSync(filepath));
-        return testhelper.post('/api/packageupload', pkg);
+        return supertest(app).post('/api/packageupload').attach('file', filepath);
+    },
+    download: async (url) => {
+        return supertest(app).get(url).parse(binaryParser).buffer();
     }
 };
 

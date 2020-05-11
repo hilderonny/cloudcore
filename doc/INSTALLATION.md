@@ -67,15 +67,7 @@ GRANT ALL PRIVILEGES ON DATABASE cloudcore to cloudcore;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 ```
 
-Zum Vorbereiten der Datenbank muss `node ./install` aufgerufen werden. Das installiert die Postgres-Erweiterung `uuid-ossp`. Außerdem werden die für die Paketinstallation notwendigen Tabellen erstellt.
-
-Die Pakete `core.json`, `setup.json` und `packaging.json` können danach mit curl über die API `/packageupload` installiert werden.
-
-```sh
-curl -F file=@tests/core.zip http://localhost/api/packageupload/
-curl -F file=@tests/setup.zip http://localhost/api/packageupload/
-curl -F file=@tests/packaging.zip http://localhost/api/packageupload/
-```
+Zum Vorbereiten der Datenbank muss `node ./install` aufgerufen werden. Das installiert die Postgres-Erweiterung `uuid-ossp`. Außerdem werden die für die Paketinstallation notwendigen Tabellen erstellt und bereits vorhandene Pakete im `/packages` Ordner installiert. Das sollten normalerweise `core.zip`, `setup.zip` und `packaging.zip` sein.
 
 ## Manuell zum Testen starten
 

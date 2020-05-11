@@ -7,8 +7,8 @@ var upload = multer({ storage: storage });
 // Wird sowohl von dieser API als auch von install.js benutzt
 router.handleZipBuffer = async (db, buffer) => {
     var zipcontent = await unzipper.Open.buffer(buffer);
-    var fileContent = (await zipcontent.files[0].buffer()).toString('utf8');
-    var packagejson = JSON.parse(fileContent);
+    var filecontent = (await zipcontent.files[0].buffer()).toString('utf8');
+    var packagejson = JSON.parse(filecontent);
     var packagename = packagejson.name;
     // Paketinfos anlegen, alte löschen
     var rows = (await db.query("select id from packages where name='" + packagename + "';")).rows;
@@ -17,7 +17,7 @@ router.handleZipBuffer = async (db, buffer) => {
         await db.query("delete from packagefields where packageid='" + row.id + "';");
         await db.query("delete from packages where id='" + row.id + "';");
     }
-    var packageid = (await db.query("insert into packages (name, description) values ('" + packagename + "', '" + packagejson.description + "') returning id;")).rows[0].id;
+    var packageid = (await db.query("insert into packages (id, name, description) values ('" + packagejson.id + "', '" + packagename + "', '" + packagejson.description + "') returning id;")).rows[0].id;
     // Tabellen und Felder anlegen und erweitern
     for (var [tablename, fields] of Object.entries(packagejson.fields)) {
         await db.query("CREATE TABLE IF NOT EXISTS " + tablename + " (id UUID PRIMARY KEY DEFAULT uuid_generate_v4());");
