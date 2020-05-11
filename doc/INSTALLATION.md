@@ -72,9 +72,9 @@ Zum Vorbereiten der Datenbank muss `node ./install` aufgerufen werden. Das insta
 Die Pakete `core.json`, `setup.json` und `packaging.json` können danach mit curl über die API `/packageupload` installiert werden.
 
 ```sh
-curl --header "Content-Type: application/json" --request POST --data @packages/core.json http://localhost/packageupload/
-curl --header "Content-Type: application/json" --request POST --data @packages/setup.json http://localhost/packageupload/
-curl --header "Content-Type: application/json" --request POST --data @packages/packaging.json http://localhost/packageupload/
+curl -F file=@tests/core.zip http://localhost/api/packageupload/
+curl -F file=@tests/setup.zip http://localhost/api/packageupload/
+curl -F file=@tests/packaging.zip http://localhost/api/packageupload/
 ```
 
 ## Manuell zum Testen starten

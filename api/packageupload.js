@@ -1,7 +1,13 @@
 var router = require('express').Router();
+var unzipper = require('unzipper');
+var multer = require('multer');
+var storage = multer.memoryStorage();
+var upload = multer({ storage: storage });
 
-router.post('/', async (req, res) => {
-    var packagejson = req.body;
+router.post('/', upload.single('file'), async (req, res) => {
+    var zipcontent = await unzipper.Open.buffer(req.file.buffer);
+    var fileContent = (await zipcontent.files[0].buffer()).toString('utf8');
+    var packagejson = JSON.parse(fileContent);
     var packagename = packagejson.name;
     // Paketinfos anlegen, alte löschen
     var rows = (await req.db.query("select id from packages where name='" + packagename + "';")).rows;

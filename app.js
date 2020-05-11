@@ -16,7 +16,6 @@ var config = JSON.parse(fs.readFileSync(configfilename));
 
 // Server konfigurieren
 var app = express();
-app.use(bodyParser.raw()); // Content-type: application/octet-stream
 app.use(bodyParser.text()); // Content-type: text/plain
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
