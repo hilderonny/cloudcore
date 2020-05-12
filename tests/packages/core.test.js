@@ -188,3 +188,32 @@ test('Router delete /api-data/:tablename/:id', async() => {
     var rows = (await testhelper.query("select * from testtable1 where id='11111111-1111-1111-1111-111111111111';")).rows;
     expect(rows.length).toBe(0);
 });
+
+test('packages, packagefields und packageentities', async() => {
+    var packages = (await testhelper.query("select id from packages where name='core';")).rows;
+    expect(packages.length).toBe(1);
+    var packageid = packages[0].id;
+    var packagefields = (await testhelper.query("select * from packagefields where packageid='" + packageid + "';")).rows;
+    expect(packagefields.length).toBe(19);
+    expect(packagefields.find(f => f.tablename === 'apps' && f.fieldname === 'ispublic')).not.toBe(undefined);
+    expect(packagefields.find(f => f.tablename === 'apps' && f.fieldname === 'label')).not.toBe(undefined);
+    expect(packagefields.find(f => f.tablename === 'apps' && f.fieldname === 'userid')).not.toBe(undefined);
+    expect(packagefields.find(f => f.tablename === 'routers' && f.fieldname === 'code')).not.toBe(undefined);
+    expect(packagefields.find(f => f.tablename === 'routers' && f.fieldname === 'ispublic')).not.toBe(undefined);
+    expect(packagefields.find(f => f.tablename === 'routers' && f.fieldname === 'url')).not.toBe(undefined);
+    expect(packagefields.find(f => f.tablename === 'routers' && f.fieldname === 'userid')).not.toBe(undefined);
+    expect(packagefields.find(f => f.tablename === 'tabs' && f.fieldname === 'appid')).not.toBe(undefined);
+    expect(packagefields.find(f => f.tablename === 'tabs' && f.fieldname === 'ispublic')).not.toBe(undefined);
+    expect(packagefields.find(f => f.tablename === 'tabs' && f.fieldname === 'label')).not.toBe(undefined);
+    expect(packagefields.find(f => f.tablename === 'tabs' && f.fieldname === 'url')).not.toBe(undefined);
+    expect(packagefields.find(f => f.tablename === 'tabs' && f.fieldname === 'ispublic')).not.toBe(undefined);
+    expect(packagefields.find(f => f.tablename === 'users' && f.fieldname === 'password')).not.toBe(undefined);
+    expect(packagefields.find(f => f.tablename === 'users' && f.fieldname === 'username')).not.toBe(undefined);
+    expect(packagefields.find(f => f.tablename === 'views' && f.fieldname === 'content')).not.toBe(undefined);
+    expect(packagefields.find(f => f.tablename === 'views' && f.fieldname === 'contenttype')).not.toBe(undefined);
+    expect(packagefields.find(f => f.tablename === 'views' && f.fieldname === 'ispublic')).not.toBe(undefined);
+    expect(packagefields.find(f => f.tablename === 'views' && f.fieldname === 'url')).not.toBe(undefined);
+    expect(packagefields.find(f => f.tablename === 'views' && f.fieldname === 'userid')).not.toBe(undefined);
+    var packageentities = (await testhelper.query("select * from packageentities where packageid='" + packageid + "';")).rows;
+    expect(packageentities.length).toBe(6);
+});
