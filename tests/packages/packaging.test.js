@@ -7,6 +7,11 @@ beforeEach(async() => {
 });
 afterAll(testhelper.cleanup);
 
+test('Alle Tabs vorhanden', async () => {
+    var tabs = (await testhelper.query("select url from tabs;")).rows.map(t => t.url);
+    expect(tabs).toContain('/setup/packages');
+});
+
 test('/allfields liefert alle vorhandenen Felder samt Tabellenname und Spaltenname', async () => {
     var response = await testhelper.get('/api-packages/allfields');
     expect(response.status).toBe(200);
@@ -101,4 +106,14 @@ test('Heruntergeladenes Paket ist vollständig', async() => {
     expect(obj.fields.testtable2.numeric1).not.toBe(undefined);
     expect(obj.fields.testtable2.text1).not.toBe(undefined);
     expect(obj.fields.testtable2.uuid1).not.toBe(undefined);
+});
+
+test('packages, packagefields und packageentities', async() => {
+    var packages = (await testhelper.query("select id from packages where name='packaging';")).rows;
+    expect(packages.length).toBe(1);
+    var packageid = packages[0].id;
+    var packagefields = (await testhelper.query("select * from packagefields where packageid='" + packageid + "';")).rows;
+    expect(packagefields.length).toBe(0);
+    var packageentities = (await testhelper.query("select * from packageentities where packageid='" + packageid + "';")).rows;
+    expect(packageentities.length).toBe(5);
 });
