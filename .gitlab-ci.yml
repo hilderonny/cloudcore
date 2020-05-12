@@ -1,7 +1,7 @@
 image: node:latest
 
 services:
-  - postgres:alpine
+  - postgres:12-alpine
 
 variables:
   POSTGRES_DB: cloudcoretest
@@ -18,7 +18,7 @@ stages:
 test:
   stage: test
   before_script:
-    - apt-get update && apt-get install -y postgresql-contrib
+    - apt-get update && apt-get install -y postgresql-12
     - psql -h "$CI_POSTGRES_HOST" -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname="$POSTGRES_DB" -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
   script:
     - npm i
