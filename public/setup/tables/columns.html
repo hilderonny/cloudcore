@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="/assets/slds.css">
+        <script src="/ccc/cc-globalnav"></script>
+        <script>
+
+            var tablename;
+
+            function createcolumn() {
+                location.href = '/setup/tables/columns/create?' + tablename;
+            }
+
+            async function deletecolumn(columnname) {
+                if (!confirm('Really delete column "' + columnname + '"?')) return;
+                await fetch('/api-schema/columns/' + tablename + '/' + columnname, { method: 'DELETE' });
+                loadcolumns();
+            }
+
+            async function loadcolumns() {
+                var columns = await (await fetch('/api-schema/columns/' + tablename)).json();
+                var tbody = document.querySelector('tbody');
+                tbody.innerHTML = '';
+                for (var column of columns) {
+                    if (column.table_schema !== 'public') continue;
+                    var tr = document.createElement('tr');
+                    tr.innerHTML = '<td>' + column.column_name + '</td><td>' + column.data_type + '</td><td><a href="#" onclick="deletecolumn(\'' + column.column_name + '\');">Delete</a></td>';
+                    tbody.appendChild(tr);
+                }
+            }
+
+            window.addEventListener('load', () => {
+                tablename = location.search.substring(1);
+                document.getElementById('tablename').innerHTML = tablename;
+                loadcolumns();
+            });
+        
+        </script>
+    </head>
+    <body>
+        <cc-globalnav selectedurl="/setup/tables"></cc-globalnav>
+        <header>
+            <img src="https://fonts.gstatic.com/s/i/materialicons/table_chart/v4/24px.svg"/>
+            <subtitle>Setup &gt; <a href="/setup/tables">Tabellen</a></subtitle>
+            <page-title><span id="tablename"></span> - Spalten</page-title>
+            <button onclick="createcolumn();">Neue Spalte</button>
+        </header>
+        <content>
+            <table>
+                <thead><tr><th>Name</th><th>Datentyp</th><th></th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </content>
+    </body>
+</html>

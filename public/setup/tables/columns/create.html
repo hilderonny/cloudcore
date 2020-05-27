@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="/assets/slds.css">
+        <script src="/ccc/cc-globalnav"></script>
+        <script>
+
+            var tablename;
+
+            async function createcolumn() {
+                var name = document.querySelector('#columnname').value;
+                var datatype = document.querySelector('#datatype').value;
+                await fetch('/api-schema/columns/' + tablename + '/' + name + '/' + datatype, { method: 'POST' });
+                location.href = '/setup/tables/columns?' + tablename;
+            }
+
+            window.addEventListener('load', () => {
+                tablename = location.search.substring(1);
+                document.getElementById('tablename').innerHTML = tablename;
+                document.getElementById('columnslink').setAttribute('href', '/setup/tables/columns?' + tablename);
+            });
+
+        </script>
+    </head>
+    <body>
+        <cc-globalnav selectedurl="/setup/tables"></cc-globalnav>
+        <header>
+            <img src="https://fonts.gstatic.com/s/i/materialicons/table_chart/v4/24px.svg"/>
+            <subtitle>Setup &gt; <a href="/setup/tables">Tabellen</a> &gt; <a href="#" id="columnslink"><span id="tablename"></span> - Spalten</a></subtitle>
+            <page-title>Neue Spalte</page-title>
+            <button onclick="createcolumn();">Erstellen</button>
+        </header>
+        <content>
+            <input-field>
+                <input id="columnname" placeholder="Name" />
+                <label>Name</label>
+            </input-field>
+            <input-field>
+                <select id="datatype">
+                    <option value="boolean">BOOLEAN</option>
+                    <option value="int">INT</option>
+                    <option value="json">JSON</option>
+                    <option value="numeric">NUMERIC</option>
+                    <option value="real">REAL</option>
+                    <option value="text" selected>TEXT</option>
+                    <option value="uuid">UUID</option>
+                </select>
+                <label>Datentyp</label>
+            </input-field>
+        </content>
+    </body>
+</html>

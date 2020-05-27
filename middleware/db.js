@@ -7,10 +7,7 @@ module.exports = (datapath) => {
     function preparetable(data) {
         return {
             lastmodified: Date.now(),
-            data: data,
-            save: function() {
-                this.lastmodified = Date.now();
-            }
+            data: data
         };
     }
 
@@ -21,17 +18,17 @@ module.exports = (datapath) => {
 
     var lastsaved = Date.now();
 
-    // Einmal je Minute speichern
+    // Alle Minute speichern, wenn nötig
     setInterval(() => {
         for (var tablename in tables) {
             var table = tables[tablename];
             if (table.lastmodified > lastsaved) {
                 fs.writeFileSync(datapath + '/' + tablename + '.json', JSON.stringify(table.data));
-                console.log('Speichere ' + tablename);
+                console.log(Date.now() + ': Speichere ' + tablename);
             }
         }
         lastsaved = Date.now();
-    }, 1000);
+    }, 60000);
 
     return (req, _, next) => {
         req.db = {
@@ -40,9 +37,11 @@ module.exports = (datapath) => {
                 if (!table) {
                     table = preparetable(JSON.parse(fs.readFileSync(datapath + '/' + datafilename)));
                     tables[tablename] = table;
-                    table.save();
                 }
                 return table.data;
+            },
+            save: (tablename) => {
+                tables[tablename].lastmodified = Date.now();
             }
         };
         next();

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="/assets/slds.css">
+        <script src="/ccc/cc-globalnav.js"></script>
+        <script>
+
+            async function createtable() {
+                var tablename = window.prompt('Name der neuen Tabelle');
+                if(!tablename) return;
+                await fetch('/api-schema/tables/' + tablename, { method: 'POST' });
+                loadtables();
+            }
+
+            async function deletetable(tablename) {
+                if (!confirm('Soll die Tabelle "' + tablename + '" wirklich gelöscht werden?')) return;
+                await fetch('/api-schema/tables/' + tablename, { method: 'DELETE' });
+                loadtables();
+            }
+
+            async function loadtables() {
+                var tables = await (await fetch('/api-schema/tables')).json();
+                tables.sort((a, b) => a.table_name > b.table_name ? 1 : -1);
+                var tbody = document.querySelector('tbody');
+                tbody.innerHTML = '';
+                for (var table of tables) {
+                    var tr = document.createElement('tr');
+                    tr.innerHTML = '<td>' + table.table_name + '</td><td><a href="/setup/tables/content?' + table.table_name + '">Daten</a></td><td><a href="/setup/tables/columns?' + table.table_name + '">Felder</a></td><td><a href="#" onclick="deletetable(\'' + table.table_name + '\');">Löschen</a></td>';
+                    tbody.appendChild(tr);
+                }
+            }
+
+            window.addEventListener('load', loadtables);
+
+        </script>
+    </head>
+    <body>
+        <cc-globalnav selectedurl="/setup/tables"></cc-globalnav>
+        <header>
+            <img src="https://fonts.gstatic.com/s/i/materialicons/table_chart/v4/24px.svg"/>
+            <subtitle>Setup</subtitle>
+            <page-title>Tabellen</page-title>
+            <button onclick="createtable();">Neue Tabelle</button>
+            <button onclick="window.open('/backup/', '_blank');">Download Backup</button>
+        </header>
+        <content>
+            <table>
+                <thead><tr><th>Name</th><th></th><th></th><th></th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </content>
+    </body>
+</html>

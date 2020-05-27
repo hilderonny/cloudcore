@@ -3,8 +3,6 @@ var express = require('express');
 var fs = require('fs');
 var auth = require('./middleware/auth');
 var db = require('./middleware/db');
-var routers = require('./middleware/routers');
-var views = require('./middleware/views');
 
 // Konfiguration aus config.json lesen
 var config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
@@ -17,12 +15,12 @@ var app = express();
 app.use(bodyParser.text()); // Content-type: text/plain
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(db(config.DATAPATH)); // TODO db raus oder umbauen
+app.use(db(config.DATAPATH));
 app.use(auth); // Erst nach db, weil die Datenbankfunktionen benutzt werden.
 app.config = config;
 
-// Salesforce Lightning Design System unter /assets einbinden, siehe https://www.lightningdesignsystem.com/platforms/heroku/
-app.use('/assets', express.static(__dirname + '/node_modules/@salesforce-ux/design-system/assets'));
+// Statisches HTML
+app.use('/', express.static(__dirname + '/public'));
 
 // Monaco code editor
 app.use('/monaco-editor', express.static(__dirname + '/node_modules/monaco-editor'));
@@ -34,11 +32,5 @@ fs.readdirSync(__dirname + '/api').forEach(apifile => {
     var apiname = fileparts[0];
     app.use('/api/' + apiname, require('./api/' + apiname));
 });
-
-// dynamische Router behandeln
-app.use(routers);
-
-// dynamische Views behandeln
-app.use(views);
 
 module.exports = app;

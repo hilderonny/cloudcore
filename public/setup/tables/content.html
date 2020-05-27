@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="/assets/slds.css">
+        <script src="/ccc/cc-globalnav"></script>
+        <script>
+
+            var tablename;
+
+            function createcontent() {
+                location.href = '/setup/tables/content/edit?' + tablename;
+            }
+
+            function htmlencode(str) {
+                return ('' + str).replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            }
+
+            async function deletecontent(id) {
+                if (!confirm('Soll der Inhalt mit der Id "' + id + '" wirklich gelöscht werden?')) return;
+                await fetch('/api-data/' + tablename + '/' + id, { method: 'DELETE' });
+                loadcontent();
+            }
+
+            async function loadcontent() {
+                var content = await (await fetch('/api-data/list/' + tablename)).json();
+                var tbody = document.querySelector('tbody');
+                tbody.innerHTML = '';
+                console.log(content);
+                var columns = {};
+                var maxlength = 1000;
+                for (var entity of content) {
+                    var tr = document.createElement('tr');
+                    tbody.appendChild(tr);
+                    for (var key of Object.keys(entity)) {
+                        columns[key] = true;
+                    }
+                    tr.innerHTML = Object.values(entity).map(v => {
+                        if ((typeof v) === 'object') v = JSON.stringify(v);
+                        var text = htmlencode(v && v.length > maxlength ? v.substring(0, maxlength) : v);
+                        return '<td title="' + text.replace(/\"/g, '&quot;') + '">' + text + '</td>';
+                    }).join('');
+                    tr.innerHTML += '<td><a href="/setup/tables/content/edit?' + tablename + '/' + entity.id + '">Bearbeiten</a></td><td><a href="#" onclick="deletecontent(\'' + entity.id + '\');">Löschen</a></td>';
+                }
+                var thead = document.querySelector('thead');
+                thead.innerHTML = '<tr>' + Object.keys(columns).map(c => '<th>' + c + '</th>').join('') + '<th></th><th></th></tr>';
+            }
+
+            window.addEventListener('load', () => {
+                tablename = location.search.substring(1);
+                document.getElementById('tablename').innerHTML = tablename;
+                loadcontent();
+            });
+        
+        </script>
+    </head>
+    <body>
+        <cc-globalnav selectedurl="/setup/tables"></cc-globalnav>
+        <header>
+            <img src="https://fonts.gstatic.com/s/i/materialicons/table_chart/v4/24px.svg"/>
+            <subtitle>Setup &gt; <a href="/setup/tables">Tabellen</a></subtitle>
+            <page-title><span id="tablename"></span> - Inhalt</page-title>
+            <button onclick="createcontent();">Neuer Inhalt</button>
+        </header>
+        <content>
+            <table>
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </content>
+    </body>
+</html>

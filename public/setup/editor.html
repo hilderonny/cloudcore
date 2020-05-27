@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="/assets/slds.css">
+        <script src="/ccc/cc-globalnav"></script>
+        <script src="/monaco-editor/min/vs/loader.js"></script>
+        <script>
+        var monacoEditor;
+        var currentView;
+        var currentRouter;
+
+        function openInNewTab() {
+            if (!currentView) return;
+            window.open(currentView.url, '_blank');
+        }
+
+        async function del() {
+            if (currentView) {
+                if (!confirm('Soll die View wirklich gelöscht werden?')) return;
+                await fetch('/api-data/views/' + currentView.id, { method: 'DELETE' });
+                location.href = '?';
+            } else if (currentRouter) {
+                if (!confirm('Soll der Router wirklich gelöscht werden?')) return;
+                await fetch('/api-data/routers/' + currentRouter.id, { method: 'DELETE' });
+                location.href = '?';
+            }
+        }
+
+        async function createView() {
+            var url = prompt('Welche URL?', '/');
+            if (!url) return;
+            var contenttype = prompt('Welcher Content Type?', 'text/html');
+            if (!contenttype) return;
+            var id = (await (await fetch('/api-data/views', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: url, contenttype: contenttype, content: '' }) })).json())[0].id;
+            location.href = '?views/' + id;
+        }
+
+        async function createRouter() {
+            var url = prompt('Welche URL?', '/');
+            if (!url) return;
+            var id = (await (await fetch('/api-data/routers', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: url, code: '' }) })).json())[0].id;
+            location.href = '?routers/' + id;
+        }
+
+        async function save() {
+            if (currentView) {
+                var content = monacoEditor.getValue();
+                await fetch('/api-data/views/' + currentView.id, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: content }) });
+            } else if (currentRouter) {
+                var code = monacoEditor.getValue();
+                await fetch('/api-data/routers/' + currentRouter.id, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: code }) });
+            }
+            var button = document.querySelector('#savebutton');
+            button.classList.add('green');
+            setTimeout(() => {
+                button.classList.remove('green');
+            }, 1000);
+        }
+
+        async function loadView(id) {
+            currentRouter = false;
+            currentView = (await (await fetch('/api-data/views/' + id)).json())[0];
+            monacoEditor.setValue(currentView.content);
+            var language = monaco.languages.getLanguages().find(l => l.mimetypes && (l.mimetypes.indexOf(currentView.contenttype) >= 0));
+            monaco.editor.setModelLanguage(monacoEditor.getModel(), language ? language.id : 'plaintext');
+            document.querySelectorAll('content table .selected').forEach(e => e.classList.remove('selected'));
+            document.getElementById('view-' + id).classList.add('selected');
+            window.history.pushState(null, null, '?views/' + id);
+        }
+
+        async function loadRouter(id) {
+            currentView = false;
+            currentRouter = (await (await fetch('/api-data/routers/' + id)).json())[0];
+            monacoEditor.setValue(currentRouter.code);
+            monaco.editor.setModelLanguage(monacoEditor.getModel(), 'javascript');
+            document.querySelectorAll('content table .selected').forEach(e => e.classList.remove('selected'));
+            document.getElementById('router-' + id).classList.add('selected');
+            window.history.pushState(null, null, '?routers/' + id);
+        }
+
+        async function listViewsAndRouters() {
+            var views = await (await fetch('/api-data/list/views/id,url')).json();
+            views.sort((v1, v2) => v1.url > v2.url ? 1 : -1);
+            var viewlist = document.getElementById('views');
+            viewlist.innerHTML = '';
+            for (var view of views) {
+                viewlist.innerHTML += '<tr id="view-' + view.id + '"><td><a href="#" onclick="loadView(\'' + view.id + '\');">' + view.url + '</a></td></tr>';
+            }
+            var routers = await (await fetch('/api-data/list/routers/id,url')).json();
+            routers.sort((r1, r2) => r1.url > r2.url ? 1 : -1);
+            var routerlist = document.getElementById('routers');
+            routerlist.innerHTML = '';
+            for (var router of routers) {
+                routerlist.innerHTML += '<tr id="router-' + router.id + '"><td><a href="#" onclick="loadRouter(\'' + router.id + '\');">' + router.url + '</a></td></tr>';
+            }
+        }
+
+        window.addEventListener('load', function() {
+            // MonacoEditor initialisieren
+            require.config({ paths: { 'vs': '/monaco-editor/min/vs' }});
+            require(['vs/editor/editor.main'], function() {
+                monacoEditor = monaco.editor.create(document.getElementById('editor'));
+                if (location.search.length > 1) {
+                    var parts = location.search.substring(1).split('/');
+                    if (parts[0] === 'views') {
+                        loadView(parts[1]);
+                    } else {
+                        loadRouter(parts[1]);
+                    }
+                };
+                monacoEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, save);
+            });        
+            listViewsAndRouters();
+        });
+
+        window.addEventListener('resize', function() {
+            if (monacoEditor) monacoEditor.layout();
+        });
+
+        </script>
+    </head>
+    <body>
+        <cc-globalnav selectedurl="/setup/editor"></cc-globalnav>
+        <header>
+            <img src="https://fonts.gstatic.com/s/i/materialicons/code/v4/24px.svg"/>
+            <subtitle>Setup</subtitle>
+            <page-title>Editor</page-title>
+            <button onclick="createView();">+ View</button>
+            <button onclick="createRouter();">+ Router</button>
+            <button onclick="save();" id="savebutton">Speichern</button>
+            <button onclick="del();">Löschen</button>
+            <button onclick="openInNewTab();">Öffnen</button>
+            <button>
+                <select onchange="monaco.editor.setTheme(this.value);">
+                    <option value="vs">Hell</option>
+                    <option value="vs-dark">Dunkel</option>
+                    <option value="hc-black">Hoher Kontrast</option>
+                </select>
+            </button>
+        </header>
+        <columns class="two-fix-flex">
+            <content style="width:300px;">
+                <table>
+                    <thead><tr><th>Views</th></tr></thead>
+                    <tbody id="views"></tbody>
+                </table>
+                <table>
+                    <thead><tr><th>Routers</th></tr></thead>
+                    <tbody id="routers"></tbody>
+                </table>
+            </content>
+            <content id="editor" style="overflow: hidden;"></content>
+        </columns>
+    </body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="/assets/slds.css">
+        <script src="/ccc/cc-globalnav"></script>
+        <script>
+
+            var tablename, entityid;
+
+            async function save() {
+                var content = {};
+                for (var key  of keys) {
+                    content[key] = document.getElementById(key).value;
+                }
+                if (entityid) {
+                    await fetch('/api-data/' + tablename + '/' + entityid, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(content) });
+                } else {
+                    entityid = (await (await fetch('/api-data/' + tablename, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(content) })).json())[0].id;
+                    location.href += '/' + entityid;
+                }
+            }
+
+            async function loadcontent() {
+                var content;
+                if (entityid) {
+                    content = (await (await fetch('/api-data/' + tablename + '/' + entityid)).json())[0];
+                } else {
+                    content = {};
+                    var columns = await (await fetch('/api-schema/columns/' + tablename)).json();
+                    for (var column of columns) {
+                        if (column.table_schema !== 'public') continue;
+                        content[column.column_name] = '';
+                    }
+                }
+                delete content.id;
+                var contentelement = document.querySelector('content');
+                contentelement.innerHTML = '';
+                keys = Object.keys(content);
+                for (var key of keys) {
+                    var inputfield = document.createElement('input-field');
+                    inputfield.innerHTML = '<textarea id="' + key + '"></textarea><label>' + key + '</label>';
+                    contentelement.appendChild(inputfield);
+                    var value = content[key];
+                    if (typeof(value) === 'object') value = JSON.stringify(value);
+                    document.getElementById(key).value = value;
+                }
+            }
+
+            window.addEventListener('load', () => {
+                var urlparts = location.search.substring(1).split('/');
+                tablename = urlparts[0];
+                entityid = urlparts[1];
+                document.getElementById('tablename').innerHTML = tablename;
+                document.getElementById('contentlink').setAttribute('href', '/setup/tables/content?' + tablename);
+                loadcontent();
+            });
+
+        </script>
+    </head>
+    <body>
+        <cc-globalnav selectedurl="/setup/tables"></cc-globalnav>
+        <header>
+            <img src="https://fonts.gstatic.com/s/i/materialicons/table_chart/v4/24px.svg"/>
+            <subtitle>Setup &gt; <a href="/setup/tables">Tabellen</a> &gt; <a href="#" id="contentlink"><span id="tablename"></span> - Inhalt</a></subtitle>
+            <page-title>Inhalt bearbeiten</page-title>
+            <button onclick="save();">Speichern</button>
+        </header>
+        <content>
+        </content>
+    </body>
+</html>
