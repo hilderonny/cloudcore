@@ -4,7 +4,7 @@ module.exports = (datapath) => {
 
     var tables = {}; // Hält Datenbankinhalte inMemory
 
-    function preparetable(tablename, data) {
+    function preparetable(data) {
         return {
             lastmodified: Date.now(),
             data: data,
@@ -16,7 +16,7 @@ module.exports = (datapath) => {
 
     for (var datafilename of fs.readdirSync(datapath)) {
         var tablename = datafilename.split('.')[0];
-        tables[tablename] = preparetable(tablename, JSON.parse(fs.readFileSync(datapath + '/' + datafilename)));
+        tables[tablename] = preparetable(JSON.parse(fs.readFileSync(datapath + '/' + datafilename)));
     }
 
     var lastsaved = Date.now();
@@ -38,7 +38,7 @@ module.exports = (datapath) => {
             get: (tablename) => { // Direkter Zugriff auf Tabelleninhalt
                 var table = tables[tablename];
                 if (!table) {
-                    table = preparetable(tablename, JSON.parse(fs.readFileSync(datapath + '/' + datafilename)));
+                    table = preparetable(JSON.parse(fs.readFileSync(datapath + '/' + datafilename)));
                     tables[tablename] = table;
                     table.save();
                 }
