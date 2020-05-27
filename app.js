@@ -7,19 +7,17 @@ var routers = require('./middleware/routers');
 var views = require('./middleware/views');
 
 // Konfiguration aus config.json lesen
-var configfilename = __dirname + '/config.json';
-if (!fs.existsSync(configfilename)) {
-    console.error(configfilename + ' existiert nicht. Kann nicht starten!');
-    process.exit();
-}
-var config = JSON.parse(fs.readFileSync(configfilename));
+var config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
+
+// Datenverzeichnis ggf. anlegen
+if (!fs.existsSync(config.DATAPATH)) fs.mkdirSync(config.DATAPATH);
 
 // Server konfigurieren
 var app = express();
 app.use(bodyParser.text()); // Content-type: text/plain
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(db(config));
+app.use(db(config.DATAPATH)); // TODO db raus oder umbauen
 app.use(auth); // Erst nach db, weil die Datenbankfunktionen benutzt werden.
 app.config = config;
 

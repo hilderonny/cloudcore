@@ -1,26 +1,48 @@
-var pg = require('pg').native;
+var fs = require('fs');
 
-module.exports = (config) => {
-    return async (req, _, next) => {
+module.exports = (datapath) => {
+
+    var tables = {}; // Hält Datenbankinhalte inMemory
+
+    function preparetable(tablename, data) {
+        return {
+            lastmodified: Date.now(),
+            data: data,
+            save: function() {
+                this.lastmodified = Date.now();
+            }
+        };
+    }
+
+    for (var datafilename of fs.readdirSync(datapath)) {
+        var tablename = datafilename.split('.')[0];
+        tables[tablename] = preparetable(tablename, JSON.parse(fs.readFileSync(datapath + '/' + datafilename)));
+    }
+
+    var lastsaved = Date.now();
+
+    // Einmal je Minute speichern
+    setInterval(() => {
+        for (var tablename in tables) {
+            var table = tables[tablename];
+            if (table.lastmodified > lastsaved) {
+                fs.writeFileSync(datapath + '/' + tablename + '.json', JSON.stringify(table.data));
+                console.log('Speichere ' + tablename);
+            }
+        }
+        lastsaved = Date.now();
+    }, 1000);
+
+    return (req, _, next) => {
         req.db = {
-            config: config, // Wird für Backup benötigt
-            query: async (query) => {
-                var client = new pg.Client({
-                    user: config.PGUSER,
-                    host: config.PGHOST,
-                    database: config.PGDATABASE,
-                    password: config.PGPASSWORD,
-                    port: config.PGPORT,
-                });
-                await client.connect();
-                try {
-                    // Konsole vorübergehend umleiten, da Warnungen ansonsten rummüllen
-                    return await client.query(query);
-                } catch (ex) {
-                    return { error: ex };
-                } finally {
-                    await client.end();
+            get: (tablename) => { // Direkter Zugriff auf Tabelleninhalt
+                var table = tables[tablename];
+                if (!table) {
+                    table = preparetable(tablename, JSON.parse(fs.readFileSync(datapath + '/' + datafilename)));
+                    tables[tablename] = table;
+                    table.save();
                 }
+                return table.data;
             }
         };
         next();

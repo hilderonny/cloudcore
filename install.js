@@ -1,3 +1,5 @@
+// TODO Überlegen, ob ich die install.js überhaupt noch brauche. Es reicht, wenn die app.js die Tabellen anlegt, die notwendig sind
+
 var pg = require('pg').native;
 var fs = require('fs');
 var packageupload = require('./api/packageupload');

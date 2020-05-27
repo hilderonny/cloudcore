@@ -2,6 +2,8 @@
 
 # Erstellt DB-Dumps mit aktuallem Datum und commited dieses automatisch.
 
+# TODO Rauswerfen
+
 cd /root/gitlab/hilderonny/cloudcore
 git pull
 wget http://localhost/backup/ -O ./backup/autobackup.sql
