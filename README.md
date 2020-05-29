@@ -24,3 +24,38 @@ Diesen Versuch gab ich aus folgenden Gründen auf:
 * Aufwand der Paketierung ohne Mehrwert für mich
 
 Ich wollte effizienter werden und entschied mich daher, wieder auf einfache Standards zurückzugreifen.
+
+## Ideen
+
+### MiiVersum nachbauen
+
+Eigenartig, dass es die Wii Spiele,  bei denen man die Controller einsetzt, nicht bereits als VR-Adaptionen für Quest und Co. gibt.
+
+Es sollte doch recht einfach und performant sein, diese simplen Figuren und Gegenden nachzubauen.
+
+* Mii Editor
+* Tennis
+* Tischtennis
+* Obst zerhacken
+* Schwertkampf
+* Surfen
+* Laufen bzw. Radfahren (MotionSickness beachten)
+* Insel nachbauen
+* Bogenschießen
+* Multiplayer mit Treffen und Chatten
+
+### LIAGA (das mit Karten) bauen
+
+In einem der Notizbücher hatte ioch ein GPS-Spiel. Das will ich umsetzen, damit ich mit dem Handy draußen rumlaufen kann.
+
+### Habitica nachbauen
+
+### VR Editor
+
+Ich will endlich in der Quest einen Editor haben, mit dem ich mir virtuelle Welten erstellen kann.
+
+## VR Grundgerüst
+
+Da soll man sich sowohl mit dem PC als auch mit der Quest drin bewegen und kommunizieren können.
+
+Als Webkomponente bauen. AFRAME bietet sich hier an, weil dieses bereits auf Komponenten basiert.
