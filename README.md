@@ -7,6 +7,10 @@ Besteht grundlegend aus `routers` - das sind API Endpunkte, die serverseitigen C
 
 [Hier geht's zur Dokumentation](https://hilderonny.gitlab.io/cloudcore)
 
+## IndexedDB Wrapper
+
+Unter https://glitch.com/edit/#!/web-database-proxy?path=script.js%3A90%3A0 habe ich einen Wrapper gebaut, der IndexedDB-Zugriffe so kapselt, dass sie sich wie ganz einfache Objektzugriffe anfühlen.
+
 ## Branch postgres2020
 
 Dieser Branch enthält einen experimentellen Stand, mit dem ich die Salesforce-Architektur nachbilden wollte.
